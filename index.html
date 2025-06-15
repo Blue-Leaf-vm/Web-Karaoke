@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="./skin/2series/style.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #wrapper {
+      width: 1920px;
+      height: 1080px;
+      transform-origin: top left;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="lyric-top-box"></div>
+      <p id="lyric-top-back" class="lyric-top"></p>
+      <p id="lyric-top-fore" class="lyric-top"></p>
+      <p id="lyric-top-pro" class="lyric-top-pro"></p>
+    <div id="lyric-bottom-box"></div>
+      <p id="lyric-bottom-back" class="lyric-bottom"></p>
+      <p id="lyric-bottom-fore" class="lyric-bottom"></p>
+      <p id="lyric-bottom-pro" class="lyric-bottom-pro"></p>
+  </div>
+
+  <script src="./skin/2series/code.js"></script>
+  <script src="./code.js"></script>
+  <script>
+    function start(number){
+      
+    }
+
+    function scaleContent() {
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+      const scaleX = window.innerWidth / targetWidth;
+      const scaleY = window.innerHeight / targetHeight;
+      const scale = Math.min(scaleX, scaleY);
+
+      const wrapper = document.getElementById('wrapper');
+      wrapper.style.transform = `scale(${scale}) translate(-50%, -50%)`;
+    }
+
+    window.addEventListener('resize', scaleContent);
+    window.addEventListener('load', scaleContent);
+    startsong(1234);
+  </script>
+</body>
+</html>

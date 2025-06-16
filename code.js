@@ -24,10 +24,26 @@ async function songstart(number){
         js.lyricsd.forEach(async item => {
             await wait(item.startwait-((60000/js.bpm)));
 
-            item.lines.forEach(j => {
-                renderlyric(false, j, isup, js.lang);
-                isup=!isup;
-            });
+            for(let j = 0; j < item.lines.length; j += 2){
+                let startup = isup;
+                for(let k = 0; k < 2; k++){
+                    const line = item.lines[j + k];
+                    if (line) {
+                        renderlyric(false, line, isup, js.lang);
+                        isup = !isup;
+                    }
+                }
+                for(let k = 0; k < 2; k++){
+                    const line = item.lines[j + k];
+                    if (line) {
+                        draglyric(line, startup);
+                        startup = !startup;
+                        for(let l=0; l<line.lyrics.length; l++){
+                            await wait(line.timing[l] + line.wait[l]);
+                        }
+                    }
+                }
+            }
 
             setTimeout(() => {
                 timer(js.bpm, isup);

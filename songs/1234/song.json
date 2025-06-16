@@ -12,7 +12,7 @@
   "bpm": 120,
   "lyricsd": [
     {
-      "startwait": 5000,
+      "startwait": 10000,
       "lines": [
         {
           "type": 0,

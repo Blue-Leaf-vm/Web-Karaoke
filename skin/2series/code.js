@@ -129,6 +129,7 @@ async function timer(bpm, isup, startcount=4){
 		left+=50;
 	}
 	timerimage.style.display = "none";
+	timerimage.src = "#";
 }
 
 //showpron: [boolean: 발음 표시 여부], data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어

@@ -82,9 +82,17 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	ad.id = "ad";
 	ci.id = "ci";
 	datatxt.id = "datatext";
-
-	setTimeout(() => {upperbox.style.top = "150px";}, 10);
-	setTimeout(() => {downbox.style.bottom = "100px";}, 200);
+	if(Math.floor(Math.random() * 2)==0){
+		upperbox.style.top = "-400px";
+		downbox.style.bottom = "-400px";
+		setTimeout(() => {upperbox.style.top = "150px";}, 10);
+		setTimeout(() => {downbox.style.bottom = "100px";}, 200);
+	} else {
+		upperbox.style.left = "150%";
+		downbox.style.left = "-50%";
+		setTimeout(() => {upperbox.style.left = "50%";}, 10);
+		setTimeout(() => {downbox.style.left = "50%";}, 200);
+	}
 	setTimeout(() => {
 		inanime = false;
 		//시간, 네트워크 보이기

@@ -3,7 +3,7 @@
 #upperbox {
     position: absolute;
     left: 50%;
-    top: -400px;
+    top: 150px;
     transform: translateX(-50%);
     transition: all linear 0.2s;
 }
@@ -56,7 +56,7 @@
 #downbox {
     position: absolute;
     left: 50%;
-    bottom: -400px;
+    bottom: 100px;
     transform: translateX(-50%);
     transition: all linear 0.2s;
     display: flex;

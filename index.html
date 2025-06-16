@@ -21,28 +21,18 @@
       top: 50%;
       left: 50%;
       background: white;
+      overflow: hidden;
     }
   </style>
 </head>
 <body>
   <div id="wrapper">
-    <div id="lyric-top-box"></div>
-      <p id="lyric-top-back" class="lyric-top"></p>
-      <p id="lyric-top-fore" class="lyric-top"></p>
-      <p id="lyric-top-pro" class="lyric-top-pro"></p>
-    <div id="lyric-bottom-box"></div>
-      <p id="lyric-bottom-back" class="lyric-bottom"></p>
-      <p id="lyric-bottom-fore" class="lyric-bottom"></p>
-      <p id="lyric-bottom-pro" class="lyric-bottom-pro"></p>
+
   </div>
 
   <script src="./skin/2series/code.js"></script>
   <script src="./code.js"></script>
   <script>
-    function start(number){
-      
-    }
-
     function scaleContent() {
       const targetWidth = 1920;
       const targetHeight = 1080;
@@ -56,7 +46,6 @@
 
     window.addEventListener('resize', scaleContent);
     window.addEventListener('load', scaleContent);
-    startsong(1234);
   </script>
 </body>
 </html>

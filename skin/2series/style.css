@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+#upperbox {
+    position: absolute;
+    left: 50%;
+    top: -400px;
+    transform: translateX(-50%);
+    transition: all linear 0.2s;
+}
+
+#upbackimage {
+    z-index: 0;
+    position: absolute;
+    left: 25px;
+    top: 25px;
+}
+
+#upborder {
+    position: relative;
+    z-index: 0;
+}
+
+#uppertitle {
+    font-family: "Noto Sans", sans-serif;
+    color: #fff;
+    font-weight: 900;
+    font-size: 100px;
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+#upperdesc {
+    font-family: "Noto Sans", sans-serif;
+    color: #C2C2C2;
+    font-size: 38px;
+    position: absolute;
+    left: 50%;
+    bottom: 110px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+#uppersing {
+    font-family: "Noto Sans", sans-serif;
+    position: absolute;
+    font-size: 38px;
+    left: 50%;
+    bottom: 80px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+#downbox {
+    position: absolute;
+    left: 50%;
+    bottom: -400px;
+    transform: translateX(-50%);
+    transition: all linear 0.2s;
+    display: flex;
+}
+
+#downblackbox {
+    background-color: #000000A6;
+    position: relative;
+    z-index: 0;
+    width: 770px;
+    height: fit-content;
+}
+
+#ci {
+    position: absolute;
+    width: 300px;
+    top: 230px;
+}
+
+#datatext {
+    font-family: "Noto Sans", sans-serif;
+    position: relative;
+    font-size: 30px;
+    z-index: 1;
+    line-height: 45px;
+    margin: 15px 0 15px 20px;
+}

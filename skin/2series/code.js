@@ -1,12 +1,25 @@
 let inanime = false;
+let isshowed = false;
+
+//상단바 생성
+
+//카운터 생성
+const timerimage = document.createElement("img");
+timerimage.id = "timerimage";
+wrapper.appendChild(timerimage);
 
 //number: 곡 번호, title: 곡 제목, dis: 곡 설명, sing: 가수, gender: 성별, songint: 원음정, curint: 현재음정, lyrics: 작사, compos: 작곡, original: 원작자, banner: 배너, lang: 곡 언어, type: [0: 오리지널, 1: MV, 2: MR, 3: LIVE, 4: 음악]
 function startsong(number, title, dis, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR", type="ORI"){
 	inanime = true;
+	isshowed = true;
+	//상단바 숨기기
+	//시간, 네트워크 숨기기
 
 	//곡 시작 화면 표출
 	const wrapper = document.getElementById("wrapper");
-	wrapper.innerHTML = '';
+	const infobox = document.getElementById("infobox") || document.createElement("div");
+	infobox.id = "infobox";
+	infobox.innerHTML = '';
 
 	//상단 박스 출력
 	const upperbox = document.createElement("div");
@@ -34,7 +47,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	upperbox.appendChild(titletxt);
 	upperbox.appendChild(singtxt);
 	upperbox.appendChild(border);
-	wrapper.appendChild(upperbox);
+	infobox.appendChild(upperbox);
 
 	backimage.id = "upbackimage";
 	border.id = "upborder";
@@ -61,7 +74,8 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	downbox.appendChild(downblackbox);
 	downbox.appendChild(ad);
 	downbox.appendChild(ci);
-	wrapper.appendChild(downbox);
+	infobox.appendChild(downbox);
+	wrapper.appendChild(infobox);
 
 	downbox.id = "downbox";
 	downblackbox.id = "downblackbox";
@@ -71,24 +85,57 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 
 	setTimeout(() => {upperbox.style.top = "150px";}, 10);
 	setTimeout(() => {downbox.style.bottom = "100px";}, 200);
-	setTimeout(() => {inanime = false;}, 410);
+	setTimeout(() => {
+		inanime = false;
+		//시간, 네트워크 보이기
+	}, 410);
 }
 
 function hidestartbox(){
 	//곡 시작 화면 숨기기 (애니메이션이 모두 작동한 후 숨겨져야 함)
-	const wrapper = document.getElementById("wrapper");
-	if(!inanime) wrapper.innerHTML = '';
+	const infobox = document.getElementById("infobox");
+	if(!inanime) { 
+		infobox.remove();
+		isshowed = false;
+		setTimeout(()=>{
+			timerimage.style.display = "block";
+		},500);
+		/*1초 뒤 상단바 표시*/
+	}
 }
 
-//bpm: 곡 BPM, startcount: [4, 3, 2, 1]
-function timer(bpm, startcount=4){
+//bpm: 곡 BPM, isup: [true: 위, false: 아래], startcount: [4, 3, 2, 1]
+async function timer(bpm, isup, startcount=4){
 	//4,3,2,1표출
-	
+	if (!isshowed) timerimage.style.display = "block";
+	//isup에 맞는 가사에서 현재 렌더링된 상태의 가사를 지정
+	//그 가사의 왼쪽 끝을 타이머 이미지의 시작 x로 잡는다
+	//그 가사의 위쪽을 y로 잡는다
+	let left = 160;
+	timerimage.style.left = left + "px";
+	timerimage.style.top = "500px";
+	for(let i=startcount;i>0;i--){
+		timerimage.src = `./skin/2series/assets/song/playing/timer/${i}.png`;
+		timerimage.style.left = left + "px";
+		await wait(60000/bpm);
+		left+=50;
+	}
+	timerimage.style.display = "none";
 }
 
-//showpron: [boolean: 발음 표시 여부], firstdata: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 첫번째 줄 데이터, seconddata: 같은 형태로 전달되는 두번째 줄 데이터, lang: 곡 언어
-function renderlyric(showpron, firstdata, seconddata, lang){
-	//가사 렌더링 및 드래깅
+//showpron: [boolean: 발음 표시 여부], data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어
+function renderlyric(showpron, data, isup, lang){
+	//가사 렌더링
+}
+
+//data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래]
+function draglyric(data, isup){
+	//렌더링된 가사 드래깅
+}
+
+function hidelyric(){
+	//가사 숨기기
+
 }
 
 //type: [free, time, coin]

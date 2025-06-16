@@ -84,3 +84,8 @@
     line-height: 45px;
     margin: 15px 0 15px 20px;
 }
+
+#timerimage {
+    display: none;
+    position: absolute;
+}

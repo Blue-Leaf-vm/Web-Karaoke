@@ -5,6 +5,7 @@
 //song.midi (전곡, song.mp3가 존재할 경우 멜로디, mr곡과 공존 불가)
 //chorus.mp3 (곡 코러스)
 //song.midi (song.mp3) / mr.mp3 필수
+let isup = true;
 
 async function songstart(number){
     //곡 정보 파싱 후 startsong에 전달
@@ -17,9 +18,26 @@ async function songstart(number){
         const data = await res.text();
         const js = JSON.parse(data);
         startsong(number, js.title, js.description||null, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, null, null, js.lang, "ORI");
-        setTimeout(() => {hidestartbox();}, js.lyricsd[0].startwait/2);
-        setTimeout(() => {timer(js.bpm);}, js.lyricsd[0].startwait-((1000/js.bpm)*4));
+        setTimeout(() => {
+            hidestartbox();
+        }, js.lyricsd[0].startwait/4);
+        js.lyricsd.forEach(async item => {
+            await wait(item.startwait-((60000/js.bpm)));
+
+            item.lines.forEach(j => {
+                renderlyric(false, j, isup, js.lang);
+                isup=!isup;
+            });
+
+            setTimeout(() => {
+                timer(js.bpm, isup);
+            }, item.startwait-((60000/js.bpm)*4));
+        });
     } catch (err) {
         alert('곡 불러오기 실패:\n', err);
     }
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

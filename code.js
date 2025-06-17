@@ -22,32 +22,32 @@ async function songstart(number){
             hidestartbox();
         }, js.lyricsd[0].startwait/4);
         js.lyricsd.forEach(async item => {
-            await wait(item.startwait-((60000/js.bpm)));
+            await wait(item.startwait - ((60000 / js.bpm) * 5));
 
-            for(let j = 0; j < item.lines.length; j += 2){
-                let startup = isup;
-                for(let k = 0; k < 2; k++){
-                    const line = item.lines[j + k];
-                    if (line) {
-                        renderlyric(false, line, isup, js.lang);
-                        isup = !isup;
-                    }
-                }
-                for(let k = 0; k < 2; k++){
-                    const line = item.lines[j + k];
-                    if (line) {
-                        draglyric(line, startup);
-                        startup = !startup;
-                        for(let l=0; l<line.lyrics.length; l++){
-                            await wait(line.timing[l] + line.wait[l]);
-                        }
-                    }
-                }
+            if (item.lines.length >= 2) {
+                renderlyric(false, item.lines[0], true, js.lang);
+                renderlyric(false, item.lines[1], false, js.lang);
+            } else if (item.lines.length == 1) {
+                renderlyric(false, item.lines[0], true, js.lang);
             }
 
-            setTimeout(() => {
-                timer(js.bpm, isup);
-            }, item.startwait-((60000/js.bpm)*4));
+            let isup = true;
+            await wait(60000 / js.bpm);
+            timer(js.bpm, isup);
+            await wait((60000 / js.bpm) * 4);
+            for (let i = 0; i < item.lines.length; i++) {
+                draglyric(item.lines[i], isup);
+
+                for (let j = 0; j < item.lines[i].lyrics.length; j++) {
+                    await wait(item.lines[i].timing[j]);
+                    await wait(item.lines[i].wait[j]);
+                }
+
+                const next = item.lines[i + 2];
+                if (next) renderlyric(false, next, isup, js.lang);
+
+                isup = !isup;
+            }
         });
     } catch (err) {
         alert('곡 불러오기 실패:\n', err);

@@ -16,7 +16,6 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	//시간, 네트워크 숨기기
 
 	//곡 시작 화면 표출
-	const wrapper = document.getElementById("wrapper");
 	const infobox = document.getElementById("infobox") || document.createElement("div");
 	infobox.id = "infobox";
 	infobox.innerHTML = '';
@@ -75,7 +74,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	downbox.appendChild(ad);
 	downbox.appendChild(ci);
 	infobox.appendChild(downbox);
-	wrapper.appendChild(infobox);
+	document.getElementById("wrapper").appendChild(infobox);
 
 	downbox.id = "downbox";
 	downblackbox.id = "downblackbox";
@@ -134,12 +133,50 @@ async function timer(bpm, isup, startcount=4){
 
 //showpron: [boolean: 발음 표시 여부], data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어
 function renderlyric(showpron, data, isup, lang){
-	//가사 렌더링
+	const lyricbox = document.createElement("div");
+	const lyrictextbox = document.createElement("div");
+	const lyrictext = document.createElement("p");
+	const lyrichuri = document.createElement("p");
+
+	const lyrictextboxdrag = document.createElement("div");
+	const lyrictextdrag = document.createElement("p");
+	const lyrichuridrag = document.createElement("p");
+
+	const lyricpron = document.createElement("p");
+
+	lyricbox.id = isup ? "upperlyricbox" : "lowerlyricbox";
+	lyrictextbox.id = isup ? "upperlyrictextbox" : "lowerlyrictextbox";
+	lyrictext.id = isup ? "upperlyrictext" : "lowerlyrictext";
+	lyrichuri.id = isup ? "upperlyrichuri" : "lowerlyrichuri";
+	lyrictextboxdrag.id = isup ? "upperlyrictextboxdrag" : "lowerlyrictextboxdrag";
+	lyrictextdrag.id = isup ? "upperlyrictextdrag" : "lowerlyrictextdrag";
+	lyrichuridrag.id = isup ? "upperlyrichuridrag" : "lowerlyrichuridrag";
+	lyricpron.id = isup ? "upperlyricpron" : "lowerlyricpron";
+
+	lyrictext.innerText = data.lyrics.join('');
+	lyrichuri.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
+	lyrictextdrag.innerText = "";
+	lyrichuridrag.innerText = "";
+	lyricpron.innerText = showpron ? data.pronunciation.join(' ') : "";
+
+	lyrictextbox.appendChild(lyrictext);
+	lyrictextbox.appendChild(lyrichuri);
+	lyrictextboxdrag.appendChild(lyrictextdrag);
+	lyrictextboxdrag.appendChild(lyrichuridrag);
+
+	lyricbox.appendChild(lyrictextbox);
+	lyricbox.appendChild(lyrictextboxdrag);
+	lyricbox.appendChild(lyricpron);
+
+	document.getElementById("wrapper").appendChild(lyricbox);
 }
+
 
 //data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래]
 function draglyric(data, isup){
 	//렌더링된 가사 드래깅
+	const lyricbox = document.getElementById(isup ? "upperlyricbox" : "lowerlyricbox");
+	lyricbox.remove();
 }
 
 function hidelyric(){

@@ -31,7 +31,7 @@
       ]
     },
     {
-      "startwait": 1000,
+      "startwait": 5000,
       "lines": [
         {
           "type": 0,

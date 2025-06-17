@@ -120,7 +120,7 @@ async function timer(bpm, isup, startcount=4){
 	//그 가사의 위쪽을 y로 잡는다
 	let left = 160;
 	timerimage.style.left = left + "px";
-	timerimage.style.top = "500px";
+	timerimage.style.top = "550px";
 	for(let i=startcount;i>0;i--){
 		timerimage.src = `./skin/2series/assets/song/playing/timer/${i}.png`;
 		timerimage.style.left = left + "px";

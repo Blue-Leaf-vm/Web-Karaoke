@@ -100,13 +100,13 @@
 
 #upperlyrictextboxdrag {position: absolute;}
 
-#upperlyrictextdrag {}
+#upperlyrictextdrag {color: yellow}
 
 #upperlyrichuridrag {}
 
-#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 900px;right: 160px;display: flex;flex-direction: row-reverse;}
+#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 900px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
 
-#lowerlyrictextbox {position: absolute;}
+#lowerlyrictextbox {position: absolute;text-align: left;}
 
 #lowerlyrictext {}
 
@@ -114,11 +114,11 @@
 
 #lowerlyrictextboxdrag {position: absolute;}
 
-#lowerlyrictextdrag {}
+#lowerlyrictextdrag {color: yellow}
 
 #lowerlyrichuridrag {}
 
-.lyrictext {font-size: 120px;margin: 0;position: relative;top: -20px;}
+.lyrictext {font-size: 120px;margin: 0;position: relative;top: -20px;white-space: pre;}
 
 .lyrichuri {font-size: 50px;margin: 0;}
 

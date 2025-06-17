@@ -89,3 +89,44 @@
     display: block;
     position: absolute;
 }
+
+#upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 750px;left: 160px;display: flex;}
+
+#upperlyrictextbox {position: absolute;}
+
+#upperlyrictext {}
+
+#upperlyrichuri {}
+
+#upperlyrictextboxdrag {position: absolute;}
+
+#upperlyrictextdrag {}
+
+#upperlyrichuridrag {}
+
+#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 900px;right: 160px;display: flex;flex-direction: row-reverse;}
+
+#lowerlyrictextbox {position: absolute;}
+
+#lowerlyrictext {}
+
+#lowerlyrichuri {}
+
+#lowerlyrictextboxdrag {position: absolute;}
+
+#lowerlyrictextdrag {}
+
+#lowerlyrichuridrag {}
+
+.lyrictext {font-size: 120px;margin: 0;position: relative;top: -20px;}
+
+.lyrichuri {font-size: 50px;margin: 0;}
+
+.lyricpron {
+    margin: 0;
+    font-family: 'Noto Sans';
+    position: relative;
+    top: 120px;
+    font-size: 50px;
+    font-weight: 500;
+}

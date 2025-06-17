@@ -152,6 +152,13 @@ function renderlyric(showpron, data, isup, lang){
 	lyrictextdrag.id = isup ? "upperlyrictextdrag" : "lowerlyrictextdrag";
 	lyrichuridrag.id = isup ? "upperlyrichuridrag" : "lowerlyrichuridrag";
 	lyricpron.id = isup ? "upperlyricpron" : "lowerlyricpron";
+	
+	lyrichuri.classList.add("lyrichuri");
+	lyrictext.classList.add("lyrictext");
+	lyricpron.classList.add("lyricpron");
+
+	lyrichuridrag.classList.add("lyrichuri");
+	lyrictextdrag.classList.add("lyrictext");
 
 	lyrictext.innerText = data.lyrics.join('');
 	lyrichuri.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
@@ -186,9 +193,10 @@ async function draglyric(data, isup, lang){
     }
 }
 
-function hidelyric(){
+function hidelyric(isup){
 	//가사 숨기기
-
+	const lyricbox = document.getElementById(isup ? "upperlyricbox" : "lowerlyricbox");
+	lyricbox.remove();
 }
 
 //type: [free, time, coin]

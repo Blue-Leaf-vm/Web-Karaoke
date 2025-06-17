@@ -35,14 +35,26 @@ async function songstart(number){
             await wait(60000 / js.bpm);
             timer(js.bpm, isup);
             await wait((60000 / js.bpm) * 4);
-            for (let i = 0; i < item.lines.length; i++) {
-                draglyric(item.lines[i], isup, js.lang);
 
-                for (let j = 0; j < item.lines[i].lyrics.length; j++) {
-                    await wait(item.lines[i].timing[j]);
-                    await wait(item.lines[i].wait[j]);
+            for (let i = 0; i < item.lines.length; i++) {
+                const line = item.lines[i];
+                const isLastLine = (i === item.lines.length - 1);
+                const isNextLastLine = (i + 1 === item.lines.length - 1);
+
+                draglyric(line, isup, js.lang);
+
+                for (let j = 0; j < line.lyrics.length; j++) {
+                    await wait(line.timing[j]);
+                    await wait(line.wait[j]);
                 }
 
+                if (isLastLine) {
+                    hidelyric(true);
+                    hidelyric(false);
+                } else if (!isNextLastLine) {
+                    hidelyric(isup);
+                }
+                
                 const next = item.lines[i + 2];
                 if (next) renderlyric(false, next, isup, js.lang);
 
@@ -50,7 +62,7 @@ async function songstart(number){
             }
         }
     } catch (err) {
-        alert('곡 불러오기 실패:\n', err);
+        alert('곡 재생 중 오류 발생:\n', err);
     }
 }
 

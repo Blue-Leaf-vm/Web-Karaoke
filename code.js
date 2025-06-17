@@ -21,7 +21,7 @@ async function songstart(number){
         setTimeout(() => {
             hidestartbox();
         }, js.lyricsd[0].startwait/4);
-        js.lyricsd.forEach(async item => {
+        for (const item of js.lyricsd) {
             await wait(item.startwait - ((60000 / js.bpm) * 5));
 
             if (item.lines.length >= 2) {
@@ -36,7 +36,7 @@ async function songstart(number){
             timer(js.bpm, isup);
             await wait((60000 / js.bpm) * 4);
             for (let i = 0; i < item.lines.length; i++) {
-                draglyric(item.lines[i], isup);
+                draglyric(item.lines[i], isup, js.lang);
 
                 for (let j = 0; j < item.lines[i].lyrics.length; j++) {
                     await wait(item.lines[i].timing[j]);
@@ -48,7 +48,7 @@ async function songstart(number){
 
                 isup = !isup;
             }
-        });
+        }
     } catch (err) {
         alert('곡 불러오기 실패:\n', err);
     }

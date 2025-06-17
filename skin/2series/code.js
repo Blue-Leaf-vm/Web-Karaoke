@@ -172,11 +172,18 @@ function renderlyric(showpron, data, isup, lang){
 }
 
 
-//data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래]
-function draglyric(data, isup){
+//data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어
+async function draglyric(data, isup, lang){
 	//렌더링된 가사 드래깅
-	const lyricbox = document.getElementById(isup ? "upperlyricbox" : "lowerlyricbox");
-	lyricbox.remove();
+	const lyrictextboxdrag = document.getElementById(isup ? "upperlyrictextboxdrag" : "lowerlyrictextboxdrag");
+	const lyrictextdrag = document.getElementById(isup ? "upperlyrictextdrag" : "lowerlyrictextdrag");
+	const lyrichuridrag = document.getElementById(isup ? "upperlyrichuridrag" : "lowerlyrichuridrag");
+	lyrichuridrag.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
+    for (let j = 0; j < data.lyrics.length; j++) {
+		lyrictextdrag.innerText = lyrictextdrag.innerText + data.lyrics[j];
+        await wait(data.timing[j]);
+        await wait(data.wait[j]);
+    }
 }
 
 function hidelyric(){

@@ -90,31 +90,31 @@
     position: absolute;
 }
 
-#upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 730px;left: 160px;display: flex;}
+#upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 600;position: relative;top: 730px;left: 160px;display: flex;}
 
 #upperlyrictextbox {position: absolute;}
 
-#upperlyrictext {}
+#upperlyrictext {color: #EBEBEB;}
 
-#upperlyrichuri {}
+#upperlyrichuri {color: #EBEBEB;}
 
 #upperlyrictextboxdrag {position: absolute;}
 
-#upperlyrictextdrag {color: dodgerblue}
+#upperlyrictextdrag {color: #03E5FF;}
 
 #upperlyrichuridrag {}
 
-#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 880px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
+#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 600;position: relative;top: 880px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
 
 #lowerlyrictextbox {position: absolute;text-align: left;}
 
-#lowerlyrictext {}
+#lowerlyrictext {color: #EBEBEB;}
 
-#lowerlyrichuri {}
+#lowerlyrichuri {color: #EBEBEB;}
 
 #lowerlyrictextboxdrag {position: absolute;}
 
-#lowerlyrictextdrag {color: dodgerblue}
+#lowerlyrictextdrag {color: #03E5FF;}
 
 #lowerlyrichuridrag {}
 
@@ -137,4 +137,20 @@
 	width: 0;
 	transition: width 0s linear;
 	white-space: nowrap;
+}
+
+#upperlyrictext::after, #upperlyrichuri::after, #lowerlyrictext::after, #lowerlyrichuri::after  {
+  z-index: -2;
+  content: attr(data-content);
+  position: absolute;
+  left: 0;
+  -webkit-text-stroke: 14px #3E4457;
+}
+
+#upperlyrictextdrag::after, #upperlyrichuridrag::after, #lowerlyrictextdrag::after, #lowerlyrichuridrag::after  {
+  z-index: -1;
+  content: attr(data-content);
+  position: absolute;
+  left: 0;
+  -webkit-text-stroke: 14px #050855;
 }

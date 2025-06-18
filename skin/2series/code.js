@@ -115,9 +115,6 @@ function hidestartbox(){
 async function timer(bpm, isup, startcount=4){
 	//4,3,2,1표출
 	if (!isshowed) timerimage.style.display = "block";
-	//isup에 맞는 가사에서 현재 렌더링된 상태의 가사를 지정
-	//그 가사의 왼쪽 끝을 타이머 이미지의 시작 x로 잡는다
-	//그 가사의 위쪽을 y로 잡는다
 	const lyricElem = document.getElementById(isup ? "upperlyrictext" : "lowerlyrictext");
 	const pos = getScaledPositionToWrapper(lyricElem);
 
@@ -130,9 +127,8 @@ async function timer(bpm, isup, startcount=4){
 	for (let i = startcount; i > 0; i--) {
 		timerimage.src = `./skin/2series/assets/song/playing/timer/${i}.png`;
 		timerimage.style.left = left + "px";
-		timerimage.style.top = top + "px";
-		await wait(60000 / bpm);
 		left += 50;
+		await wait(60000 / bpm);
 	}
 
 	timerimage.style.display = "none";
@@ -152,7 +148,7 @@ function getScaledPositionToWrapper(element) {
 }
 
 //showpron: [boolean: 발음 표시 여부], data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어
-function renderlyric(showpron, data, isup, lang){
+async function renderlyric(showpron, data, isup, lang){
 	const lyricbox = document.createElement("div");
 	const lyrictextbox = document.createElement("div");
 	const lyrictext = document.createElement("p");
@@ -181,6 +177,7 @@ function renderlyric(showpron, data, isup, lang){
 	lyrictextdrag.classList.add("lyrictext");
 
 	lyrictext.innerText = data.lyrics.join('');
+	lyrictext.setAttribute("data-content", data.lyrics.join(''));
 	lyrichuri.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
 	lyrictextdrag.innerText = "";
 	lyrichuridrag.innerText = "";
@@ -226,7 +223,7 @@ async function draglyric(data, isup, lang) {
 
 	for (let j = 0; j < data.lyrics.length; j++) {
 		lyrictextdrag.innerText += data.lyrics[j];
-
+		lyrictextdrag.setAttribute("data-content", lyrictextdrag.innerText);
 		await new Promise(requestAnimationFrame);
 
 		lyrictextboxdrag.style.transition = `width ${data.timing[j]}ms linear`;

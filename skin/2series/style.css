@@ -118,15 +118,14 @@
 
 #lowerlyrichuridrag {}
 
-.lyrictext {font-size: 120px;margin: 0;position: relative;top: -20px;white-space: pre;}
+.lyrictext {font-size: 120px;margin: 0;position: relative;top: -20px;white-space: pre;text-align: center;}
 
 .lyrichuri {font-size: 50px;margin: 0;}
 
 .lyricpron {
-    margin: 0;
-    font-family: 'Noto Sans';
-    position: relative;
-    top: 120px;
-    font-size: 50px;
-    font-weight: 500;
+  margin: 0;
+  font-family: 'Noto Sans';
+  font-size: 50px;
+  font-weight: 500;
+  top: 85px;
 }

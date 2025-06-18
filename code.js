@@ -17,6 +17,7 @@ async function songstart(number){
         const res = await fetch(`./songs/${number}/song.json`);
         const data = await res.text();
         const js = JSON.parse(data);
+        const renderpron = false;
         startsong(number, js.title, js.description||null, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, null, null, js.lang, "ORI");
         setTimeout(() => {
             hidestartbox();
@@ -25,10 +26,10 @@ async function songstart(number){
             await wait(item.startwait - ((60000 / js.bpm) * 5));
 
             if (item.lines.length >= 2) {
-                renderlyric(false, item.lines[0], true, js.lang);
-                renderlyric(false, item.lines[1], false, js.lang);
+                renderlyric(renderpron, item.lines[0], true, js.lang);
+                renderlyric(renderpron, item.lines[1], false, js.lang);
             } else if (item.lines.length == 1) {
-                renderlyric(false, item.lines[0], true, js.lang);
+                renderlyric(renderpron, item.lines[0], true, js.lang);
             }
 
             let isup = true;
@@ -56,7 +57,7 @@ async function songstart(number){
                 }
                 
                 const next = item.lines[i + 2];
-                if (next) renderlyric(false, next, isup, js.lang);
+                if (next) renderlyric(renderpron, next, isup, js.lang);
 
                 isup = !isup;
             }

@@ -118,17 +118,37 @@ async function timer(bpm, isup, startcount=4){
 	//isup에 맞는 가사에서 현재 렌더링된 상태의 가사를 지정
 	//그 가사의 왼쪽 끝을 타이머 이미지의 시작 x로 잡는다
 	//그 가사의 위쪽을 y로 잡는다
-	let left = 160;
+	const lyricElem = document.getElementById(isup ? "upperlyrictext" : "lowerlyrictext");
+	const pos = getScaledPositionToWrapper(lyricElem);
+
+	let left = pos.x;
+	let top = pos.y - 150;
+
 	timerimage.style.left = left + "px";
-	timerimage.style.top = "550px";
-	for(let i=startcount;i>0;i--){
+	timerimage.style.top = top + "px";
+
+	for (let i = startcount; i > 0; i--) {
 		timerimage.src = `./skin/2series/assets/song/playing/timer/${i}.png`;
 		timerimage.style.left = left + "px";
-		await wait(60000/bpm);
-		left+=50;
+		timerimage.style.top = top + "px";
+		await wait(60000 / bpm);
+		left += 50;
 	}
+
 	timerimage.style.display = "none";
 	timerimage.src = "#";
+}
+
+function getScaledPositionToWrapper(element) {
+	const wrapper = document.getElementById("wrapper");
+	const wrapperRect = wrapper.getBoundingClientRect();
+	const elemRect = element.getBoundingClientRect();
+
+	const scale = wrapperRect.width / 1920; // wrapper scaling 기준
+	const relativeX = (elemRect.left - wrapperRect.left) / scale;
+	const relativeY = (elemRect.top - wrapperRect.top) / scale;
+
+	return { x: relativeX, y: relativeY };
 }
 
 //showpron: [boolean: 발음 표시 여부], data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어
@@ -166,6 +186,10 @@ function renderlyric(showpron, data, isup, lang){
 	lyrichuridrag.innerText = "";
 	lyricpron.innerText = showpron ? data.pronunciation.join(' ') : "";
 
+	if(showpron&&isup){
+		lyricbox.style.top = "700px";
+	}
+
 	lyrictextbox.appendChild(lyrictext);
 	lyrictextbox.appendChild(lyrichuri);
 	lyrictextboxdrag.appendChild(lyrictextdrag);
@@ -176,6 +200,16 @@ function renderlyric(showpron, data, isup, lang){
 	lyricbox.appendChild(lyricpron);
 
 	document.getElementById("wrapper").appendChild(lyricbox);
+
+	requestAnimationFrame(() => {
+		const textElem = lyrictext;
+		const pronElem = lyricpron;
+
+		const halfWidth = textElem.offsetWidth / 2;
+		pronElem.style.position = "absolute";
+		pronElem.style.left = `${textElem.offsetLeft + halfWidth}px`;
+		pronElem.style.transform = "translateX(-50%)";
+	});
 }
 
 

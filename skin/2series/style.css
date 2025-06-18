@@ -90,7 +90,7 @@
     position: absolute;
 }
 
-#upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 750px;left: 160px;display: flex;}
+#upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 730px;left: 160px;display: flex;}
 
 #upperlyrictextbox {position: absolute;}
 
@@ -100,11 +100,11 @@
 
 #upperlyrictextboxdrag {position: absolute;}
 
-#upperlyrictextdrag {color: yellow}
+#upperlyrictextdrag {color: dodgerblue}
 
 #upperlyrichuridrag {}
 
-#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 900px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
+#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 700;position: relative;top: 880px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
 
 #lowerlyrictextbox {position: absolute;text-align: left;}
 
@@ -114,11 +114,11 @@
 
 #lowerlyrictextboxdrag {position: absolute;}
 
-#lowerlyrictextdrag {color: yellow}
+#lowerlyrictextdrag {color: dodgerblue}
 
 #lowerlyrichuridrag {}
 
-.lyrictext {font-size: 120px;margin: 0;position: relative;top: -20px;white-space: pre;text-align: center;}
+.lyrictext {font-size: 120px;margin: 0;position: relative;white-space: pre;text-align: center;}
 
 .lyrichuri {font-size: 50px;margin: 0;}
 
@@ -127,5 +127,14 @@
   font-family: 'Noto Sans';
   font-size: 50px;
   font-weight: 500;
-  top: 85px;
+  top: 105px;
+}
+
+#upperlyrictextboxdrag,
+#lowerlyrictextboxdrag {
+	position: absolute;
+	overflow-x: hidden;
+	width: 0;
+	transition: width 0s linear;
+	white-space: nowrap;
 }

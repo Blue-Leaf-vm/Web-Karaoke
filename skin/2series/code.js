@@ -122,7 +122,7 @@ async function timer(bpm, isup, startcount=4){
 	const pos = getScaledPositionToWrapper(lyricElem);
 
 	let left = pos.x;
-	let top = pos.y - 150;
+	let top = pos.y - 180;
 
 	timerimage.style.left = left + "px";
 	timerimage.style.top = top + "px";
@@ -187,7 +187,7 @@ function renderlyric(showpron, data, isup, lang){
 	lyricpron.innerText = showpron ? data.pronunciation.join(' ') : "";
 
 	if(showpron&&isup){
-		lyricbox.style.top = "700px";
+		lyricbox.style.top = "680px";
 	}
 
 	lyrictextbox.appendChild(lyrictext);
@@ -214,17 +214,28 @@ function renderlyric(showpron, data, isup, lang){
 
 
 //data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어
-async function draglyric(data, isup, lang){
-	//렌더링된 가사 드래깅
+async function draglyric(data, isup, lang) {
 	const lyrictextboxdrag = document.getElementById(isup ? "upperlyrictextboxdrag" : "lowerlyrictextboxdrag");
 	const lyrictextdrag = document.getElementById(isup ? "upperlyrictextdrag" : "lowerlyrictextdrag");
 	const lyrichuridrag = document.getElementById(isup ? "upperlyrichuridrag" : "lowerlyrichuridrag");
+
 	lyrichuridrag.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
-    for (let j = 0; j < data.lyrics.length; j++) {
-		lyrictextdrag.innerText = lyrictextdrag.innerText + data.lyrics[j];
-        await wait(data.timing[j]);
-        await wait(data.wait[j]);
-    }
+
+	lyrictextdrag.innerText = "";
+	lyrictextboxdrag.style.width = "0px";
+
+	for (let j = 0; j < data.lyrics.length; j++) {
+		lyrictextdrag.innerText += data.lyrics[j];
+
+		await new Promise(requestAnimationFrame);
+
+		lyrictextboxdrag.style.transition = `width ${data.timing[j]}ms linear`;
+		const targetWidth = lyrictextdrag.scrollWidth;
+		lyrictextboxdrag.style.width = `${targetWidth}px`;
+
+		await wait(data.timing[j]);
+		await wait(data.wait[j]);
+	}
 }
 
 function hidelyric(isup){

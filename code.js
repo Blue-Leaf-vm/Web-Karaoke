@@ -17,7 +17,7 @@ async function songstart(number){
         const res = await fetch(`./songs/${number}/song.json`);
         const data = await res.text();
         const js = JSON.parse(data);
-        const renderpron = false;
+        const renderpron = true;
         startsong(number, js.title, js.description||null, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, null, null, js.lang, "ORI");
         setTimeout(() => {
             hidestartbox();

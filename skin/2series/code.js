@@ -4,7 +4,7 @@ let isplaying = false;
 let lanimg = 1;
 let printinfo = 0;
 let rollbackimg;
-let rollbacktxt;
+let rollbackview;
 
 //상단바 생성
 const topbar = document.createElement("div");
@@ -81,6 +81,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
 	rollbacktxt = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
 	rollbackimg = `./skin/2series/assets/song/playing/nowsong.png`
+	rollbackview = 'visible';
 
 	//곡 시작 화면 표출
 	const infobox = document.getElementById("infobox") || document.createElement("div");
@@ -348,16 +349,21 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)"){
 	if (printinfo==0){
 		rollbackimg = topimgbar.src;
 		rollbacktxt = toptext.innerHTML;
+		rollbackview = topblackbar.style.visibility;
 	}
 	printinfo++;
 	if(type==0){topimgbar.src = "./skin/2series/assets/ui/info.png";}
 	else if(type==1){topimgbar.src = "./skin/2series/assets/ui/einfo.png";}
 	toptext.innerHTML = message;
+	topimgbar.style.visibility = 'visible';
+	topblackbar.style.visibility = 'visible';
 	await wait(3000);
 	printinfo--;
 	if(printinfo==0){
 		topimgbar.src = rollbackimg;
 		toptext.innerHTML = rollbacktxt;
+		topimgbar.style.visibility = rollbackview;
+		topblackbar.style.visibility = rollbackview;
 	}
 }
 

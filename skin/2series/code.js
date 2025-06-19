@@ -277,6 +277,13 @@ async function renderlyric(showpron, data, isup, lang){
 	document.getElementById("wrapper").appendChild(lyricbox);
 
 	requestAnimationFrame(() => {
+		if(!isup){
+			const textWidth = lyrictext.clientWidth;
+			const wrapperWidth = wrapper.offsetWidth;
+			const left = 1920 - 160 - textWidth;
+			lyricbox.style.left = `${left}px`;
+		}
+
 		const textElem = lyrictext;
 		const pronElem = lyricpron;
 
@@ -331,7 +338,7 @@ function limit(type="free"){
 }
 
 //number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
-function searchsong(number, s, inter, title, dis, sing){
+function searchsong(number, s, inter, title, dis, sing){ 
 	//검색 처리
 }
 

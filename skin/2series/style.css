@@ -228,3 +228,12 @@
     align-items: center;
     margin-left: 20px;
 }
+
+#networkbox {
+    display: flex;
+    width: 110px;
+    position: absolute;
+    left: 1720px;
+    top: 120px;
+    justify-content: center;
+}

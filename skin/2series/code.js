@@ -1,6 +1,10 @@
 let inanime = false;
 let isshowed = false;
 let isplaying = false;
+let lanimg = 1;
+let printinfo = 0;
+let rollbackimg;
+let rollbacktxt;
 
 //상단바 생성
 const topbar = document.createElement("div");
@@ -32,6 +36,17 @@ toptimetext.innerText = "000분";
 
 wrapper.appendChild(topbar);
 
+//네트워크 생성
+const networkbox = document.createElement("div");
+const networklanimg = document.createElement("img");
+const networkwifiimg = document.createElement("img");
+networkbox.id = "networkbox";
+networklanimg.id = "networklanimg";
+networkwifiimg.id = "networkwifiimg";
+networkbox.appendChild(networkwifiimg);
+networkbox.appendChild(networklanimg);
+wrapper.appendChild(networkbox);
+
 //카운터 생성
 const timerimage = document.createElement("img");
 timerimage.id = "timerimage";
@@ -39,10 +54,18 @@ wrapper.appendChild(timerimage);
 
 //곡 재생 중일 때 안내 표시
 setInterval(()=>{
-	if (isplaying){
+	if (isplaying && printinfo==0){
 		if (topimgbar.src.includes("nowsong.png")) {topimgbar.src = "./skin/2series/assets/song/playing/nowsong2.png";}
 		else { topimgbar.src = "./skin/2series/assets/song/playing/nowsong.png"; }
 	}
+},3000);
+
+//네트워크 표시
+setInterval(()=>{
+	networklanimg.src = `./skin/2series/assets/ui/network/LAN/${lanimg}.png`;
+	networkwifiimg.src = `./skin/2series/assets/ui/network/WIFI/${lanimg}.png`;
+	lanimg++;
+	if(lanimg>4){lanimg=1;}
 },2500);
 
 //number: 곡 번호, title: 곡 제목, dis: 곡 설명, sing: 가수, gender: 성별, songint: 원음정, curint: 현재음정, lyrics: 작사, compos: 작곡, original: 원작자, banner: 배너, lang: 곡 언어, type: [0: 오리지널, 1: MV, 2: MR, 3: LIVE, 4: 음악]
@@ -51,9 +74,13 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	inanime = true;
 	isshowed = true;
 	//상단바 숨기기
-	topbar.style.visibility = "hidden";
+	topimgbar.style.visibility = "hidden";
+	topblackbar.style.visibility = "hidden";
+	toptimebox.style.visibility = "hidden";
+	networkbox.style.visibility = "hidden";
 	toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
-	//시간, 네트워크 숨기기
+	rollbacktxt = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+	rollbackimg = `./skin/2series/assets/song/playing/nowsong.png`
 
 	//곡 시작 화면 표출
 	const infobox = document.getElementById("infobox") || document.createElement("div");
@@ -134,7 +161,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	}
 	setTimeout(() => {
 		inanime = false;
-		//네트워크 보이기
+		networkbox.style.visibility = "visible";
 	}, 410);
 }
 
@@ -147,9 +174,10 @@ async function hidestartbox(){
 		setTimeout(()=>{
 			timerimage.style.display = "block";
 		},500);
-		/*1초 뒤 상단바 표시*/
+		toptimebox.style.visibility = "visible";
 		await wait(1000);
-		topbar.style.visibility = "visible";
+		topimgbar.style.visibility = "visible";
+		topblackbar.style.visibility = "visible";
 	}
 }
 
@@ -293,7 +321,8 @@ function hidelyric(isup){
 
 function endsong(){
 	isplaying = false;
-	topbar.style.visibility = "hidden";
+	topimgbar.style.visibility = "hidden";
+	topblackbar.style.visibility = "hidden";
 }
 
 //type: [free, time, coin]
@@ -307,8 +336,22 @@ function searchsong(number, s, inter, title, dis, sing){
 }
 
 //type: [0: 일반 안내, 1: 오류 안내], message: 안내 메세지
-function info(type=0, message){
+async function info(type=0, message="카운터에 문의하세요(CODE:00)"){
 	//안내 처리
+	if (printinfo==0){
+		rollbackimg = topimgbar.src;
+		rollbacktxt = toptext.innerHTML;
+	}
+	printinfo++;
+	if(type==0){topimgbar.src = "./skin/2series/assets/ui/info.png";}
+	else if(type==1){topimgbar.src = "./skin/2series/assets/ui/einfo.png";}
+	toptext.innerHTML = message;
+	await wait(3000);
+	printinfo--;
+	if(printinfo==0){
+		topimgbar.src = rollbackimg;
+		toptext.innerHTML = rollbacktxt;
+	}
 }
 
 //score: 점수

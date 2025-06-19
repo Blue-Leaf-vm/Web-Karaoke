@@ -10,6 +10,7 @@
   "gender": 1,
   "sync": 100,
   "bpm": 120,
+  "endwait": 1000,
   "lyricsd": [
     {
       "startwait": 5000,

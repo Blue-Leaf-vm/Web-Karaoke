@@ -90,33 +90,17 @@
     position: absolute;
 }
 
-#upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 600;position: relative;top: 730px;left: 160px;display: flex;}
+#upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 600;position: relative;top: 610px;left: 160px;display: flex;}
 
 #upperlyrictextbox {position: absolute;}
 
-#upperlyrictext {color: #EBEBEB;}
-
-#upperlyrichuri {color: #EBEBEB;}
-
 #upperlyrictextboxdrag {position: absolute;}
 
-#upperlyrictextdrag {color: #03E5FF;}
-
-#upperlyrichuridrag {}
-
-#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 600;position: relative;top: 880px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
+#lowerlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 600;position: relative;top: 760px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
 
 #lowerlyrictextbox {position: absolute;text-align: left;}
 
-#lowerlyrictext {color: #EBEBEB;}
-
-#lowerlyrichuri {color: #EBEBEB;}
-
 #lowerlyrictextboxdrag {position: absolute;}
-
-#lowerlyrictextdrag {color: #03E5FF;}
-
-#lowerlyrichuridrag {}
 
 .lyrictext {font-size: 120px;margin: 0;position: relative;white-space: pre;text-align: center;}
 
@@ -127,7 +111,16 @@
   font-family: 'Noto Sans';
   font-size: 50px;
   font-weight: 500;
-  top: 105px;
+  top: 110px;
+  color: #CCCCCC;
+}
+
+.lyricpron::after {
+  z-index: -1;
+  content: attr(data-content);
+  position: absolute;
+  left: 0;
+  -webkit-text-stroke: 10px #4B4861;
 }
 
 #upperlyrictextboxdrag,
@@ -144,7 +137,6 @@
   content: attr(data-content);
   position: absolute;
   left: 0;
-  -webkit-text-stroke: 14px #3E4457;
 }
 
 #upperlyrictextdrag::after, #upperlyrichuridrag::after, #lowerlyrictextdrag::after, #lowerlyrichuridrag::after  {
@@ -152,5 +144,87 @@
   content: attr(data-content);
   position: absolute;
   left: 0;
-  -webkit-text-stroke: 14px #050855;
+}
+
+.color0{
+    color: #CCCCCC;
+}
+.color0::after{
+    -webkit-text-stroke: 13px #4B4861;
+}
+.color0drag{
+    color: #00AFEC;
+}
+.color0drag::after{
+    -webkit-text-stroke: 13px #212251;
+}
+
+.color1{
+    color: #C8C0B7;
+}
+.color1::after{
+    -webkit-text-stroke: 13px #514635;
+}
+.color1drag{
+    color: #EDEA65;
+}
+.color1drag::after{
+    -webkit-text-stroke: 13px #423422;
+}
+
+#topbar {
+    margin: 35px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#topimgbar { }
+
+#topblackbar {
+    background: #000000aa;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    padding: 10px 15px;
+    margin: 0 20px;
+    height: 55px;
+}
+
+#toptext {
+    font-family: 'Noto Sans', sans-serif;
+    color: #8B70FC;
+    font-size: 50px;
+    margin: 0;
+    transform: scaleX(0.85);
+    transform-origin: left;
+}
+
+#toptimebox {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+#toptimeimg {
+    opacity: 0.67;
+}
+
+#toptimetext {
+    color: #ff0;
+    font-family: 'Noto Sans';
+    margin: 0;
+    align-self: center;
+    position: absolute;
+    font-size: 55px;
+    padding: 0 15px 0 0;
+    transform: scaleX(0.85);
+    transform-origin: right;
+}
+
+#toptimecontainer {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
 }

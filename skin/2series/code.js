@@ -1,18 +1,58 @@
 let inanime = false;
 let isshowed = false;
+let isplaying = false;
 
 //상단바 생성
+const topbar = document.createElement("div");
+const topimgbar = document.createElement("img");
+const topblackbar = document.createElement("div");
+const toptext = document.createElement("p");
+const toptimebox = document.createElement("div");
+const toptimeimg = document.createElement("img");
+const toptimetext = document.createElement("p");
+topblackbar.appendChild(toptext);
+toptimeimg.appendChild(toptimetext);
+topbar.appendChild(topimgbar);
+topbar.appendChild(topblackbar);
+toptimebox.appendChild(toptimeimg);
+toptimebox.appendChild(toptimetext);
+topbar.appendChild(toptimebox);
+
+topbar.id = "topbar";
+topimgbar.id = "topimgbar";
+topblackbar.id = "topblackbar";
+toptext.id = "toptext";
+toptimebox.id = "toptimebox";
+toptimeimg.id = "toptimeimg";
+toptimetext.id = "toptimetext";
+
+topimgbar.src = "./skin/2series/assets/ui/info.png";
+toptimeimg.src = "./skin/2series/assets/ui/time/time.png";
+toptimetext.innerText = "000분";
+
+wrapper.appendChild(topbar);
 
 //카운터 생성
 const timerimage = document.createElement("img");
 timerimage.id = "timerimage";
 wrapper.appendChild(timerimage);
 
+//곡 재생 중일 때 안내 표시
+setInterval(()=>{
+	if (isplaying){
+		if (topimgbar.src.includes("nowsong.png")) {topimgbar.src = "./skin/2series/assets/song/playing/nowsong2.png";}
+		else { topimgbar.src = "./skin/2series/assets/song/playing/nowsong.png"; }
+	}
+},2500);
+
 //number: 곡 번호, title: 곡 제목, dis: 곡 설명, sing: 가수, gender: 성별, songint: 원음정, curint: 현재음정, lyrics: 작사, compos: 작곡, original: 원작자, banner: 배너, lang: 곡 언어, type: [0: 오리지널, 1: MV, 2: MR, 3: LIVE, 4: 음악]
 function startsong(number, title, dis, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR", type="ORI"){
+	isplaying = true;
 	inanime = true;
 	isshowed = true;
 	//상단바 숨기기
+	topbar.style.visibility = "hidden";
+	toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
 	//시간, 네트워크 숨기기
 
 	//곡 시작 화면 표출
@@ -94,11 +134,11 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	}
 	setTimeout(() => {
 		inanime = false;
-		//시간, 네트워크 보이기
+		//네트워크 보이기
 	}, 410);
 }
 
-function hidestartbox(){
+async function hidestartbox(){
 	//곡 시작 화면 숨기기 (애니메이션이 모두 작동한 후 숨겨져야 함)
 	const infobox = document.getElementById("infobox");
 	if(!inanime) { 
@@ -108,6 +148,8 @@ function hidestartbox(){
 			timerimage.style.display = "block";
 		},500);
 		/*1초 뒤 상단바 표시*/
+		await wait(1000);
+		topbar.style.visibility = "visible";
 	}
 }
 
@@ -176,15 +218,23 @@ async function renderlyric(showpron, data, isup, lang){
 	lyrichuridrag.classList.add("lyrichuri");
 	lyrictextdrag.classList.add("lyrictext");
 
+	lyrictext.classList.add(`color${data.type}`);
+	lyrichuri.classList.add(`color${data.type}`);
+	lyrictextdrag.classList.add(`color${data.type}drag`);
+	lyrichuridrag.classList.add(`color${data.type}drag`);
+
 	lyrictext.innerText = data.lyrics.join('');
 	lyrictext.setAttribute("data-content", data.lyrics.join(''));
 	lyrichuri.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
 	lyrictextdrag.innerText = "";
 	lyrichuridrag.innerText = "";
 	lyricpron.innerText = showpron ? data.pronunciation.join(' ') : "";
+	lyricpron.setAttribute("data-content", showpron ? data.pronunciation.join(' ') : "");
 
 	if(showpron&&isup){
-		lyricbox.style.top = "680px";
+		lyricbox.style.top = "520px";
+	} else if (showpron&&!isup){
+		lyricbox.style.top = "720px";
 	}
 
 	lyrictextbox.appendChild(lyrictext);
@@ -241,6 +291,11 @@ function hidelyric(isup){
 	lyricbox.remove();
 }
 
+function endsong(){
+	isplaying = false;
+	topbar.style.visibility = "hidden";
+}
+
 //type: [free, time, coin]
 function limit(type="free"){
 	//시간, 코인 처리
@@ -257,7 +312,7 @@ function info(type=0, message){
 }
 
 //score: 점수
-function endsong(score){
+function score(score){
 	//점수 화면 표시
 }
 

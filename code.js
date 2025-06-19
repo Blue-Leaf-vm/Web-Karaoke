@@ -62,6 +62,8 @@ async function songstart(number){
                 isup = !isup;
             }
         }
+        await wait(js.endwait);
+        endsong();
     } catch (err) {
         alert('곡 재생 중 오류 발생:\n', err);
     }

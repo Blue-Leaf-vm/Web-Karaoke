@@ -80,8 +80,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	networkbox.style.visibility = "hidden";
 	toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
 	rollbacktxt = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
-	rollbackimg = `./skin/2series/assets/song/playing/nowsong.png`
-	rollbackview = 'visible';
+	rollbackimg = `./skin/2series/assets/song/playing/nowsong.png`;
 
 	//곡 시작 화면 표출
 	const infobox = document.getElementById("infobox") || document.createElement("div");
@@ -163,6 +162,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	setTimeout(() => {
 		inanime = false;
 		networkbox.style.visibility = "visible";
+		toptimebox.style.visibility = "visible";
 	}, 410);
 }
 
@@ -175,7 +175,7 @@ async function hidestartbox(){
 		setTimeout(()=>{
 			timerimage.style.display = "block";
 		},500);
-		toptimebox.style.visibility = "visible";
+		rollbackview = 'visible';
 		await wait(1000);
 		topimgbar.style.visibility = "visible";
 		topblackbar.style.visibility = "visible";

@@ -347,6 +347,7 @@ function endsong(){
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
 	timerimage.style.display = "none";
+	timerimage.removeAttribute("src")
 	hidelyric(true);
 	hidelyric(false);
 	hidestartbox(true);

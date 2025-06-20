@@ -79,6 +79,8 @@ function wait(ms) {
 }
 
 async function input(n) {
+    if(inpnum.length==0 && n==0){return;}
+    else if (inpnum.length==6 && n==0){return;}
 	delnum++;
 	inpnum += n;
 	if(inpnum.length>6){inpnum = '' + n;}

@@ -88,6 +88,7 @@
 #timerimage {
     display: block;
     position: absolute;
+    opacity: 0.8;
 }
 
 #upperlyricbox {font-family: 'TJ 노래하는즐거움체 TTF';font-weight: 600;position: relative;top: 610px;left: 160px;display: flex;}
@@ -179,7 +180,22 @@
     align-items: center;
 }
 
-#topimgbar { }
+#topimgbox{
+    display: flex;
+    justify-content: center;
+}
+
+#topimgtext {
+    color: #CCCCCC;
+    font-family: 'Noto Sans';
+    margin: 0;
+    align-self: center;
+    position: absolute;
+    font-size: 55px;
+    padding: 0 0 0 100px;
+    transform: scaleX(0.85);
+    transform-origin: right;
+}
 
 #topblackbar {
     background: #000000aa;

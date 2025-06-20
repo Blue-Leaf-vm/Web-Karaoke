@@ -3,34 +3,44 @@ let isshowed = false;
 let isplaying = false;
 let lanimg = 1;
 let printinfo = 0;
+let printser = 0;
 let rollbackimg;
 let rollbackview;
 
 //상단바 생성
 const topbar = document.createElement("div");
-const topimgbar = document.createElement("img");
+const topimgbox = document.createElement("div");
+const topimgimg = document.createElement("img");
+const topimgtext = document.createElement("p");
 const topblackbar = document.createElement("div");
 const toptext = document.createElement("p");
 const toptimebox = document.createElement("div");
 const toptimeimg = document.createElement("img");
 const toptimetext = document.createElement("p");
-topblackbar.appendChild(toptext);
 toptimeimg.appendChild(toptimetext);
-topbar.appendChild(topimgbar);
+topimgbox.appendChild(topimgimg);
+topimgbox.appendChild(topimgtext);
+topbar.appendChild(topimgbox);
+topblackbar.appendChild(toptext);
 topbar.appendChild(topblackbar);
 toptimebox.appendChild(toptimeimg);
 toptimebox.appendChild(toptimetext);
 topbar.appendChild(toptimebox);
 
+topimgbox.style.visibility = "hidden";
+topblackbar.style.visibility = "hidden";
+
 topbar.id = "topbar";
-topimgbar.id = "topimgbar";
+topimgbox.id = "topimgbox";
+topimgimg.id = "topimgimg";
+topimgtext.id = "topimgtext";
 topblackbar.id = "topblackbar";
 toptext.id = "toptext";
 toptimebox.id = "toptimebox";
 toptimeimg.id = "toptimeimg";
 toptimetext.id = "toptimetext";
 
-topimgbar.src = "./skin/2series/assets/ui/info.png";
+topimgimg.src = "./skin/2series/assets/ui/info.png";
 toptimeimg.src = "./skin/2series/assets/ui/time/time.png";
 toptimetext.innerText = "000분";
 
@@ -54,9 +64,9 @@ wrapper.appendChild(timerimage);
 
 //곡 재생 중일 때 안내 표시
 setInterval(()=>{
-	if (isplaying && printinfo==0){
-		if (topimgbar.src.includes("nowsong.png")) {topimgbar.src = "./skin/2series/assets/song/playing/nowsong2.png";}
-		else { topimgbar.src = "./skin/2series/assets/song/playing/nowsong.png"; }
+	if (isplaying && printinfo==0 && printser==0){
+		if (topimgimg.src.includes("nowsong.png")) {topimgimg.src = "./skin/2series/assets/song/playing/nowsong2.png";}
+		else { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; }
 	}
 },3000);
 
@@ -74,11 +84,13 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	inanime = true;
 	isshowed = true;
 	//상단바 숨기기
-	topimgbar.style.visibility = "hidden";
+	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
 	toptimebox.style.visibility = "hidden";
 	networkbox.style.visibility = "hidden";
+	topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png";
 	toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+	topimgtext.innerText = '';
 	rollbacktxt = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
 	rollbackimg = `./skin/2series/assets/song/playing/nowsong.png`;
 
@@ -96,7 +108,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	const desctxt = document.createElement("p");
 	const singtxt = document.createElement("p");
 	titletxt.innerText = title;
-	singtxt.innerHTML = `<span style="color: #8B70FC">노래</span>&nbsp;&nbsp;&nbsp;<span style="color: #C2C2C2">${sing}</span>`;
+	singtxt.innerHTML = `<span style="color: #8B70FC">노래</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${sing}</span>`;
 	if(dis){
 		desctxt.innerText = `(${dis})`;
 
@@ -128,10 +140,10 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	const datatxt = document.createElement("p");
 
 	datatxt.innerHTML = `
-		<span style="color: #8B70FC">현재음정</span>&nbsp;<span style="color: #C2C2C2">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${curint}</span>&nbsp;&nbsp;&nbsp;<span style="color: #8B70FC">원음정</span>&nbsp;<span style="color: #C2C2C2">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${songint}</span>
-		</br><span style="color: #8B70FC">작사</span>&nbsp;&nbsp;&nbsp;<span style="color: #C2C2C2">${lyrics}</span>
-		</br><span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #C2C2C2">${compos}</span>
-		${original ? `</br><span style="color: #8B70FC">원곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #C2C2C2">${original}</span>` : ' '}
+		<span style="color: #8B70FC">현재음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${curint}</span>&nbsp;&nbsp;&nbsp;<span style="color: #8B70FC">원음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${songint}</span>
+		</br><span style="color: #8B70FC">작사</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${lyrics}</span>
+		</br><span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${compos}</span>
+		${original ? `</br><span style="color: #8B70FC">원곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${original}</span>` : ' '}
 	`;
 	ad.src = `./skin/2series/assets/song/start/ad/${Math.floor(Math.random() * 7)+1}.png`;
 	ci.src = "./skin/2series/assets/song/start/CI.png";
@@ -177,7 +189,7 @@ async function hidestartbox(){
 		},500);
 		rollbackview = 'visible';
 		await wait(1000);
-		topimgbar.style.visibility = "visible";
+		topimgbox.style.visibility = "visible";
 		topblackbar.style.visibility = "visible";
 	}
 }
@@ -329,7 +341,7 @@ function hidelyric(isup){
 
 function endsong(){
 	isplaying = false;
-	topimgbar.style.visibility = "hidden";
+	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
 }
 
@@ -338,31 +350,62 @@ function limit(type="free"){
 	//시간, 코인 처리
 }
 
-//number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
-function searchsong(number, s, inter, title, dis, sing){ 
+//status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
+async function searchsong(status = 1, number, s, inter, title, dis, sing){ 
 	//검색 처리
+	if (printser==0&&printinfo==0){
+		rollbackimg = topimgimg.src;
+		rollbacktxt = toptext.innerHTML;
+		rollbackview = topblackbar.style.visibility;
+	}
+	printser++;
+	if(status==0){
+		if(s==0){topimgimg.src = "./skin/2series/assets/song/select/man.png";}
+		else if(s==1){topimgimg.src = "./skin/2series/assets/song/select/woman.png";}
+		else if(s==2){topimgimg.src = "./skin/2series/assets/song/select/multi.png";}
+		toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+		topimgtext.innerText = inter;
+	} else if (status==1){
+		topimgimg.src = "./skin/2series/assets/ui/einfo.png";
+		toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">곡이 없습니다.</span>`;
+		topimgtext.innerText = '';
+	}
+	topimgbox.style.visibility = 'visible';
+	topblackbar.style.visibility = 'visible';
+	await wait(10000);
+	if(printser==-1){printser=0; return;}
+	printser--;
+	if(printser==0){
+		topimgimg.src = rollbackimg;
+		toptext.innerHTML = rollbacktxt;
+		topimgbox.style.visibility = rollbackview;
+		topblackbar.style.visibility = rollbackview;
+		topimgtext.innerText = '';
+	}
 }
 
 //type: [0: 일반 안내, 1: 오류 안내], message: 안내 메세지
 async function info(type=0, message="카운터에 문의하세요(CODE:00)"){
 	//안내 처리
-	if (printinfo==0){
-		rollbackimg = topimgbar.src;
+	if (printinfo==0 && printser==0){
+		rollbackimg = topimgimg.src;
 		rollbacktxt = toptext.innerHTML;
 		rollbackview = topblackbar.style.visibility;
 	}
 	printinfo++;
-	if(type==0){topimgbar.src = "./skin/2series/assets/ui/info.png";}
-	else if(type==1){topimgbar.src = "./skin/2series/assets/ui/einfo.png";}
+	if(type==0){topimgimg.src = "./skin/2series/assets/ui/info.png";}
+	else if(type==1){topimgimg.src = "./skin/2series/assets/ui/einfo.png";}
 	toptext.innerHTML = message;
-	topimgbar.style.visibility = 'visible';
+	topimgtext.innerText = '';
+	topimgbox.style.visibility = 'visible';
 	topblackbar.style.visibility = 'visible';
 	await wait(3000);
+	if(printinfo==-1){printinfo=0; return;}
 	printinfo--;
 	if(printinfo==0){
-		topimgbar.src = rollbackimg;
+		topimgimg.src = rollbackimg;
 		toptext.innerHTML = rollbacktxt;
-		topimgbar.style.visibility = rollbackview;
+		topimgbox.style.visibility = rollbackview;
 		topblackbar.style.visibility = rollbackview;
 	}
 }

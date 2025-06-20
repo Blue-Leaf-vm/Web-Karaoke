@@ -6,6 +6,9 @@
 //chorus.mp3 (곡 코러스 / mr곡에서도 재생하나, 같이 존재시키는 것은 비추)
 //song.midi (song.mp3) / mr.mp3 필수
 let isup = true;
+let playing = false;
+let inpnum = "";
+let delnum = 0;
 
 async function songstart(number){
     //곡 정보 파싱 후 startsong에 전달
@@ -19,6 +22,7 @@ async function songstart(number){
         const js = JSON.parse(data);
         const renderpron = false;
         startsong(number, js.title, js.description||null, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, null, js.lang, "ORI");
+        playing = true;
         setTimeout(() => {
             hidestartbox();
         }, js.lyricsd[0].startwait/4);
@@ -64,11 +68,45 @@ async function songstart(number){
         }
         await wait(js.endwait);
         endsong();
+        playing = false;
     } catch (err) {
-        alert('곡 재생 중 오류 발생:\n', err);
+        info(0, `카운터에 문의하세요(${err.name})`)
     }
 }
 
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+async function input(n) {
+	delnum++;
+	inpnum += n;
+	if(inpnum.length>6){inpnum = '' + n;}
+	setTimeout(() => {
+		delnum--;
+		if (delnum<1) {inpnum = '';}
+	}, 10000);
+	try{
+        const res = await fetch(`./songs/${inpnum}/song.json`);
+        const data = await res.text();
+        const js = JSON.parse(data);
+        searchsong(0, inpnum, js.gender, js.interval, js.title, js.description, js.sing);
+    } catch {searchsong(1, inpnum);}
+}
+
+document.addEventListener('keydown', async function(event) {
+	if (event.key === 'Enter') {
+        if (!playing) {
+            try{
+                const res = await fetch(`./songs/${inpnum}/song.json`);
+                const data = await res.text();
+                const js = JSON.parse(data);
+                console.log(inpnum);
+                songstart(inpnum);
+                inpnum = '';
+            } catch {}
+        }
+	} else if (Number(event.key) >= 0 && Number(event.key) < 10){
+		input(Number(event.key));
+	}
+});

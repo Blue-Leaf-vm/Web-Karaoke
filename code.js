@@ -9,8 +9,9 @@ let isup = true;
 let inpnum = "";
 let delnum = 0;
 let isplaying = false;
+let playnum = 0;
 
-async function songstart(number){
+async function songstart(number, num){
     //곡 정보 파싱 후 startsong에 전달
     //startwait의 절반만큼 기다린 후 hidestartbox() 실행
     //그와 동시에 가사 렌더링
@@ -26,9 +27,9 @@ async function songstart(number){
             hidestartbox();
         }, js.lyricsd[0].startwait/4);
         for (const item of js.lyricsd) {
-            if(!isplaying){return;}
+            if(!isplaying||num!=playnum){return;}
             await wait(item.startwait - ((60000 / js.bpm) * 5));
-            if(!isplaying){return;}
+            if(!isplaying||num!=playnum){return;}
             if (item.lines.length >= 2) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
                 setTimeout(()=>{renderlyric(renderpron, item.lines[1], false, js.lang);}, 30);
@@ -40,14 +41,14 @@ async function songstart(number){
             await wait(60000 / js.bpm);
             timer(js.bpm, isup);
 
-            if(!isplaying){return;}
+            if(!isplaying||num!=playnum){return;}
 
             await wait((60000 / js.bpm) * 4);
 
-            if(!isplaying){return;}
+            if(!isplaying||num!=playnum){return;}
 
             for (let i = 0; i < item.lines.length; i++) {
-                if(!isplaying){return;}
+                if(!isplaying||num!=playnum){return;}
                 const line = item.lines[i];
                 const isLastLine = (i === item.lines.length - 1);
                 const isNextLastLine = (i + 1 === item.lines.length - 1);
@@ -55,10 +56,12 @@ async function songstart(number){
                 draglyric(line, isup, js.lang);
 
                 for (let j = 0; j < line.lyrics.length; j++) {
+                    if(!isplaying||num!=playnum){return;}
                     await wait(line.timing[j]);
+                    if(!isplaying||num!=playnum){return;}
                     await wait(line.wait[j]);
                 }
-                if(!isplaying){return;}
+                if(!isplaying||num!=playnum){return;}
                 if (isLastLine) {
                     hidelyric(true);
                     hidelyric(false);
@@ -67,6 +70,7 @@ async function songstart(number){
                 }
                 
                 const next = item.lines[i + 2];
+                if(!isplaying||num!=playnum){return;}
                 if (next) renderlyric(renderpron, next, isup, js.lang);
 
                 isup = !isup;
@@ -109,8 +113,7 @@ document.addEventListener('keydown', async function(event) {
                 const res = await fetch(`./songs/${inpnum}/song.json`);
                 const data = await res.text();
                 const js = JSON.parse(data);
-                console.log(inpnum);
-                songstart(inpnum);
+                songstart(inpnum, ++playnum);
                 inpnum = '';
             } catch {}
         }

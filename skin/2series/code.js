@@ -217,7 +217,7 @@ async function timer(bpm, isup, startcount=4){
 	}
 
 	timerimage.style.display = "none";
-	timerimage.src = "#";
+	timerimage.removeAttribute("src");
 }
 
 function getScaledPositionToWrapper(element) {
@@ -346,7 +346,7 @@ function hidelyric(isup){
 function endsong(){
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
-	timerimage.style.visibility = "hidden";
+	timerimage.style.display = "none";
 	hidelyric(true);
 	hidelyric(false);
 	hidestartbox(true);

@@ -1,6 +1,5 @@
 let inanime = false;
 let isshowed = false;
-let isplaying = false;
 let lanimg = 1;
 let printinfo = 0;
 let printser = 0;
@@ -178,10 +177,10 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	}, 410);
 }
 
-async function hidestartbox(){
+async function hidestartbox(isstop=false){
 	//곡 시작 화면 숨기기 (애니메이션이 모두 작동한 후 숨겨져야 함)
 	const infobox = document.getElementById("infobox");
-	if(!inanime) { 
+	if(!inanime || isstop) { 
 		infobox.remove();
 		isshowed = false;
 		setTimeout(()=>{
@@ -189,8 +188,10 @@ async function hidestartbox(){
 		},500);
 		rollbackview = 'visible';
 		await wait(1000);
-		topimgbox.style.visibility = "visible";
-		topblackbar.style.visibility = "visible";
+		if (!isstop){
+			topimgbox.style.visibility = "visible";
+			topblackbar.style.visibility = "visible";
+		}
 	}
 }
 
@@ -212,6 +213,7 @@ async function timer(bpm, isup, startcount=4){
 		timerimage.style.left = left + "px";
 		left += 50;
 		await wait(60000 / bpm);
+		if(!isplaying){return;}
 	}
 
 	timerimage.style.display = "none";
@@ -335,14 +337,20 @@ async function draglyric(data, isup, lang) {
 
 function hidelyric(isup){
 	//가사 숨기기
-	const lyricbox = document.getElementById(isup ? "upperlyricbox" : "lowerlyricbox");
-	lyricbox.remove();
+	try{
+		const lyricbox = document.getElementById(isup ? "upperlyricbox" : "lowerlyricbox");
+		lyricbox.remove();
+	} catch {};
 }
 
 function endsong(){
-	isplaying = false;
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
+	timerimage.style.visibility = "hidden";
+	hidelyric(true);
+	hidelyric(false);
+	hidestartbox(true);
+	rollbackview = "hidden";
 }
 
 //type: [free, time, coin]

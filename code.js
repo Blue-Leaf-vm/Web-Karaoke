@@ -11,7 +11,7 @@ let delnum = 0;
 let isplaying = false;
 let playnum = 0;
 
-async function songstart(number, num){
+async function songstart(number, num=playnum){
     //곡 정보 파싱 후 startsong에 전달
     //startwait의 절반만큼 기다린 후 hidestartbox() 실행
     //그와 동시에 가사 렌더링
@@ -21,7 +21,7 @@ async function songstart(number, num){
         const res = await fetch(`./songs/${number}/song.json`);
         const data = await res.text();
         const js = JSON.parse(data);
-        const renderpron = false;
+        const renderpron = true;
         startsong(number, js.title, js.description||null, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, null, js.lang, "ORI");
         setTimeout(() => {
             hidestartbox();

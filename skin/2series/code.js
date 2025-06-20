@@ -3,6 +3,7 @@ let isshowed = false;
 let lanimg = 1;
 let printinfo = 0;
 let printser = 0;
+let norollback = false;
 let rollbackimg;
 let rollbackview;
 
@@ -186,8 +187,10 @@ async function hidestartbox(isstop=false){
 		setTimeout(()=>{
 			timerimage.style.display = "block";
 		},500);
-		rollbackview = 'visible';
+		if(!isplaying){return;}
 		await wait(1000);
+		if(!isplaying){return;}
+		rollbackview = 'visible';
 		if (!isstop){
 			topimgbox.style.visibility = "visible";
 			topblackbar.style.visibility = "visible";
@@ -366,8 +369,7 @@ function rollbackupbar(){
 	topimgbox.style.visibility = rollbackview;
 	topblackbar.style.visibility = rollbackview;
 	topimgtext.innerText = '';
-	printinfo=-1;
-	printser=-1;
+	norollback=true;
 }
 
 //status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
@@ -393,15 +395,19 @@ async function searchsong(status = 1, number, s, inter, title, dis, sing){
 	topimgbox.style.visibility = 'visible';
 	topblackbar.style.visibility = 'visible';
 	await wait(10000);
-	if(printser==-1){printser=0; return;}
-	printser--;
-	if(printser==0){
-		topimgimg.src = rollbackimg;
-		toptext.innerHTML = rollbacktxt;
-		topimgbox.style.visibility = rollbackview;
-		topblackbar.style.visibility = rollbackview;
-		topimgtext.innerText = '';
+	if(printser<=-1){printser=0; return;}
+	else if(printser==0){
+		if (norollback) {norollback=false; return;}
+		else {
+			topimgimg.src = rollbackimg;
+			toptext.innerHTML = rollbacktxt;
+			topimgbox.style.visibility = rollbackview;
+			topblackbar.style.visibility = rollbackview;
+			topimgtext.innerText = '';
+			return;
+		}
 	}
+	printser--;
 }
 
 //type: [0: 일반 안내, 1: 오류 안내], message: 안내 메세지
@@ -420,14 +426,19 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)"){
 	topimgbox.style.visibility = 'visible';
 	topblackbar.style.visibility = 'visible';
 	await wait(3000);
-	if(printinfo==-1){printinfo=0; return;}
-	printinfo--;
-	if(printinfo==0){
-		topimgimg.src = rollbackimg;
-		toptext.innerHTML = rollbacktxt;
-		topimgbox.style.visibility = rollbackview;
-		topblackbar.style.visibility = rollbackview;
+	if(printinfo<=-1){printinfo=0; return;}
+	else if(printinfo==0){
+		if (norollback) {norollback=false; return;}
+		else {
+			topimgimg.src = rollbackimg;
+			toptext.innerHTML = rollbacktxt;
+			topimgbox.style.visibility = rollbackview;
+			topblackbar.style.visibility = rollbackview;
+			topimgtext.innerText = '';
+			return;
+		}
 	}
+	printinfo--;
 }
 
 //score: 점수

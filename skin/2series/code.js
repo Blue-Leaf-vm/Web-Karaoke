@@ -350,6 +350,17 @@ function limit(type="free"){
 	//시간, 코인 처리
 }
 
+//상단바 롤백
+function rollbackupbar(){
+	topimgimg.src = rollbackimg;
+	toptext.innerHTML = rollbacktxt;
+	topimgbox.style.visibility = rollbackview;
+	topblackbar.style.visibility = rollbackview;
+	topimgtext.innerText = '';
+	printinfo=-1;
+	printser=-1;
+}
+
 //status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
 async function searchsong(status = 1, number, s, inter, title, dis, sing){ 
 	//검색 처리

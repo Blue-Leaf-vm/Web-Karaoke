@@ -108,6 +108,11 @@ document.addEventListener('keydown', async function(event) {
                 inpnum = '';
             } catch {}
         }
+    } else if (event.key === 'Escape') {
+        if (inpnum.length != 0){
+            inpnum = '';
+            rollbackupbar();
+        }
 	} else if (Number(event.key) >= 0 && Number(event.key) < 10){
 		input(Number(event.key));
 	}

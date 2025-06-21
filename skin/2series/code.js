@@ -43,6 +43,7 @@ toptimetext.id = "toptimetext";
 topimgimg.src = "./skin/2series/assets/ui/info.png";
 toptimeimg.src = "./skin/2series/assets/ui/time/time.png";
 toptimetext.innerText = "000분";
+toptimebox.style.display = "none";
 
 wrapper.appendChild(topbar);
 
@@ -189,7 +190,7 @@ async function hidestartbox(isstop=false){
 		},500);
 		rollbackview = 'visible';
 		await wait(1000);
-		if (!isstop){
+		if (!isstop&&isplaying){
 			topimgbox.style.visibility = "visible";
 			topblackbar.style.visibility = "visible";
 		}
@@ -355,9 +356,25 @@ function endsong(){
 	rollbackview = "hidden";
 }
 
-//type: [free, time, coin]
-function limit(type="free"){
+//type: [free, time, coin, remote]
+function limit(type="free", number){
 	//시간, 코인 처리
+	if (type=="free"){toptimebox.style.display = "none";}
+	else if (type=="time"){
+		toptimebox.style.display = "flex";
+		toptimeimg.src = "./skin/2series/assets/ui/time/time.png";
+		toptimetext.innerText = `${String(number).padStart(3, '0')}분`;
+	}
+	else if (type=="coin"){
+		toptimebox.style.display = "flex";
+		toptimeimg.src = "./skin/2series/assets/ui/time/coin.png";
+		toptimetext.innerText = `${String(number).padStart(3, '0')}개`;
+	}
+	else if (type=="remote"){
+		toptimebox.style.display = "flex";
+		toptimeimg.src = "./skin/2series/assets/ui/time/remote.png";
+		toptimetext.innerText = `${String(number).padStart(5, '0')}`;
+	}
 }
 
 //상단바 롤백
@@ -435,12 +452,25 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", lev
 	}
 }
 
+//img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
+async function loadimage(img){
+	//이미지 렌더링
+}
+
 //score: 점수
 function score(score){
 	//점수 화면 표시
+	isinscore = true;
+	isinscore = false;
+	endscore();
+}
+
+function startkar(){
+	//입실화면 표시
 }
 
 //songs: 부른 곡 목록, scores: 부른 곡 점수 목록 (배열로 입력)
 function endkar(songs, scores){
 	//퇴장화면 표시
+	info(0, "이용시간이 종료되었습니다.");
 }

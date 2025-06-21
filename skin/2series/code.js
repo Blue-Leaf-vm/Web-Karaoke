@@ -6,6 +6,8 @@ let printser = 0;
 let printlevel = 0;
 let rollbackimg;
 let rollbackview;
+let songtext;
+let reservetext;
 
 //상단바 생성
 const topbar = document.createElement("div");
@@ -63,13 +65,32 @@ const timerimage = document.createElement("img");
 timerimage.id = "timerimage";
 wrapper.appendChild(timerimage);
 
-//곡 재생 중일 때 안내 표시
-setInterval(()=>{
-	if (isplaying && printinfo==0 && printser==0){
-		if (topimgimg.src.includes("nowsong.png")) {topimgimg.src = "./skin/2series/assets/song/playing/nowsong2.png";}
-		else { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; }
+//안내 이미지 표시
+document.addEventListener("DOMContentLoaded", async function() {
+	try{
+		while(true){
+			if(printinfo==0&&printser==0){
+				if (isplaying && printinfo==0 && printser==0) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong2.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; await wait(3000); }
+				if (isplaying && printinfo==0 && printser==0) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; await wait(3000); }
+				if (reservedsong.length>0) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong2.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; await wait(3000); }
+				if (reservedsong.length>0) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; await wait(3000); }
+				if (reservedsong.length>1) { topimgimg.src = "./skin/2series/assets/song/playing/reserve.png"; toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${reservedsong.length}</span>`; await wait(3000); }
+			}
+			await wait(100);
+		}
+	} catch (e) {
+    	console.error("infoimage error:", e);
 	}
-},3000);
+});
+
+//status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
+async function setnextreservesong(number, title, dis, sing){
+	reservetext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+	rollbacktxt = reservetext;
+	rollbackimg = `./skin/2series/assets/song/playing/nextsong.png`;
+	rollbackview = 'visible';
+	if(printinfo==0&&printser==0&&!isplaying){rollbackupbar();}
+}
 
 //네트워크 표시
 setInterval(()=>{
@@ -90,9 +111,10 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	toptimebox.style.visibility = "hidden";
 	networkbox.style.visibility = "hidden";
 	topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png";
-	toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+	songtext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+	toptext.innerHTML = songtext;
 	topimgtext.innerText = '';
-	rollbacktxt = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+	rollbacktxt = songtext;
 	rollbackimg = `./skin/2series/assets/song/playing/nowsong.png`;
 
 	//곡 시작 화면 표출
@@ -164,12 +186,12 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	if(Math.floor(Math.random() * 2)==0){
 		upperbox.style.top = "-400px";
 		downbox.style.bottom = "-400px";
-		setTimeout(() => {upperbox.style.top = "150px";}, 10);
+		setTimeout(() => {upperbox.style.top = "150px";}, 20);
 		setTimeout(() => {downbox.style.bottom = "100px";}, 200);
 	} else {
 		upperbox.style.left = "150%";
 		downbox.style.left = "-50%";
-		setTimeout(() => {upperbox.style.left = "50%";}, 10);
+		setTimeout(() => {upperbox.style.left = "50%";}, 20);
 		setTimeout(() => {downbox.style.left = "50%";}, 200);
 	}
 	setTimeout(() => {
@@ -244,7 +266,6 @@ async function renderlyric(showpron, data, isup, lang){
 	const lyrictextboxdrag = document.createElement("div");
 	const lyrictextdrag = document.createElement("p");
 	const lyrichuridrag = document.createElement("p");
-
 	const lyricpron = document.createElement("p");
 
 	lyricbox.id = isup ? "upperlyricbox" : "lowerlyricbox";
@@ -458,10 +479,11 @@ async function loadimage(img){
 }
 
 //score: 점수
-function score(score){
+async function score(score){
 	//점수 화면 표시
 	isinscore = true;
 	isinscore = false;
+	await wait(500);
 	endscore();
 }
 
@@ -474,3 +496,15 @@ function endkar(songs, scores){
 	//퇴장화면 표시
 	info(0, "이용시간이 종료되었습니다.");
 }
+
+function safeJoin(arr, maxLength, sep) {
+	let result = '';
+	for (let i = 0; i < arr.length; i++) {
+	  const word = arr[i];
+	  const next = result.length > 0 ? result + sep + word : word;
+	  if (next.length > maxLength) break;
+	  result = next;
+	}
+	return result;
+}
+  

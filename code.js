@@ -14,7 +14,9 @@ let playnum = 0;
 let remotemode = false;
 let sangsong = [];
 let sangsongscore = [];
+let reservedsong = [];
 let isusing = false;
+let autoplay = true;
 
 //설정
 let iscoin = false;
@@ -34,6 +36,7 @@ async function songstart(number, num=playnum){
         return;
     }
     try{
+        autoplay = true;
         const res = await fetch(`./songs/${number}/song.json`);
         const data = await res.text();
         const js = JSON.parse(data);
@@ -107,14 +110,51 @@ async function songstart(number, num=playnum){
     }
 }
 
+async function songreserve(number){
+    if(!freeplay&&timecoin==0){
+        info(0, "시간/코인을 입력하세요.");
+        return;
+    }
+    if (!reservedsong.includes(number)) info(0, `${number} 예약되었습니다.`);
+    else info(0, `${number} 중복예약되었습니다.`);
+    try{
+        const res = await fetch(`./songs/${number}/song.json`);
+        const data = await res.text();
+        const js = JSON.parse(data);
+        reservedsong.push(number);
+        if(reservedsong.length==1) setnextreservesong(number, js.title, js.description||null, js.sing);
+    } catch (err) {
+        info(0, `카운터에 문의하세요(${err.name})`)
+    }
+}
+
+async function getsongdata(number){
+    try{
+        const res = await fetch(`./songs/${number}/song.json`);
+        const data = await res.text();
+        const js = JSON.parse(data);
+        return js;
+    } catch (err) {
+        info(0, `카운터에 문의하세요(${err.name})`)
+    }
+}
+
 function songend(){
     isplaying = false;
     endsong();
     score(100);
 }
 
-function endscore(){
+async function endscore(){
     setlimit();
+    if(reservedsong.length>0&&timecoin>0&&autoplay){
+        songstart(reservedsong[0], ++playnum);
+        reservedsong.shift();
+    }
+    else if(reservedsong.length>0&&timecoin>0&&!autoplay){
+        const js = await getsongdata(reservedsong[0]);
+        setnextreservesong(reservedsong[0], js.title, js.description, js.sing);
+    }
 }
 
 async function input(n) {
@@ -147,8 +187,7 @@ function setlimit(chkend=true) {
     if (freeplay) {limit("free", timecoin);}
     else if (iscoin) {limit("coin", timecoin);}
     else {limit("time", timecoin);}
-    console.log(`${isplaying} ${timecoin} ${freeplay} ${isinscore} ${chkend} ${isusing}`)
-    if (!isplaying&&timecoin==0&&!isinscore&&chkend&&isusing) {endkar(sangsong, sangsongscore);isusing=false;}
+    if (!isplaying&&timecoin==0&&!isinscore&&chkend&&isusing) {endkar(sangsong, sangsongscore);isusing=false;reservedsong = [];}
 }
 
 function addtimecoin(type, amount) {
@@ -175,10 +214,29 @@ document.addEventListener('keydown', async function(event) {
 	if (event.key === 'Enter') {
         if (!isplaying && !remotemode) {
             try{
+                if(inpnum==''&&reservedsong.length>0){
+                    songstart(reservedsong[0], ++playnum);
+                    reservedsong.shift();
+                    if(reservedsong.length>0){
+                        const js = await getsongdata(reservedsong[0]);
+                        await setnextreservesong(reservedsong[0], js.title, js.description, js.sing);
+                    }
+                } else {
+                    const res = await fetch(`./songs/${inpnum}/song.json`);
+                    const data = await res.text();
+                    const js = JSON.parse(data);
+                    songstart(inpnum, ++playnum);
+                    inpnum = '';
+                }
+            } catch {}
+        }
+    } else if (event.key === 'q' || event.key === 'Q') {
+        if (!remotemode) {
+            try{
                 const res = await fetch(`./songs/${inpnum}/song.json`);
                 const data = await res.text();
                 const js = JSON.parse(data);
-                songstart(inpnum, ++playnum);
+                songreserve(inpnum);
                 inpnum = '';
             } catch {}
         }
@@ -186,8 +244,9 @@ document.addEventListener('keydown', async function(event) {
         if (inpnum.length != 0){
             inpnum = '';
             rollbackupbar();
-        } else {
+        } else if (isplaying){
             songend();
+            autoplay = false;
             isplaying = false;
         }
     } else if (event.key === 'r' || event.key === 'R') {

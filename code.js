@@ -148,7 +148,7 @@ function setlimit(chkend=true) {
     else if (iscoin) {limit("coin", timecoin);}
     else {limit("time", timecoin);}
     console.log(`${isplaying} ${timecoin} ${freeplay} ${isinscore} ${chkend} ${isusing}`)
-    if (!isplaying&&timecoin==0&&!freeplay&&!isinscore&&chkend&&isusing) {endkar(sangsong, sangsongscore);isusing=false;}
+    if (!isplaying&&timecoin==0&&!isinscore&&chkend&&isusing) {endkar(sangsong, sangsongscore);isusing=false;}
 }
 
 function addtimecoin(type, amount) {
@@ -227,6 +227,7 @@ document.addEventListener('keydown', async function(event) {
         }
     } else if (event.key === 'e' || event.key === 'E') {
         if(remotemode) {
+            if(freeplay){isusing=true;}
             timecoin=0;
             setlimit();
             remotemode=false;

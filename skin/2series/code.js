@@ -43,7 +43,7 @@ toptimetext.id = "toptimetext";
 topimgimg.src = "./skin/2series/assets/ui/info.png";
 toptimeimg.src = "./skin/2series/assets/ui/time/time.png";
 toptimetext.innerText = "000분";
-toptimebox.style.display = "none";
+toptimebox.style.visibility = "hidden";
 
 wrapper.appendChild(topbar);
 
@@ -175,7 +175,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	setTimeout(() => {
 		inanime = false;
 		networkbox.style.visibility = "visible";
-		toptimebox.style.visibility = "visible";
+		if(!freeplay) {toptimebox.style.visibility = "visible";}
 	}, 410);
 }
 
@@ -359,19 +359,19 @@ function endsong(){
 //type: [free, time, coin, remote]
 function limit(type="free", number){
 	//시간, 코인 처리
-	if (type=="free"){toptimebox.style.display = "none";}
+	if (type=="free"){toptimebox.style.visibility = "hidden";}
 	else if (type=="time"){
-		toptimebox.style.display = "flex";
+		toptimebox.style.visibility = "visible";
 		toptimeimg.src = "./skin/2series/assets/ui/time/time.png";
 		toptimetext.innerText = `${String(number).padStart(3, '0')}분`;
 	}
 	else if (type=="coin"){
-		toptimebox.style.display = "flex";
+		toptimebox.style.visibility = "visible";
 		toptimeimg.src = "./skin/2series/assets/ui/time/coin.png";
-		toptimetext.innerText = `${String(number).padStart(3, '0')}개`;
+		toptimetext.innerText = `${String(number).padStart(3, '0')}곡`;
 	}
 	else if (type=="remote"){
-		toptimebox.style.display = "flex";
+		toptimebox.style.visibility = "visible";
 		toptimeimg.src = "./skin/2series/assets/ui/time/remote.png";
 		toptimetext.innerText = `${String(number).padStart(5, '0')}`;
 	}

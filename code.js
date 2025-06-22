@@ -106,6 +106,7 @@ async function songstart(number, num=playnum){
             }
         }
         await wait(js.endwait);
+        if(!isplaying||num!=playnum){return;}
         songend();
         isplaying = false;
     } catch (err) {
@@ -127,28 +128,32 @@ async function loadsongandvideo(number){
             const bga = document.getElementById('bga');
             bga.src = URL.createObjectURL(await mvHandle.getFile());
             bga.muted = true;
-            setTimeout(()=>{bga.play();}, js.videosync);
+            if(js.videosync<0){bga.play(); bga.currentTime = (js.videosync*-1) / 1000;}
+            else {setTimeout(()=>{bga.play();}, js.videosync);}
         }
         const musicHandle = await folderHandle.getFileHandle('song.mp3');
         if(musicHandle){
             //음악 재생
             const music = document.getElementById('music');
             music.src = URL.createObjectURL(await musicHandle.getFile());
-            setTimeout(()=>{music.play();}, js.musicsync);
+            if(js.musicsync<0){music.play(); music.currentTime = (js.musicsync*-1) / 1000;}
+            else {setTimeout(()=>{music.play();}, js.musicsync);}
         }
         const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
         if(musicHandle){
             //멜로디 재생
             const melody = document.getElementById('melody');
             melody.src = URL.createObjectURL(await melodyHandle.getFile());
-            setTimeout(()=>{melody.play();}, js.melodysync);
+            if(js.melodysync<0){melody.play(); melody.currentTime = (js.melodysync*-1) / 1000;}
+            else {setTimeout(()=>{melody.play();}, js.melodysync);}
         }
         const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
         if(chorusHandle){
             //코러스 재생
             const chorus = document.getElementById('chorus');
             chorus.src = URL.createObjectURL(await chorusHandle.getFile());
-            setTimeout(()=>{chorus.play();}, js.chorussync);
+            if(js.chorussync<0){chorus.play(); chorus.currentTime = (js.chorussync*-1) / 1000;}
+            else {setTimeout(()=>{chorus.play();}, js.chorussync);}
         }
     } catch (err) {
         info(0, `카운터에 문의하세요(${err.name})`)

@@ -22,13 +22,14 @@ let isusing = false;
 let autoplay = true;
 let songdir = null;
 
+let starttime;
+
 //설정
 let iscoin = false;
 let timecoin = 0;
 let freeplay = false;
 let remcointime = 5;
 let renderpron = true;
-let syncspeck = 180;
 
 async function songstart(number, num=playnum, phase=0, line=0){
     //곡 정보 파싱 후 startsong에 전달
@@ -44,6 +45,7 @@ async function songstart(number, num=playnum, phase=0, line=0){
         const js = await getsongdata(number);
         const banner = await getbannerdata(number);
         if(phase==0&&line==0&&!isplaying){
+            starttime = performance.now();
             startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang, "ORI");
             isplaying = true;
             autoplay = true;
@@ -59,7 +61,6 @@ async function songstart(number, num=playnum, phase=0, line=0){
                     if(timecoin==2){info(0, "2곡 남았습니다.");}
                 }, remcointime*1000);
             }
-            await wait(syncspeck);
             setTimeout(() => {
                 hidestartbox();
             }, js.lyricsd[0].startwait/4);
@@ -81,18 +82,20 @@ async function songstart(number, num=playnum, phase=0, line=0){
                     for (let j = 0; j < line.lyrics.length; j++) {
                         sum+=line.timing[j] || 0;
                         sum+=line.wait[j] || 0;
+                        sum+=7;
                     }
                 }
             }
-            sum+=phase==0 ? 0 : js.lyricsd[phase].startwait - ((60000 / js.bpm) * 6) + ((60000 / js.bpm) * 4)-js.bpm;
+            console.log(sum);
             await loadsongandvideo(number, sum);
         }
+
         for (let k=phase;k<js.lyricsd.length;k++) {
-            const item = js.lyricsd[k];
+            console.log(performance.now()-starttime);
             playingphase = k;
+            const item = js.lyricsd[k];
             if(!isplaying||num!=playnum){return;}
-            if(phase!=k||k==0) await wait(item.startwait - ((60000 / js.bpm) * 5));
-            else await wait(60000 / js.bpm);
+            await wait(item.startwait - ((60000 / js.bpm) * 5));
             if(!isplaying||num!=playnum){return;}
             if (item.lines.length >= 2) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
@@ -162,48 +165,34 @@ async function loadsongandvideo(number, time=0){
         if(mvHandle){
             //mv 존재 시 재생
             const bga = document.getElementById('bga');
-            if(time!=0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000);}
-            else{
-                setTimeout(async ()=>{
-                    bga.src = URL.createObjectURL(await mvHandle.getFile());
-                    bga.muted = true;
-                    if(js.videosync<0){bga.play(); bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000);}
-                    else {setTimeout(()=>{bga.play();}, js.videosync);}
-                }, syncspeck);
-            }
+            bga.src = URL.createObjectURL(await mvHandle.getFile());
+            bga.muted = true;
+            if(js.videosync+time<0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000); bga.play();}
+            else {setTimeout(()=>{bga.currentTime = (time / 1000); bga.play();}, js.videosync);}
         }
         const musicHandle = await folderHandle.getFileHandle('song.mp3');
         if(musicHandle){
             //음악 재생
             const music = document.getElementById('music');
-            if(time!=0){music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000);}
-            else{
-                music.src = URL.createObjectURL(await musicHandle.getFile());
-                if(js.musicsync<0){music.play(); music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000);}
-                else {setTimeout(()=>{music.play();}, js.musicsync);}
-            }
+            music.src = URL.createObjectURL(await musicHandle.getFile());
+            if(js.musicsync+time<0){music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000); music.play();}
+            else {setTimeout(()=>{music.currentTime = (time / 1000); music.play();}, js.musicsync);}
         }
         const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
         if(musicHandle){
             //멜로디 재생
             const melody = document.getElementById('melody');
-            if(time!=0){melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000);}
-            else{
-                melody.src = URL.createObjectURL(await melodyHandle.getFile());
-                if(js.melodysync<0){melody.play(); melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000);}
-                else {setTimeout(()=>{melody.play();}, js.melodysync);}
-            }
+            melody.src = URL.createObjectURL(await melodyHandle.getFile());
+            if(js.melodysync+time<0){melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000); melody.play();}
+            else {setTimeout(()=>{melody.currentTime = (time / 1000); melody.play();}, js.melodysync);}
         }
         const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
         if(chorusHandle){
             //코러스 재생
             const chorus = document.getElementById('chorus');
-            if(time!=0){chorus.currentTime = ((js.chorussync*-1) / 1000) + (time / 1000);}
-            else{
-                chorus.src = URL.createObjectURL(await chorusHandle.getFile());
-                if(js.chorussync<0){chorus.play(); chorus.currentTime = ((js.chorussync*-1) / 1000) + time;}
-                else {setTimeout(()=>{chorus.play();}, js.chorussync);}
-            }
+            chorus.src = URL.createObjectURL(await chorusHandle.getFile());
+            if(js.chorussync+time<0){chorus.currentTime = ((js.chorussync*-1) / 1000) + (time / 1000); chorus.play();}
+            else {setTimeout(()=>{chorus.currentTime = (time / 1000); chorus.play();}, js.chorussync);}
         }
     } catch (err) {
         if(err.name!="NotFoundError") info(0, `카운터에 문의하세요(${err.name})`)
@@ -333,7 +322,18 @@ function addservice(amount){
 }
 
 function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    const start = performance.now();
+    return new Promise(resolve => {
+        function check() {
+            const now = performance.now();
+            if (now - start >= ms) {
+                resolve();
+            } else {
+                requestAnimationFrame(check);
+            }
+        }
+        check();
+    });
 }
 
 document.addEventListener('keydown', async function(event) {

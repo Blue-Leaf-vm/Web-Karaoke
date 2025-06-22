@@ -2,34 +2,17 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./skin/2series/style.css">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    #wrapper {
-      width: 1920px;
-      height: 1080px;
-      transform-origin: top left;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      background: gainsboro;
-      overflow: hidden;
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.4.0"></script>
 </head>
 <body>
   <div id="wrapper">
-
+    <video id="bga" width="1920" height="1080"></video>
   </div>
-
+  <audio id="music"></audio>
+  <audio id="melody"></audio>
+  <audio id="chorus"></audio>
   <script src="./skin/2series/code.js"></script>
   <script src="./code.js"></script>
   <script>

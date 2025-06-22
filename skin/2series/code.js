@@ -84,8 +84,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 });
 
 //status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
-async function setnextreservesong(number, title, dis, sing){
-	reservetext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+async function setnextreservesong(number, title, dis, group){
+	reservetext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${group}</span>`;
 	rollbacktxt = reservetext;
 	rollbackimg = `./skin/2series/assets/song/playing/nextsong.png`;
 	rollbackview = 'visible';
@@ -101,7 +101,7 @@ setInterval(()=>{
 },2500);
 
 //number: 곡 번호, title: 곡 제목, dis: 곡 설명, sing: 가수, gender: 성별, songint: 원음정, curint: 현재음정, lyrics: 작사, compos: 작곡, original: 원작자, banner: 배너, lang: 곡 언어, type: [0: 오리지널, 1: MV, 2: MR, 3: LIVE, 4: 음악]
-function startsong(number, title, dis, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR", type="ORI"){
+function startsong(number, title, dis, group, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR", type="ORI"){
 	isplaying = true;
 	inanime = true;
 	isshowed = true;
@@ -111,7 +111,7 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	toptimebox.style.visibility = "hidden";
 	networkbox.style.visibility = "hidden";
 	topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png";
-	songtext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+	songtext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${group}</span>`;
 	toptext.innerHTML = songtext;
 	topimgtext.innerText = '';
 	rollbacktxt = songtext;
@@ -144,17 +144,28 @@ function startsong(number, title, dis, sing, gender, songint, curint, lyrics, co
 	border.src = `./skin/2series/assets/song/start/startborder/${Math.floor(Math.random() * 5)+1}.png`;
 	backimage.src = "./skin/2series/assets/song/start/startbg.png";
 
+	backimage.id = "upbackimage";
+	border.id = "upborder";
+	upperbox.id = "upperbox";
+	titletxt.id = "uppertitle";
+	singtxt.id = "uppersing";
+
 	upperbox.appendChild(backimage);
 	upperbox.appendChild(titletxt);
 	upperbox.appendChild(singtxt);
 	upperbox.appendChild(border);
 	infobox.appendChild(upperbox);
 
-	backimage.id = "upbackimage";
-	border.id = "upborder";
-	upperbox.id = "upperbox";
-	titletxt.id = "uppertitle";
-	singtxt.id = "uppersing";
+	if(banner){
+		const bannerimage = document.createElement("img");
+		bannerimage.id = "bannerimage";
+		bannerimage.src = banner;
+		upperbox.appendChild(bannerimage);
+
+		titletxt.style.left = "55%";
+		desctxt.style.left = "55%";
+		singtxt.style.left = "55%";
+	}
 
 	const downbox = document.createElement("div");
 	const downblackbox = document.createElement("div");
@@ -410,7 +421,7 @@ function rollbackupbar(){
 }
 
 //status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
-async function searchsong(status = 1, number, s, inter, title, dis, sing, level=printlevel+1){ 
+async function searchsong(status = 1, number, s, inter, title, dis, group, level=printlevel+1){ 
 	//검색 처리
 	printlevel++;
 	if (printser==0&&printinfo==0){
@@ -423,7 +434,7 @@ async function searchsong(status = 1, number, s, inter, title, dis, sing, level=
 		if(s==0){topimgimg.src = "./skin/2series/assets/song/select/man.png";}
 		else if(s==1){topimgimg.src = "./skin/2series/assets/song/select/woman.png";}
 		else if(s==2){topimgimg.src = "./skin/2series/assets/song/select/multi.png";}
-		toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${sing}</span>`;
+		toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${group}</span>`;
 		topimgtext.innerText = inter;
 	} else if (status==1){
 		topimgimg.src = "./skin/2series/assets/ui/einfo.png";

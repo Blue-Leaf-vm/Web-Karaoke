@@ -17,6 +17,7 @@ let sangsongscore = [];
 let reservedsong = [];
 let isusing = false;
 let autoplay = true;
+let songdir = null;
 
 //설정
 let iscoin = false;
@@ -37,10 +38,12 @@ async function songstart(number, num=playnum){
     }
     try{
         autoplay = true;
-        const res = await fetch(`./songs/${number}/song.json`);
-        const data = await res.text();
-        const js = JSON.parse(data);
-        startsong(number, js.title, js.description||null, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, null, js.lang, "ORI");
+        const js = await getsongdata(number);
+        const banner = await getbannerdata(number);
+        startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang, "ORI");
+        
+        await loadsongandvideo(number);
+
         if (!freeplay&&iscoin){
             setTimeout(() => {
                 if(!isplaying||num!=playnum){return;}
@@ -106,7 +109,50 @@ async function songstart(number, num=playnum){
         songend();
         isplaying = false;
     } catch (err) {
+        info(0, `카운터에 문의하세요(${err.name})`);
+    }
+}
+
+async function loadsongandvideo(number){
+    try{
+        const folderHandle = await songdir.getDirectoryHandle(number);
+        const fileHandle = await folderHandle.getFileHandle('song.json');
+        const file = await fileHandle.getFile();
+        const content = await file.text();
+        const js = JSON.parse(content);
+
+        const mvHandle = await folderHandle.getFileHandle('mv.mp4');
+        if(mvHandle){
+            //mv 존재 시 재생
+            const bga = document.getElementById('bga');
+            bga.src = URL.createObjectURL(await mvHandle.getFile());
+            bga.muted = true;
+            setTimeout(()=>{bga.play();}, js.videosync);
+        }
+        const musicHandle = await folderHandle.getFileHandle('song.mp3');
+        if(musicHandle){
+            //음악 재생
+            const music = document.getElementById('music');
+            music.src = URL.createObjectURL(await musicHandle.getFile());
+            setTimeout(()=>{music.play();}, js.musicsync);
+        }
+        const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
+        if(musicHandle){
+            //멜로디 재생
+            const melody = document.getElementById('melody');
+            melody.src = URL.createObjectURL(await melodyHandle.getFile());
+            setTimeout(()=>{melody.play();}, js.melodysync);
+        }
+        const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
+        if(chorusHandle){
+            //코러스 재생
+            const chorus = document.getElementById('chorus');
+            chorus.src = URL.createObjectURL(await chorusHandle.getFile());
+            setTimeout(()=>{chorus.play();}, js.chorussync);
+        }
+    } catch (err) {
         info(0, `카운터에 문의하세요(${err.name})`)
+        return;
     }
 }
 
@@ -118,28 +164,55 @@ async function songreserve(number){
     if (!reservedsong.includes(number)) info(0, `${number} 예약되었습니다.`);
     else info(0, `${number} 중복예약되었습니다.`);
     try{
-        const res = await fetch(`./songs/${number}/song.json`);
-        const data = await res.text();
-        const js = JSON.parse(data);
+        const js = await getsongdata(number);
         reservedsong.push(number);
-        if(reservedsong.length==1) setnextreservesong(number, js.title, js.description||null, js.sing);
+        if(reservedsong.length==1) setnextreservesong(number, js.title, js.description||null, js.group||js.sing);
     } catch (err) {
         info(0, `카운터에 문의하세요(${err.name})`)
     }
 }
 
 async function getsongdata(number){
+    if (!songdir) {
+        info(0, "곡 폴더를 선택해주세요.")
+        return 1;
+    }
     try{
-        const res = await fetch(`./songs/${number}/song.json`);
-        const data = await res.text();
-        const js = JSON.parse(data);
-        return js;
+        const folderHandle = await songdir.getDirectoryHandle(number);
+        const fileHandle = await folderHandle.getFileHandle('song.json');
+        if (fileHandle) {
+            const file = await fileHandle.getFile();
+            const content = await file.text();
+            const js = JSON.parse(content);
+            return js;
+        }
     } catch (err) {
-        info(0, `카운터에 문의하세요(${err.name})`)
+        return 1;
+    }
+}
+
+async function getbannerdata(number){
+    try{
+        const folderHandle = await songdir.getDirectoryHandle(number);
+        const bannerHandle = await folderHandle.getFileHandle('banner.png');
+        if(bannerHandle){
+            return URL.createObjectURL(await bannerHandle.getFile());
+        }
+    } catch (err) {
+        return null;
     }
 }
 
 function songend(){
+    const bga = document.getElementById('bga');
+    const music = document.getElementById('music');
+    const melody = document.getElementById('melody');
+    const chorus = document.getElementById('chorus');
+    music.pause();
+    melody.pause();
+    chorus.pause();
+    music.removeAttribute("src");
+    melody.removeAttribute("src");
     isplaying = false;
     endsong();
     score(100);
@@ -151,9 +224,9 @@ async function endscore(){
         songstart(reservedsong[0], ++playnum);
         reservedsong.shift();
     }
-    else if(reservedsong.length>0&&timecoin>0&&!autoplay){
+    if(reservedsong.length>0&&timecoin>0){
         const js = await getsongdata(reservedsong[0]);
-        setnextreservesong(reservedsong[0], js.title, js.description, js.sing);
+        setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
     }
 }
 
@@ -168,12 +241,9 @@ async function input(n) {
             delnum--;
             if (delnum<1) {inpnum = '';}
         }, 10000);
-        try{
-            const res = await fetch(`./songs/${inpnum}/song.json`);
-            const data = await res.text();
-            const js = JSON.parse(data);
-            searchsong(0, inpnum, js.gender, js.interval, js.title, js.description, js.sing);
-        } catch {searchsong(1, inpnum);}
+        const js = await getsongdata(inpnum);
+        if(js==1){searchsong(1, inpnum); return;}
+        searchsong(0, inpnum, js.gender, js.interval, js.title, js.description, js.group||js.sing);
     } else {
         inpnum += n;
         if(inpnum.length>6){inpnum = '' + n;}
@@ -219,25 +289,23 @@ document.addEventListener('keydown', async function(event) {
                     reservedsong.shift();
                     if(reservedsong.length>0){
                         const js = await getsongdata(reservedsong[0]);
-                        await setnextreservesong(reservedsong[0], js.title, js.description, js.sing);
+                        await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
                     }
                 } else {
-                    const res = await fetch(`./songs/${inpnum}/song.json`);
-                    const data = await res.text();
-                    const js = JSON.parse(data);
-                    songstart(inpnum, ++playnum);
-                    inpnum = '';
+                    if (typeof await getsongdata(inpnum)=="object"){
+                        songstart(inpnum, ++playnum);
+                        inpnum = '';
+                    }
                 }
             } catch {}
         }
     } else if (event.key === 'q' || event.key === 'Q') {
         if (!remotemode) {
             try{
-                const res = await fetch(`./songs/${inpnum}/song.json`);
-                const data = await res.text();
-                const js = JSON.parse(data);
-                songreserve(inpnum);
-                inpnum = '';
+                if(typeof await getsongdata(inpnum)=="object"){
+                    songreserve(inpnum);
+                    inpnum = '';
+                }
             } catch {}
         }
     } else if (event.key === 'Escape') {
@@ -306,3 +374,7 @@ setInterval(() => {
 }, 60000);
 
 setlimit(false);
+
+document.addEventListener("DOMContentLoaded", async function() {
+	songdir = await window.showDirectoryPicker();
+});

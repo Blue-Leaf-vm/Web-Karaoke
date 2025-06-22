@@ -1,0 +1,24 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#wrapper {
+    width: 1920px;
+    height: 1080px;
+    transform-origin: top left;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: #000;
+    overflow: hidden;
+}
+
+#bga {
+    position: absolute;
+    z-index: -10;
+}

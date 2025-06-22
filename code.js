@@ -24,7 +24,8 @@ let iscoin = false;
 let timecoin = 0;
 let freeplay = false;
 let remcointime = 5;
-let renderpron = false;
+let renderpron = true;
+let syncspeck = 180;
 
 async function songstart(number, num=playnum){
     //곡 정보 파싱 후 startsong에 전달
@@ -52,6 +53,7 @@ async function songstart(number, num=playnum){
                 if(timecoin==2){info(0, "2곡 남았습니다.");}
             }, remcointime*1000);
         }
+        await wait(syncspeck);
         setTimeout(() => {
             hidestartbox();
         }, js.lyricsd[0].startwait/4);
@@ -126,10 +128,12 @@ async function loadsongandvideo(number){
         if(mvHandle){
             //mv 존재 시 재생
             const bga = document.getElementById('bga');
-            bga.src = URL.createObjectURL(await mvHandle.getFile());
-            bga.muted = true;
-            if(js.videosync<0){bga.play(); bga.currentTime = (js.videosync*-1) / 1000;}
-            else {setTimeout(()=>{bga.play();}, js.videosync);}
+            setTimeout(async ()=>{
+                bga.src = URL.createObjectURL(await mvHandle.getFile());
+                bga.muted = true;
+                if(js.videosync<0){bga.play(); bga.currentTime = (js.videosync*-1) / 1000;}
+                else {setTimeout(()=>{bga.play();}, js.videosync);}
+            }, syncspeck);
         }
         const musicHandle = await folderHandle.getFileHandle('song.mp3');
         if(musicHandle){

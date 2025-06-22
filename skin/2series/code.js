@@ -305,8 +305,8 @@ async function renderlyric(showpron, data, isup, lang){
 	lyrichuri.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
 	lyrictextdrag.innerText = "";
 	lyrichuridrag.innerText = "";
-	lyricpron.innerText = showpron ? data.pronunciation.join(' ') : "";
-	lyricpron.setAttribute("data-content", showpron ? data.pronunciation.join(' ') : "");
+	lyricpron.innerText = showpron ? data.pronunciation.join('') : "";
+	lyricpron.setAttribute("data-content", showpron ? data.pronunciation.join('') : "");
 
 	if(showpron&&isup){
 		lyricbox.style.top = "520px";

@@ -36,7 +36,7 @@ async function songstart(number, num=playnum, phase=0, line=0){
     //그와 동시에 가사 렌더링
     //1절의 startwait에서 ((1000/bpm)*4)를 뺀 만큼 기다린 후 timer(bpm) 실행
 
-    if(!freeplay&&timecoin==0){
+    if(!freeplay&&timecoin==0&&phase==0){
         info(0, "시간/코인을 입력하세요.");
         return;
     }
@@ -47,6 +47,8 @@ async function songstart(number, num=playnum, phase=0, line=0){
             startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang, "ORI");
             isplaying = true;
             autoplay = true;
+            nowplaying = number;
+            playingphase = 0;
             await loadsongandvideo(number);
 
             if (!freeplay&&iscoin){
@@ -61,6 +63,10 @@ async function songstart(number, num=playnum, phase=0, line=0){
             setTimeout(() => {
                 hidestartbox();
             }, js.lyricsd[0].startwait/4);
+        } else if (phase>=js.lyricsd.length) {
+            songend();
+            autoplay = false;
+            isplaying = false;
         } else if (phase!=0||isplaying){
             hidestartbox();
             hidelyric(true);
@@ -200,7 +206,7 @@ async function loadsongandvideo(number, time=0){
             }
         }
     } catch (err) {
-        info(0, `카운터에 문의하세요(${err.name})`)
+        if(err.name!="NotFoundError") info(0, `카운터에 문의하세요(${err.name})`)
         return;
     }
 }
@@ -410,6 +416,16 @@ document.addEventListener('keydown', async function(event) {
             remotemode=false;
             inpnum = '';
         }
+    } else if (event.key === 'ArrowUp') {
+        if(isplaying&&(freeplay||timecoin!=0)) {
+            songstart(nowplaying, ++playnum, playingphase-1>=0?playingphase-1:0, 0);
+            info(0, "절을 점프합니다.");
+        }
+    } else if (event.key === 'ArrowDown') {
+        if(isplaying) {
+            songstart(nowplaying, ++playnum, playingphase+1, 0);
+            info(0, "절을 점프합니다.");
+        }
 	} else if (Number(event.key) >= 0 && Number(event.key) < 10){
 		input(Number(event.key));
 	}
@@ -424,7 +440,3 @@ setInterval(() => {
 }, 60000);
 
 setlimit(false);
-
-document.addEventListener("DOMContentLoaded", async function() {
-	songdir = await window.showDirectoryPicker();
-});

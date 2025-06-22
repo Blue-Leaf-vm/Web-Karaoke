@@ -224,6 +224,7 @@ async function songreserve(number){
 async function getsongdata(number){
     if (!songdir) {
         info(0, "곡 폴더를 선택해주세요.")
+        songdir = await window.showDirectoryPicker();
         return 1;
     }
     try{

@@ -21,6 +21,7 @@ let playingline;
 let isusing = false;
 let autoplay = true;
 let songdir = null;
+let ininterlude = false;
 
 let starttime;
 
@@ -31,7 +32,7 @@ let freeplay = false;
 let remcointime = 5;
 let renderpron = true;
 
-async function songstart(number, num=playnum, phase=0, line=0){
+async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
     //곡 정보 파싱 후 startsong에 전달
     //startwait의 절반만큼 기다린 후 hidestartbox() 실행
     //그와 동시에 가사 렌더링
@@ -44,7 +45,8 @@ async function songstart(number, num=playnum, phase=0, line=0){
     try{
         const js = await getsongdata(number);
         const banner = await getbannerdata(number);
-        if(phase==0&&line==0&&!isplaying){
+        if(phase==0&&line==0&&!isplaying&&!skipinter){
+            ininterlude = true;
             starttime = performance.now();
             startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang, "ORI");
             isplaying = true;
@@ -87,15 +89,17 @@ async function songstart(number, num=playnum, phase=0, line=0){
                 }
             }
             console.log(sum);
+            if(skipinter){sum+=js.lyricsd[phase].startwait - ((60000 / js.bpm) * 5);}
             await loadsongandvideo(number, sum);
         }
 
         for (let k=phase;k<js.lyricsd.length;k++) {
             console.log(performance.now()-starttime);
             playingphase = k;
+            ininterlude = true;
             const item = js.lyricsd[k];
             if(!isplaying||num!=playnum){return;}
-            await wait(item.startwait - ((60000 / js.bpm) * 5));
+            if(!skipinter){await wait(item.startwait - ((60000 / js.bpm) * 5))};
             if(!isplaying||num!=playnum){return;}
             if (item.lines.length >= 2) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
@@ -113,7 +117,7 @@ async function songstart(number, num=playnum, phase=0, line=0){
             await wait((60000 / js.bpm) * 4);
 
             if(!isplaying||num!=playnum){return;}
-
+            ininterlude = false;
             for (let i = 0; i < item.lines.length; i++) {
                 if(!isplaying||num!=playnum){return;}
                 const line = item.lines[i];
@@ -259,6 +263,7 @@ function songend(){
     music.removeAttribute("src");
     melody.removeAttribute("src");
     isplaying = false;
+    ininterlude = false;
     endsong();
     score(100);
 }
@@ -425,6 +430,11 @@ document.addEventListener('keydown', async function(event) {
         if(isplaying) {
             songstart(nowplaying, ++playnum, playingphase+1, 0);
             info(0, "절을 점프합니다.");
+        }
+    } else if (event.key === 'j' || event.key === 'J') {
+        if(isplaying&&ininterlude) {
+            songstart(nowplaying, ++playnum, playingphase, 0, true);
+            info(0, "간주를 점프합니다.");
         }
 	} else if (Number(event.key) >= 0 && Number(event.key) < 10){
 		input(Number(event.key));

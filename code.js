@@ -15,6 +15,9 @@ let remotemode = false;
 let sangsong = [];
 let sangsongscore = [];
 let reservedsong = [];
+let nowplaying;
+let playingphase;
+let playingline;
 let isusing = false;
 let autoplay = true;
 let songdir = null;
@@ -27,7 +30,7 @@ let remcointime = 5;
 let renderpron = true;
 let syncspeck = 180;
 
-async function songstart(number, num=playnum){
+async function songstart(number, num=playnum, phase=0, line=0){
     //곡 정보 파싱 후 startsong에 전달
     //startwait의 절반만큼 기다린 후 hidestartbox() 실행
     //그와 동시에 가사 렌더링
@@ -38,28 +41,52 @@ async function songstart(number, num=playnum){
         return;
     }
     try{
-        autoplay = true;
         const js = await getsongdata(number);
         const banner = await getbannerdata(number);
-        startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang, "ORI");
-        
-        await loadsongandvideo(number);
+        if(phase==0&&line==0&&!isplaying){
+            startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang, "ORI");
+            isplaying = true;
+            autoplay = true;
+            await loadsongandvideo(number);
 
-        if (!freeplay&&iscoin){
+            if (!freeplay&&iscoin){
+                setTimeout(() => {
+                    if(!isplaying||num!=playnum){return;}
+                    timecoin--;
+                    setlimit();
+                    if(timecoin==2){info(0, "2곡 남았습니다.");}
+                }, remcointime*1000);
+            }
+            await wait(syncspeck);
             setTimeout(() => {
-                if(!isplaying||num!=playnum){return;}
-                timecoin--;
-                setlimit();
-                if(timecoin==2){info(0, "2곡 남았습니다.");}
-            }, remcointime*1000);
-        }
-        await wait(syncspeck);
-        setTimeout(() => {
+                hidestartbox();
+            }, js.lyricsd[0].startwait/4);
+        } else if (phase!=0||isplaying){
             hidestartbox();
-        }, js.lyricsd[0].startwait/4);
-        for (const item of js.lyricsd) {
+            hidelyric(true);
+            hidelyric(false);     
+            //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함
+            let sum = 0;
+            for (let k=0;k<phase;k++) {
+                const item = js.lyricsd[k];
+                sum+=item.startwait || 0;
+                for (let i = 0; i < item.lines.length; i++) {
+                    const line = item.lines[i];
+                    for (let j = 0; j < line.lyrics.length; j++) {
+                        sum+=line.timing[j] || 0;
+                        sum+=line.wait[j] || 0;
+                    }
+                }
+            }
+            sum+=phase==0 ? 0 : js.lyricsd[phase].startwait - ((60000 / js.bpm) * 6) + ((60000 / js.bpm) * 4)-js.bpm;
+            await loadsongandvideo(number, sum);
+        }
+        for (let k=phase;k<js.lyricsd.length;k++) {
+            const item = js.lyricsd[k];
+            playingphase = k;
             if(!isplaying||num!=playnum){return;}
-            await wait(item.startwait - ((60000 / js.bpm) * 5));
+            if(phase!=k||k==0) await wait(item.startwait - ((60000 / js.bpm) * 5));
+            else await wait(60000 / js.bpm);
             if(!isplaying||num!=playnum){return;}
             if (item.lines.length >= 2) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
@@ -83,6 +110,7 @@ async function songstart(number, num=playnum){
                 const line = item.lines[i];
                 const isLastLine = (i === item.lines.length - 1);
                 const isNextLastLine = (i + 1 === item.lines.length - 1);
+                playingline = i;
 
                 draglyric(line, isup, js.lang);
 
@@ -116,7 +144,7 @@ async function songstart(number, num=playnum){
     }
 }
 
-async function loadsongandvideo(number){
+async function loadsongandvideo(number, time=0){
     try{
         const folderHandle = await songdir.getDirectoryHandle(number);
         const fileHandle = await folderHandle.getFileHandle('song.json');
@@ -128,36 +156,48 @@ async function loadsongandvideo(number){
         if(mvHandle){
             //mv 존재 시 재생
             const bga = document.getElementById('bga');
-            setTimeout(async ()=>{
-                bga.src = URL.createObjectURL(await mvHandle.getFile());
-                bga.muted = true;
-                if(js.videosync<0){bga.play(); bga.currentTime = (js.videosync*-1) / 1000;}
-                else {setTimeout(()=>{bga.play();}, js.videosync);}
-            }, syncspeck);
+            if(time!=0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000);}
+            else{
+                setTimeout(async ()=>{
+                    bga.src = URL.createObjectURL(await mvHandle.getFile());
+                    bga.muted = true;
+                    if(js.videosync<0){bga.play(); bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000);}
+                    else {setTimeout(()=>{bga.play();}, js.videosync);}
+                }, syncspeck);
+            }
         }
         const musicHandle = await folderHandle.getFileHandle('song.mp3');
         if(musicHandle){
             //음악 재생
             const music = document.getElementById('music');
-            music.src = URL.createObjectURL(await musicHandle.getFile());
-            if(js.musicsync<0){music.play(); music.currentTime = (js.musicsync*-1) / 1000;}
-            else {setTimeout(()=>{music.play();}, js.musicsync);}
+            if(time!=0){music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000);}
+            else{
+                music.src = URL.createObjectURL(await musicHandle.getFile());
+                if(js.musicsync<0){music.play(); music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000);}
+                else {setTimeout(()=>{music.play();}, js.musicsync);}
+            }
         }
         const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
         if(musicHandle){
             //멜로디 재생
             const melody = document.getElementById('melody');
-            melody.src = URL.createObjectURL(await melodyHandle.getFile());
-            if(js.melodysync<0){melody.play(); melody.currentTime = (js.melodysync*-1) / 1000;}
-            else {setTimeout(()=>{melody.play();}, js.melodysync);}
+            if(time!=0){melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000);}
+            else{
+                melody.src = URL.createObjectURL(await melodyHandle.getFile());
+                if(js.melodysync<0){melody.play(); melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000);}
+                else {setTimeout(()=>{melody.play();}, js.melodysync);}
+            }
         }
         const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
         if(chorusHandle){
             //코러스 재생
             const chorus = document.getElementById('chorus');
-            chorus.src = URL.createObjectURL(await chorusHandle.getFile());
-            if(js.chorussync<0){chorus.play(); chorus.currentTime = (js.chorussync*-1) / 1000;}
-            else {setTimeout(()=>{chorus.play();}, js.chorussync);}
+            if(time!=0){chorus.currentTime = ((js.chorussync*-1) / 1000) + (time / 1000);}
+            else{
+                chorus.src = URL.createObjectURL(await chorusHandle.getFile());
+                if(js.chorussync<0){chorus.play(); chorus.currentTime = ((js.chorussync*-1) / 1000) + time;}
+                else {setTimeout(()=>{chorus.play();}, js.chorussync);}
+            }
         }
     } catch (err) {
         info(0, `카운터에 문의하세요(${err.name})`)

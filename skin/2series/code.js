@@ -60,6 +60,20 @@ networkbox.appendChild(networkwifiimg);
 networkbox.appendChild(networklanimg);
 wrapper.appendChild(networkbox);
 
+//측면 이미지 생성
+const sideimage = document.createElement("img");
+const noscoreimage = document.createElement("img");
+const nochorusimage = document.createElement("img");
+const firstphaseimage = document.createElement("img");
+sideimage.id = "sideimage";
+noscoreimage.id = "noscoreimage";
+nochorusimage.id = "nochorusimage";
+firstphaseimage.id = "firstphaseimage";
+wrapper.appendChild(sideimage);
+wrapper.appendChild(noscoreimage);
+wrapper.appendChild(nochorusimage);
+wrapper.appendChild(firstphaseimage);
+
 //카운터 생성
 const timerimage = document.createElement("img");
 timerimage.id = "timerimage";
@@ -100,8 +114,13 @@ setInterval(()=>{
 	if(lanimg>4){lanimg=1;}
 },2500);
 
+//사이드바 렌더
+setInterval(()=>{
+	loadsideimage(false, true);
+},9000);
+
 //number: 곡 번호, title: 곡 제목, dis: 곡 설명, sing: 가수, gender: 성별, songint: 원음정, curint: 현재음정, lyrics: 작사, compos: 작곡, original: 원작자, banner: 배너, lang: 곡 언어, type: [0: 오리지널, 1: MV, 2: MR, 3: LIVE, 4: 음악]
-function startsong(number, title, dis, group, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR", type="ORI"){
+function startsong(number, title, dis, group, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR"){
 	inanime = true;
 	isshowed = true;
 	//상단바 숨기기
@@ -211,7 +230,7 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	}, 410);
 }
 
-async function hidestartbox(isstop=false){
+async function hidestartbox(isstop=false, noloadside=false){
 	//곡 시작 화면 숨기기 (애니메이션이 모두 작동한 후 숨겨져야 함)
 	const infobox = document.getElementById("infobox");
 	if(!inanime || isstop) { 
@@ -225,6 +244,7 @@ async function hidestartbox(isstop=false){
 		if (!isstop&&isplaying){
 			topimgbox.style.visibility = "visible";
 			topblackbar.style.visibility = "visible";
+			if (!noloadside) {loadsideimage();}
 		}
 	}
 }
@@ -252,6 +272,7 @@ async function timer(bpm, isup, startcount=4){
 
 	timerimage.style.display = "none";
 	timerimage.removeAttribute("src");
+	loadsideimage(true);
 }
 
 function getScaledPositionToWrapper(element) {
@@ -380,6 +401,7 @@ function endsong(){
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
 	timerimage.style.display = "none";
+	hidesideimage();
 	timerimage.removeAttribute("src")
 	hidelyric(true);
 	hidelyric(false);
@@ -485,7 +507,45 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", lev
 
 //img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img){
-	//이미지 렌더링
+	//중간이미지 렌더링
+}
+
+function hidesideimage(){
+	sideimage.style.visibility = "hidden";
+}
+
+async function loadsideimage(onlyshow=false, noshow=false) {
+	if (songtype == "ORI"){
+		if (!noshow) sideimage.style.visibility = "hidden";
+	} else if (songtype == "MV"){
+		if (!noshow) sideimage.style.visibility = "visible";
+		sideimage.style.top = "450px";
+		if(!onlyshow){
+			for(let i=0;i<22;i++){
+				sideimage.src = `./skin/2series/assets/song/playing/MV/${i+1}.png`;
+				await wait(1000/22);
+			}
+		}
+	} else if (songtype == "MR"){
+		if (!noshow) sideimage.style.visibility = "visible";
+		sideimage.style.top = "300px";
+			if(!onlyshow){
+			for(let i=0;i<19;i++){
+				sideimage.src = `./skin/2series/assets/song/playing/MR/${i+1}.png`;
+				await wait(1000/19);
+			}
+		}
+	}
+ 	else if (songtype == "LIVE"){
+		if (!noshow) sideimage.style.visibility = "visible";
+		sideimage.style.top = "450px";
+		if(!onlyshow){
+			for(let i=0;i<22;i++){
+				sideimage.src = `./skin/2series/assets/song/playing/LIVE/${i+1}.png`;
+				await wait(1000/22);
+			}
+		}
+	}
 }
 
 //score: 점수

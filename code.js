@@ -22,6 +22,7 @@ let isusing = false;
 let autoplay = true;
 let songdir = null;
 let ininterlude = false;
+let songtype = "ORI";
 
 let starttime;
 
@@ -48,7 +49,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
         if(phase==0&&line==0&&!isplaying&&!skipinter){
             ininterlude = true;
             starttime = performance.now();
-            startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang, "ORI");
+            startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang);
             isplaying = true;
             autoplay = true;
             nowplaying = number;
@@ -71,7 +72,8 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
             autoplay = false;
             isplaying = false;
         } else if (phase!=0||isplaying){
-            hidestartbox();
+            if(!skipinter) hidestartbox(false);
+            else hidestartbox(false, true);
             hidelyric(true);
             hidelyric(false);     
             //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함
@@ -89,7 +91,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
                 }
             }
             console.log(sum);
-            if(skipinter){sum+=js.lyricsd[phase].startwait - ((60000 / js.bpm) * 5);}
+            if(skipinter){sum+=js.lyricsd[phase].startwait - ((60000 / js.bpm) * 6);}
             await loadsongandvideo(number, sum);
         }
 
@@ -99,8 +101,10 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
             ininterlude = true;
             const item = js.lyricsd[k];
             if(!isplaying||num!=playnum){return;}
-            if(!skipinter){await wait(item.startwait - ((60000 / js.bpm) * 5))};
+            if(!skipinter){await wait(item.startwait - ((60000 / js.bpm) * 5));}
+            else {await wait(60000 / js.bpm);}
             if(!isplaying||num!=playnum){return;}
+            hidesideimage();
             if (item.lines.length >= 2) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
                 setTimeout(()=>{renderlyric(renderpron, item.lines[1], false, js.lang);}, 30);
@@ -164,6 +168,7 @@ async function loadsongandvideo(number, time=0){
         const file = await fileHandle.getFile();
         const content = await file.text();
         const js = JSON.parse(content);
+        songtype = "ORI";
 
         const mvHandle = await folderHandle.getFileHandle('mv.mp4');
         if(mvHandle){
@@ -173,6 +178,7 @@ async function loadsongandvideo(number, time=0){
             bga.muted = true;
             if(js.videosync+time<0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000); bga.play();}
             else {setTimeout(()=>{bga.currentTime = (time / 1000); bga.play();}, js.videosync);}
+            songtype = "MV";
         }
         const musicHandle = await folderHandle.getFileHandle('song.mp3');
         if(musicHandle){
@@ -264,6 +270,7 @@ function songend(){
     melody.removeAttribute("src");
     isplaying = false;
     ininterlude = false;
+    songtype = "ORI";
     endsong();
     score(100);
 }

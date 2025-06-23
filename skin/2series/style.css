@@ -261,3 +261,9 @@
     left: 50px;
     top: 100px;
 }
+
+#sideimage {
+    visibility: visible;
+    position: absolute;
+    left: 50px;
+}

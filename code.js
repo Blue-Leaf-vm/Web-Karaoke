@@ -22,7 +22,10 @@ let isusing = false;
 let autoplay = true;
 let songdir = null;
 let ininterlude = false;
-let songtype = "ORI";
+
+let ifmv = false;
+let ifmr = false;
+let iflive = false;
 
 let starttime;
 
@@ -178,7 +181,7 @@ async function loadsongandvideo(number, time=0){
             bga.muted = true;
             if(js.videosync+time<0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000); bga.play();}
             else {setTimeout(()=>{bga.currentTime = (time / 1000); bga.play();}, js.videosync);}
-            songtype = "MV";
+            ifmv = true;
         }
         const musicHandle = await folderHandle.getFileHandle('song.mp3');
         if(musicHandle){
@@ -187,6 +190,7 @@ async function loadsongandvideo(number, time=0){
             music.src = URL.createObjectURL(await musicHandle.getFile());
             if(js.musicsync+time<0){music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000); music.play();}
             else {setTimeout(()=>{music.currentTime = (time / 1000); music.play();}, js.musicsync);}
+            ifmr = true;
         }
         const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
         if(musicHandle){
@@ -195,6 +199,7 @@ async function loadsongandvideo(number, time=0){
             melody.src = URL.createObjectURL(await melodyHandle.getFile());
             if(js.melodysync+time<0){melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000); melody.play();}
             else {setTimeout(()=>{melody.currentTime = (time / 1000); melody.play();}, js.melodysync);}
+            ifmr = false;
         }
         const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
         if(chorusHandle){
@@ -270,7 +275,9 @@ function songend(){
     melody.removeAttribute("src");
     isplaying = false;
     ininterlude = false;
-    songtype = "ORI";
+    ifmv = false;
+    ifmr = false;
+    iflive = false;
     endsong();
     score(100);
 }

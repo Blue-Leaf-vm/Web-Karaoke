@@ -515,9 +515,9 @@ function hidesideimage(){
 }
 
 async function loadsideimage(onlyshow=false, noshow=false) {
-	if (songtype == "ORI"){
+	if (ifmv==false&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "hidden";
-	} else if (songtype == "MV"){
+	} else if (ifmv==true&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "450px";
 		if(!onlyshow){
@@ -526,7 +526,7 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 				await wait(1000/22);
 			}
 		}
-	} else if (songtype == "MR"){
+	} else if (ifmr==true){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "300px";
 			if(!onlyshow){
@@ -536,7 +536,7 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 			}
 		}
 	}
- 	else if (songtype == "LIVE"){
+ 	else if (iflive==true){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "450px";
 		if(!onlyshow){

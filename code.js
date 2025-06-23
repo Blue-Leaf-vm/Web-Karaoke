@@ -407,7 +407,7 @@ document.addEventListener('keydown', async function(event) {
         }
     } else if (event.key === 's' || event.key === 'S') {
         if(!freeplay&&remotemode) {
-            const toupcoin = inpnum==''?(iscoin?1:30):Number(inpnum);
+            const toupcoin = inpnum==''?(iscoin?1:5):Number(inpnum);
             addservice(toupcoin);
             remotemode=false;
             inpnum = '';

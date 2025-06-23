@@ -326,7 +326,7 @@ function setlimit(chkend=true) {
 
 function addtimecoin(type, amount) {
     isusing = true;
-    info(0, `${amount}${type=="coin"?"곡":"분"} ${timecoin==0?"입력":"추가"}하였습니다.`);
+    info(0, `${amount}${type=="coin"?"개":"분"} ${timecoin==0?"입력":"추가"}하였습니다.`);
     timecoin+=amount;
     iscoin=type=="coin"?true:false;
     setlimit();
@@ -335,7 +335,7 @@ function addtimecoin(type, amount) {
 function addservice(amount){
     isusing = true;
     loadimage("service");
-    info(0, `${amount}${iscoin?"곡":"분"} 서비스하였습니다.`);
+    info(0, `${amount}${iscoin?"개":"분"} 서비스하였습니다.`);
     timecoin+=amount;
     setlimit();
 }
@@ -396,31 +396,36 @@ document.addEventListener('keydown', async function(event) {
         if(!remotemode) {remotemode=true; limit("remote", 0);}
         else {remotemode=false; setlimit();}
         inpnum = '';
+    } else if (event.key === 'f' || event.key === 'F') {
+        if(remotemode) {
+            freeplay=!freeplay;
+            remotemode=false;
+            setlimit();
+            inpnum = '';
+        }
     } else if (event.key === 't' || event.key === 'T') {
-        if(remotemode && (!iscoin || timecoin==0)) {
+        if(remotemode && (!iscoin || timecoin==0) && !freeplay) {
             const toupcoin = inpnum==''?30:Number(inpnum);
-            freeplay=false;
             addtimecoin("time", toupcoin);
             remotemode=false;
             inpnum = '';
         }
     } else if (event.key === 'c' || event.key === 'C') {
-        if(remotemode && (iscoin || timecoin==0)) {
+        if(remotemode && (iscoin || timecoin==0) && !freeplay) {
             const toupcoin = inpnum==''?1:Number(inpnum);
-            freeplay=false;
             addtimecoin("coin", toupcoin);
             remotemode=false;
             inpnum = '';
         }
     } else if (event.key === 's' || event.key === 'S') {
-        if(!freeplay&&remotemode) {
+        if(!freeplay&&remotemode&&!freeplay) {
             const toupcoin = inpnum==''?(iscoin?1:5):Number(inpnum);
             addservice(toupcoin);
             remotemode=false;
             inpnum = '';
         }
     } else if (event.key === 'd' || event.key === 'D') {
-        if(!freeplay&&remotemode) {
+        if(!freeplay&&remotemode&&!freeplay) {
             const toupcoin = inpnum==''?(iscoin?1:5):Number(inpnum);
             timecoin-=toupcoin;
             setlimit();

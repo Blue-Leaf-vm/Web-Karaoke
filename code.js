@@ -22,6 +22,7 @@ let isusing = false;
 let autoplay = true;
 let songdir = null;
 let ininterlude = false;
+let localmode = true;
 
 let ifmv = false;
 let ifmr = false;
@@ -175,58 +176,64 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
 }
 
 async function loadsongandvideo(number, time=0, fileload=false){
-    const folderHandle = await songdir.getDirectoryHandle(number);
     if(fileload){
-        try{
-            hasmv = false;
-            hasmusic = false;
-            hasmelody = false;
-            haschorus = false;
-            haslive = false;
+        try {
+            const status = {
+                hasmv: false,
+                hasmusic: false,
+                hasmelody: false,
+                haschorus: false,
+                haslive: false,
+            };
 
-            const mvHandle = await folderHandle.getFileHandle('mv.mp4');
-            if(mvHandle){
-                //mv 존재 시 재생
-                const bga = document.getElementById('bga');
-                bga.src = URL.createObjectURL(await mvHandle.getFile());
-                bga.muted = true;
-                bga.load();
-                hasmv = true;
+            const elements = [
+                { id: 'bga', name: 'mv.mp4', type: 'video', key: 'hasmv' },
+                { id: 'music', name: 'song.mp3', type: 'audio', key: 'hasmusic' },
+                { id: 'melody', name: 'melody.mp3', type: 'audio', key: 'hasmelody' },
+                { id: 'chorus', name: 'chorus.mp3', type: 'audio', key: 'haschorus' },
+            ];
+
+            for (const { id, name, type, key } of elements) {
+                let fileUrl = null;
+
+                if (localmode) {
+                    try {
+                        const folderHandle = await songdir.getDirectoryHandle(number);
+                        const fileHandle = await folderHandle.getFileHandle(name);
+                        const file = await fileHandle.getFile();
+                        fileUrl = URL.createObjectURL(file);
+                    } catch {
+                        continue;
+                    }
+                } else {
+                    const exists = await fileExists(`./songs/${number}/${name}`);
+                    if (exists) {
+                        fileUrl = `./songs/${number}/${name}`;
+                    } else {
+                        continue;
+                    }
+                }
+
+                const element = document.getElementById(id);
+                element.src = fileUrl;
+                element.load();
+                if (id === 'bga') element.muted = true;
+                status[key] = true;
             }
-            const musicHandle = await folderHandle.getFileHandle('song.mp3');
-            if(musicHandle){
-                //음악 재생
-                const music = document.getElementById('music');
-                music.src = URL.createObjectURL(await musicHandle.getFile());
-                music.load();
-                hasmusic = true;
-            }
-            const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
-            if(melodyHandle){
-                //멜로디 재생
-                const melody = document.getElementById('melody');
-                melody.src = URL.createObjectURL(await melodyHandle.getFile());
-                melody.load();
-                hasmelody = true;
-            }
-            const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
-            if(chorusHandle){
-                //코러스 재생
-                const chorus = document.getElementById('chorus');
-                chorus.src = URL.createObjectURL(await chorusHandle.getFile());
-                chorus.load();
-                haschorus = true;
-            }
+
+            hasmv = status.hasmv;
+            hasmusic = status.hasmusic;
+            hasmelody = status.hasmelody;
+            haschorus = status.haschorus;
+            haslive = status.haslive;
+
         } catch (err) {
-            if(err.name!="NotFoundError") info(0, `카운터에 문의하세요(${err.name})`);
+            if (err.name !== "NotFoundError") info(0, `카운터에 문의하세요(${err.name})`);
             console.log(err);
             return;
         }
     } else {
-        const fileHandle = await folderHandle.getFileHandle('song.json');
-        const file = await fileHandle.getFile();
-        const content = await file.text();
-        const js = JSON.parse(content);
+        const js = getsongdata(number);
         if(hasmv){
             //mv 존재 시 재생
             if(js.videosync+time<0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000); await bga.play();}
@@ -270,23 +277,34 @@ async function songreserve(number){
 }
 
 async function getsongdata(number){
-    if (!songdir) {
-        info(0, "곡 폴더를 선택해주세요.")
-        songdir = await window.showDirectoryPicker();
-        return 1;
-    }
-    try{
-        const folderHandle = await songdir.getDirectoryHandle(number);
-        const fileHandle = await folderHandle.getFileHandle('song.json');
-
-        if (fileHandle) {
-            const file = await fileHandle.getFile();
-            const content = await file.text();
-            const js = JSON.parse(content);
-            return js;
+    if(localmode){
+        if (!songdir) {
+            info(0, "곡 폴더를 선택해주세요.")
+            songdir = await window.showDirectoryPicker();
+            return 1;
         }
-    } catch (err) {
-        return 1;
+        try{
+            const folderHandle = await songdir.getDirectoryHandle(number);
+            const fileHandle = await folderHandle.getFileHandle('song.json');
+
+            if (fileHandle) {
+                const file = await fileHandle.getFile();
+                const content = await file.text();
+                const js = JSON.parse(content);
+                return js;
+            }
+        } catch (err) {
+            return 1;
+        }
+    } else {
+        try{
+            const res = await fetch(`./songs/${number}/song.json`);
+            const data = await res.text();
+            const js = JSON.parse(data);
+            return js;
+        } catch (err) {
+            return 1;
+        }
     }
 }
 
@@ -422,6 +440,13 @@ document.addEventListener('keydown', async function(event) {
                 }
             } catch {}
         }
+    } else if (event.key === 'l' || event.key === 'L') {
+        if(remotemode) {
+            localmode=!localmode;
+            remotemode=false;
+            setlimit();
+            inpnum = '';
+        }
     } else if (event.key === 'Escape') {
         if (inpnum.length != 0){
             inpnum = '';
@@ -498,6 +523,15 @@ document.addEventListener('keydown', async function(event) {
 		input(Number(event.key));
 	}
 });
+
+async function fileExists(url) {
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        return response.ok;
+    } catch (e) {
+        return false;
+    }
+}
 
 setInterval(() => {
     if(timecoin>0&&!freeplay&&!iscoin){

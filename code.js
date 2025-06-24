@@ -93,7 +93,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
                     for (let j = 0; j < line.lyrics.length; j++) {
                         sum+=line.timing[j] || 0;
                         sum+=line.wait[j] || 0;
-                        sum+=7;
+                        sum+=2;
                     }
                 }
             }
@@ -138,12 +138,11 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
 
                 draglyric(line, isup, js.lang);
 
+                let sum = 0;
                 for (let j = 0; j < line.lyrics.length; j++) {
-                    if(!isplaying||num!=playnum){return;}
-                    await wait(line.timing[j]);
-                    if(!isplaying||num!=playnum){return;}
-                    await wait(line.wait[j]);
+                    sum+=line.timing[j]+line.wait[j];
                 }
+                await wait(sum);
                 if(!isplaying||num!=playnum){return;}
                 if (isLastLine) {
                     hidelyric(true);

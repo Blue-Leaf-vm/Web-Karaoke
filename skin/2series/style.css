@@ -91,21 +91,55 @@
     opacity: 0.8;
 }
 
-#upperlyricbox {font-family: "TJ 노래하는즐거움체 TTF", "Noto Sans", sans-serif;font-weight: 600;position: relative;top: 610px;left: 160px;display: flex;}
+#upperlyricbox {
+    font-family: "TJ 노래하는즐거움체 TTF", "Noto Sans", sans-serif;
+    font-weight: 600;
+    position: relative;
+    top: 610px;
+    left: 160px;
+    display: flex;
+}
 
-#upperlyrictextbox {position: absolute;}
+#upperlyrictextbox {
+    position: absolute;
+}
 
-#upperlyrictextboxdrag {position: absolute;}
+#upperlyrictextboxdrag {
+    position: absolute;
+}
 
-#lowerlyricbox {font-family: "TJ 노래하는즐거움체 TTF", "Noto Sans", sans-serif;font-weight: 600;position: relative;top: 760px;right: -400px;display: flex;flex-direction: column;align-items: flex-start;}
+#lowerlyricbox {
+    font-family: "TJ 노래하는즐거움체 TTF", "Noto Sans", sans-serif;
+    font-weight: 600;
+    position: relative;
+    top: 760px;
+    right: -400px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
-#lowerlyrictextbox {position: absolute;text-align: left;}
+#lowerlyrictextbox {
+    position: absolute;
+    text-align: left;
+}
 
-#lowerlyrictextboxdrag {position: absolute;}
+#lowerlyrictextboxdrag {
+    position: absolute;
+}
 
-.lyrictext {font-size: 120px;margin: 0;position: relative;white-space: pre;text-align: center;}
+.lyrictext {
+    font-size: 120px;
+    margin: 0;
+    position: relative;
+    white-space: pre;
+    text-align: center;
+}
 
-.lyrichuri {font-size: 50px;margin: 0;}
+.lyrichuri {
+    font-size: 50px;
+    margin: 0;
+}
 
 .lyricpron {
   margin: 0;
@@ -134,17 +168,17 @@
 }
 
 #upperlyrictext::after, #upperlyrichuri::after, #lowerlyrictext::after, #lowerlyrichuri::after  {
-  z-index: -2;
-  content: attr(data-content);
-  position: absolute;
-  left: 0;
+    z-index: -2;
+    content: attr(data-content);
+    position: absolute;
+    left: 0;
 }
 
 #upperlyrictextdrag::after, #upperlyrichuridrag::after, #lowerlyrictextdrag::after, #lowerlyrichuridrag::after  {
-  z-index: -1;
-  content: attr(data-content);
-  position: absolute;
-  left: 0;
+    z-index: -1;
+    content: attr(data-content);
+    position: absolute;
+    left: 0;
 }
 
 .color0{

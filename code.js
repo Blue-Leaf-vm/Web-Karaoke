@@ -1,10 +1,3 @@
-//음악 파일 분석
-//mv.mp4 (존재할 경우 mv 재생)
-//mr.mp3 (존재할 경우 mr곡 판정)
-//live.mp3 (존재할 경우 라이브 곡 / midi와 mr 모두 공존 가능 / live.mp3만 존재할 경우 효과음과 배경음 모두 포함으로 판정 / 다른 파일도 존재할 경우 효과음으로 판정)
-//song.midi (전곡, song.mp3가 존재할 경우 멜로디 (melody.mp3가 존재할 경우 미사용됨 / melody.mp3는 테스트용으로 사용 추천), mr곡이 존재할 경우 미사용됨)
-//chorus.mp3 (곡 코러스 / mr곡에서도 재생하나, 같이 존재시키는 것은 비추)
-//song.midi (song.mp3) / mr.mp3 필수
 let isup = true;
 let inpnum = "";
 let delnum = 0;
@@ -55,6 +48,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
     }
     try{
         const js = await getsongdata(number);
+        if(js==1){info(0, `카운터에 문의하세요(CODE:01)`); return;}
         const banner = await getbannerdata(number);
         if(phase==0&&line==0&&!isplaying&&!skipinter){
             ininterlude = true;

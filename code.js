@@ -120,6 +120,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
             }
 
             let isup = true;
+            ininterlude = false;
             await wait(60000 / js.bpm);
             timer(js.bpm, isup);
 
@@ -128,7 +129,6 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
             await wait((60000 / js.bpm) * 4);
 
             if(!isplaying||num!=playnum){return;}
-            ininterlude = false;
             for (let i = 0; i < item.lines.length; i++) {
                 if(!isplaying||num!=playnum){return;}
                 const line = item.lines[i];

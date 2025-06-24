@@ -226,7 +226,7 @@ async function loadsongandvideo(number, time=0, fileload=false){
             return;
         }
     } else {
-        const js = getsongdata(number);
+        const js = await getsongdata(number);
         if(hasmv){
             //mv 존재 시 재생
             if(js.videosync+time<0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000); await bga.play();}

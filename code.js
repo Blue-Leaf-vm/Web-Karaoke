@@ -271,13 +271,13 @@ async function songreserve(number){
 }
 
 async function getsongdata(number){
-    if(localmode){
-        if (!songdir) {
-            info(0, "곡 폴더를 선택해주세요.")
-            songdir = await window.showDirectoryPicker();
-            return 1;
-        }
-        try{
+    if (!songdir&&localmode) {
+        info(0, "곡 폴더를 선택해주세요.")
+        songdir = await window.showDirectoryPicker();
+        return 1;
+    }
+    try{
+        if(localmode){
             const folderHandle = await songdir.getDirectoryHandle(number);
             const fileHandle = await folderHandle.getFileHandle('song.json');
 
@@ -287,27 +287,30 @@ async function getsongdata(number){
                 const js = JSON.parse(content);
                 return js;
             }
-        } catch (err) {
-            return 1;
-        }
-    } else {
-        try{
+        } else {
             const res = await fetch(`./songs/${number}/song.json`);
             const data = await res.text();
             const js = JSON.parse(data);
             return js;
-        } catch (err) {
-            return 1;
         }
+    } catch (err) {
+        return 1;
     }
 }
 
 async function getbannerdata(number){
     try{
-        const folderHandle = await songdir.getDirectoryHandle(number);
-        const bannerHandle = await folderHandle.getFileHandle('banner.png');
-        if(bannerHandle){
-            return URL.createObjectURL(await bannerHandle.getFile());
+        if (localmode){
+            const folderHandle = await songdir.getDirectoryHandle(number);
+            const bannerHandle = await folderHandle.getFileHandle('banner.png');
+            if(bannerHandle){
+                return URL.createObjectURL(await bannerHandle.getFile());
+            }
+        } else {
+            const exists = await fileExists(`./songs/${number}/banner.png`);
+            if (exists) {
+                return `./songs/${number}/banner.png`;
+            }
         }
     } catch (err) {
         return null;

@@ -4,15 +4,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./skin/2series/style.css">
-  <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.4.0"></script>
 </head>
 <body>
   <div id="wrapper">
     <video id="bga" width="1920" height="1080"></video>
   </div>
-  <audio id="music"></audio>
-  <audio id="melody"></audio>
-  <audio id="chorus"></audio>
+  <audio id="music" preload="auto"></audio>
+  <audio id="melody" preload="auto"></audio>
+  <audio id="chorus" preload="auto"></audio>
+  <audio id="mutesound" preload="auto" muted loop src="./mute.mp3" autoplay></audio>
   <script src="./skin/2series/code.js"></script>
   <script src="./code.js"></script>
   <script>

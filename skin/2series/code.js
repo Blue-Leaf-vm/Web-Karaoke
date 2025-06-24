@@ -577,4 +577,3 @@ function safeJoin(arr, maxLength, sep) {
 	}
 	return result;
 }
-  

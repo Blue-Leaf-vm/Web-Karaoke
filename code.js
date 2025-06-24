@@ -27,6 +27,12 @@ let ifmv = false;
 let ifmr = false;
 let iflive = false;
 
+let hasmv = false;
+let hasmusic = false;
+let hasmelody = false;
+let haschorus = false;
+let haslive = false;
+
 let starttime;
 
 //설정
@@ -57,6 +63,9 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
             autoplay = true;
             nowplaying = number;
             playingphase = 0;
+            await loadsongandvideo(number, 0, true);
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            context.resume();
             await loadsongandvideo(number);
 
             if (!freeplay&&iscoin){
@@ -161,57 +170,86 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
         isplaying = false;
     } catch (err) {
         info(0, `카운터에 문의하세요(${err.name})`);
+        console.error(err);
     }
 }
 
-async function loadsongandvideo(number, time=0){
-    try{
-        const folderHandle = await songdir.getDirectoryHandle(number);
+async function loadsongandvideo(number, time=0, fileload=false){
+    const folderHandle = await songdir.getDirectoryHandle(number);
+    if(fileload){
+        try{
+            hasmv = false;
+            hasmusic = false;
+            hasmelody = false;
+            haschorus = false;
+            haslive = false;
+
+            const mvHandle = await folderHandle.getFileHandle('mv.mp4');
+            if(mvHandle){
+                //mv 존재 시 재생
+                const bga = document.getElementById('bga');
+                bga.src = URL.createObjectURL(await mvHandle.getFile());
+                bga.muted = true;
+                bga.load();
+                hasmv = true;
+            }
+            const musicHandle = await folderHandle.getFileHandle('song.mp3');
+            if(musicHandle){
+                //음악 재생
+                const music = document.getElementById('music');
+                music.src = URL.createObjectURL(await musicHandle.getFile());
+                music.load();
+                hasmusic = true;
+            }
+            const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
+            if(melodyHandle){
+                //멜로디 재생
+                const melody = document.getElementById('melody');
+                melody.src = URL.createObjectURL(await melodyHandle.getFile());
+                melody.load();
+                hasmelody = true;
+            }
+            const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
+            if(chorusHandle){
+                //코러스 재생
+                const chorus = document.getElementById('chorus');
+                chorus.src = URL.createObjectURL(await chorusHandle.getFile());
+                chorus.load();
+                haschorus = true;
+            }
+        } catch (err) {
+            if(err.name!="NotFoundError") info(0, `카운터에 문의하세요(${err.name})`);
+            console.log(err);
+            return;
+        }
+    } else {
         const fileHandle = await folderHandle.getFileHandle('song.json');
         const file = await fileHandle.getFile();
         const content = await file.text();
         const js = JSON.parse(content);
-        songtype = "ORI";
-
-        const mvHandle = await folderHandle.getFileHandle('mv.mp4');
-        if(mvHandle){
+        if(hasmv){
             //mv 존재 시 재생
-            const bga = document.getElementById('bga');
-            bga.src = URL.createObjectURL(await mvHandle.getFile());
-            bga.muted = true;
-            if(js.videosync+time<0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000); bga.play();}
-            else {setTimeout(()=>{bga.currentTime = (time / 1000); bga.play();}, js.videosync);}
+            if(js.videosync+time<0){bga.currentTime = ((js.videosync*-1) / 1000) + (time / 1000); await bga.play();}
+            else {setTimeout(async ()=>{bga.currentTime = (time / 1000); await bga.play();}, js.videosync);}
             ifmv = true;
         }
-        const musicHandle = await folderHandle.getFileHandle('song.mp3');
-        if(musicHandle){
+        if(hasmusic){
             //음악 재생
-            const music = document.getElementById('music');
-            music.src = URL.createObjectURL(await musicHandle.getFile());
-            if(js.musicsync+time<0){music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000); music.play();}
-            else {setTimeout(()=>{music.currentTime = (time / 1000); music.play();}, js.musicsync);}
+            if(js.musicsync+time<0){music.currentTime = ((js.musicsync*-1) / 1000) + (time / 1000); await music.play();}
+            else {setTimeout(async ()=>{music.currentTime = (time / 1000); await music.play();}, js.musicsync);}
             ifmr = true;
         }
-        const melodyHandle = await folderHandle.getFileHandle('melody.mp3');
-        if(musicHandle){
+        if(hasmelody){
             //멜로디 재생
-            const melody = document.getElementById('melody');
-            melody.src = URL.createObjectURL(await melodyHandle.getFile());
-            if(js.melodysync+time<0){melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000); melody.play();}
-            else {setTimeout(()=>{melody.currentTime = (time / 1000); melody.play();}, js.melodysync);}
+            if(js.melodysync+time<0){melody.currentTime = ((js.melodysync*-1) / 1000) + (time / 1000); await melody.play();}
+            else {setTimeout(async ()=>{melody.currentTime = (time / 1000); await melody.play();}, js.melodysync);}
             ifmr = false;
         }
-        const chorusHandle = await folderHandle.getFileHandle('chorus.mp3');
-        if(chorusHandle){
+        if(haschorus){
             //코러스 재생
-            const chorus = document.getElementById('chorus');
-            chorus.src = URL.createObjectURL(await chorusHandle.getFile());
-            if(js.chorussync+time<0){chorus.currentTime = ((js.chorussync*-1) / 1000) + (time / 1000); chorus.play();}
-            else {setTimeout(()=>{chorus.currentTime = (time / 1000); chorus.play();}, js.chorussync);}
+            if(js.chorussync+time<0){chorus.currentTime = ((js.chorussync*-1) / 1000) + (time / 1000); await chorus.play();}
+            else {setTimeout(async ()=>{chorus.currentTime = (time / 1000); await chorus.play();}, js.chorussync);}
         }
-    } catch (err) {
-        if(err.name!="NotFoundError") info(0, `카운터에 문의하세요(${err.name})`)
-        return;
     }
 }
 
@@ -240,6 +278,7 @@ async function getsongdata(number){
     try{
         const folderHandle = await songdir.getDirectoryHandle(number);
         const fileHandle = await folderHandle.getFileHandle('song.json');
+
         if (fileHandle) {
             const file = await fileHandle.getFile();
             const content = await file.text();

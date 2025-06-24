@@ -8,6 +8,7 @@ let rollbackimg;
 let rollbackview;
 let songtext;
 let reservetext;
+let lasthap = 0;
 
 //상단바 생성
 const topbar = document.createElement("div");
@@ -118,6 +119,13 @@ setInterval(()=>{
 setInterval(()=>{
 	loadsideimage(false, true);
 },9000);
+
+setInterval(()=>{
+	if(lasthap!=0&&printinfo+printser==lasthap){
+		rollbackupbar();
+	}
+	lasthap = printinfo+printser;
+},11000);
 
 //number: 곡 번호, title: 곡 제목, dis: 곡 설명, sing: 가수, gender: 성별, songint: 원음정, curint: 현재음정, lyrics: 작사, compos: 작곡, original: 원작자, banner: 배너, lang: 곡 언어, type: [0: 오리지널, 1: MV, 2: MR, 3: LIVE, 4: 음악]
 function startsong(number, title, dis, group, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR"){

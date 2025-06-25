@@ -65,7 +65,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
 
             if (!freeplay&&iscoin){
                 setTimeout(() => {
-                    if(!isplaying||num!=playnum){return;}
+                    if(!isplaying||nowplaying!=number){return;}
                     timecoin--;
                     setlimit();
                     if(timecoin==2){info(0, "2곡 남았습니다.");}
@@ -529,7 +529,7 @@ document.addEventListener('keydown', async function(event) {
             inpnum = '';
         }
     } else if (event.key === 'ArrowUp') {
-        if(isplaying&&(freeplay||timecoin!=0)) {
+        if(isplaying&&(freeplay||timecoin!=0&&!iscoin)) {
             songstart(nowplaying, ++playnum, playingphase-1>=0?playingphase-1:0, 0);
             info(0, "절을 점프합니다.");
         }

@@ -440,7 +440,10 @@ document.addEventListener('keydown', async function(event) {
                 } else {
                     if(reservedsong.includes(inpnum||-1)){
                         info(0, `${inpnum} 예약취소되었습니다.`);
-                        reservedsong.pop(inpnum);
+                        const index = reservedsong.indexOf(inpnum);
+                        if (index !== -1) {
+                            reservedsong.splice(index, 1);
+                        }
                         if(reservedsong.length>0){
                             const js = await getsongdata(reservedsong[0]);
                             await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);

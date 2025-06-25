@@ -210,7 +210,7 @@ async function loadsongandvideo(number, time=0, fileload=false){
                 const element = document.getElementById(id);
                 element.src = fileUrl;
                 element.load();
-                if (id === 'bga') element.muted = true;
+                if (id === 'bga') element.volume = 0;
                 status[key] = true;
             }
 

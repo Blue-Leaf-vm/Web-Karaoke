@@ -427,6 +427,31 @@ document.addEventListener('keydown', async function(event) {
                 }
             } catch {}
         }
+    } else if (event.key === 'u' || event.key === 'U') {
+        if (!remotemode){
+            try{
+                if(inpnum == ''&&reservedsong.length>0){
+                    info(0, `${reservedsong[0]} 예약취소되었습니다.`);
+                    reservedsong.shift();
+                    if(reservedsong.length>0){
+                        const js = await getsongdata(reservedsong[0]);
+                        await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
+                    }
+                } else {
+                    if(reservedsong.includes(inpnum||-1)){
+                        info(0, `${inpnum} 예약취소되었습니다.`);
+                        reservedsong.pop(inpnum);
+                        if(reservedsong.length>0){
+                            const js = await getsongdata(reservedsong[0]);
+                            await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
+                        }
+                    } else {
+                        info(0, `예약되지 않은 곡입니다.`);
+                    }
+                }
+                inpnum = '';
+            } catch {}
+        }
     } else if (event.key === 'q' || event.key === 'Q') {
         if (!remotemode) {
             try{

@@ -93,7 +93,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
                     for (let j = 0; j < line.lyrics.length; j++) {
                         sum+=line.timing[j] || 0;
                         sum+=line.wait[j] || 0;
-                        sum+=2;
+                        sum+=2.03;
                     }
                 }
             }

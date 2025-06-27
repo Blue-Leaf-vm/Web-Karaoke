@@ -384,16 +384,23 @@ async function draglyric(data, isup, lang) {
 	lyrictextdrag.innerText = "";
 	lyrictextboxdrag.style.width = "0px";
 
+	let sstarttime;
+	let sdrift = 0;
+
 	for (let j = 0; j < data.lyrics.length; j++) {
 		lyrictextdrag.innerText += data.lyrics[j];
 		lyrictextdrag.setAttribute("data-content", lyrictextdrag.innerText);
 		await new Promise(requestAnimationFrame);
 
-		lyrictextboxdrag.style.transition = `width ${data.timing[j]-10}ms linear`;
+		if (j == data.lyrics.length-1) lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift-100}ms linear`;
+		else lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift}ms linear`;
 		const targetWidth = lyrictextdrag.scrollWidth;
 		lyrictextboxdrag.style.width = `${targetWidth}px`;
 
-		await wait(data.timing[j]+data.wait[j]-10);
+        sstarttime = Date.now();
+        await wait(Math.max(0, data.timing[j]+data.wait[j] - sdrift) - 10);
+        sdrift = Date.now() - sstarttime - data.timing[j]+data.wait[j];
+        if (sdrift < 0) sdrift = 0;
 	}
 }
 

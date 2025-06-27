@@ -28,6 +28,8 @@ let haschorus = false;
 let haslive = false;
 
 let starttime;
+let drift;
+let ontime;
 
 //설정
 let iscoin = false;
@@ -36,12 +38,12 @@ let freeplay = false;
 let remcointime = 5;
 let renderpron = true;
 
-async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
+async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
     //startwait의 절반만큼 기다린 후 hidestartbox() 실행
     //그와 동시에 가사 렌더링
     //1절의 startwait에서 ((1000/bpm)*4)를 뺀 만큼 기다린 후 timer(bpm) 실행
-
+    let skipinter = skipinter1;
     if(!freeplay&&timecoin==0&&phase==0){
         info(0, "시간/코인을 입력하세요.");
         return;
@@ -52,7 +54,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
         const banner = await getbannerdata(number);
         if(phase==0&&line==0&&!isplaying&&!skipinter){
             ininterlude = true;
-            starttime = performance.now();
+            ontime = Date.now();
             startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang);
             isplaying = true;
             autoplay = true;
@@ -93,7 +95,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
                     for (let j = 0; j < line.lyrics.length; j++) {
                         sum+=line.timing[j] || 0;
                         sum+=line.wait[j] || 0;
-                        sum+=2.03;
+                        //sum+=1.2;
                     }
                 }
             }
@@ -103,13 +105,22 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
         }
 
         for (let k=phase;k<js.lyricsd.length;k++) {
-            console.log(performance.now()-starttime);
+            console.log(Date.now()-ontime);
             playingphase = k;
             ininterlude = true;
             const item = js.lyricsd[k];
             if(!isplaying||num!=playnum){return;}
-            if(!skipinter){await wait(item.startwait - ((60000 / js.bpm) * 5));}
-            else {await wait(60000 / js.bpm);}
+            starttime = Date.now();
+            if (!skipinter) {
+                const expected = item.startwait - ((60000 / js.bpm) * 5);
+                await wait(expected);
+                drift = Date.now() - starttime - expected;
+            } else {
+                const expected = 60000 / js.bpm;
+                await wait(expected);
+                drift = Date.now() - starttime - expected;
+                skipinter = false;
+            }
             if(!isplaying||num!=playnum){return;}
             hidesideimage();
             if (item.lines.length >= 2) {
@@ -121,12 +132,13 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
 
             let isup = true;
             ininterlude = false;
-            await wait(60000 / js.bpm);
+            starttime = Date.now();
+            await wait(Math.max(0, (60000 / js.bpm) - drift));
             timer(js.bpm, isup);
 
-            if(!isplaying||num!=playnum){return;}
-
             await wait((60000 / js.bpm) * 4);
+
+            drift = Date.now() - starttime - ((60000 / js.bpm) * 5);
 
             if(!isplaying||num!=playnum){return;}
             for (let i = 0; i < item.lines.length; i++) {
@@ -137,12 +149,16 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter=false){
                 playingline = i;
 
                 draglyric(line, isup, js.lang);
-
+                starttime = Date.now();
                 let sum = 0;
                 for (let j = 0; j < line.lyrics.length; j++) {
-                    sum+=line.timing[j]+line.wait[j];
+                    sum += line.timing[j] + line.wait[j];
                 }
-                await wait(sum);
+                await wait(Math.max(0, sum - drift));
+
+                drift = Date.now() - starttime - sum;
+                if (drift < 0) drift = 0;
+
                 if(!isplaying||num!=playnum){return;}
                 if (isLastLine) {
                     hidelyric(true);

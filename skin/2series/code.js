@@ -389,7 +389,7 @@ async function draglyric(data, isup, lang) {
 		lyrictextdrag.setAttribute("data-content", lyrictextdrag.innerText);
 		await new Promise(requestAnimationFrame);
 
-		lyrictextboxdrag.style.transition = `width ${data.timing[j]}ms linear`;
+		lyrictextboxdrag.style.transition = `width ${data.timing[j]-10}ms linear`;
 		const targetWidth = lyrictextdrag.scrollWidth;
 		lyrictextboxdrag.style.width = `${targetWidth}px`;
 

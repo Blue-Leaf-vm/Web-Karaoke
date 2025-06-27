@@ -118,7 +118,7 @@ setInterval(()=>{
 
 //사이드바 렌더
 setInterval(()=>{
-	loadsideimage(false, true);
+	if(isplaying&&!isshowed) loadsideimage(false, true);
 },9000);
 
 setInterval(()=>{

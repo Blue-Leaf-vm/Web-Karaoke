@@ -148,6 +148,7 @@
   font-weight: 500;
   top: 129px;
   color: #CCCCCC;
+  white-space: nowrap;
 }
 
 .lyricpron::after {
@@ -156,6 +157,7 @@
   position: absolute;
   left: 0;
   -webkit-text-stroke: 10px #4B4861;
+  white-space: nowrap;
 }
 
 #upperlyrictextboxdrag,

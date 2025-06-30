@@ -36,7 +36,7 @@ let iscoin = false;
 let timecoin = 0;
 let freeplay = false;
 let remcointime = 5;
-let renderpron = false;
+let renderpron = true;
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
@@ -374,6 +374,7 @@ async function input(n) {
             delnum--;
             if (delnum<1) {inpnum = '';}
         }, 10000);
+        if(!isplaying) systemsound(0, n);
         const js = await getsongdata(inpnum);
         if(js==1){searchsong(1, inpnum); return;}
         searchsong(0, inpnum, js.gender, js.interval, js.title, js.description, js.group||js.sing);
@@ -395,6 +396,9 @@ function setlimit(chkend=true) {
 
 function addtimecoin(type, amount) {
     isusing = true;
+    if(timecoin==0){
+        startkar();
+    }
     info(0, `${amount}${type=="coin"?"개":"분"} ${timecoin==0?"입력":"추가"}하였습니다.`);
     timecoin+=amount;
     iscoin=type=="coin"?true:false;
@@ -490,6 +494,7 @@ document.addEventListener('keydown', async function(event) {
             inpnum = '';
         }
     } else if (event.key === 'Escape') {
+        document.getElementById('system').pause();
         if (inpnum.length != 0){
             inpnum = '';
             rollbackupbar();

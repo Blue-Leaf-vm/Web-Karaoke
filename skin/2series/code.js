@@ -253,7 +253,7 @@ async function hidestartbox(isstop=false, noloadside=false){
 		if (!isstop&&isplaying){
 			topimgbox.style.visibility = "visible";
 			topblackbar.style.visibility = "visible";
-			if (!noloadside) {loadsideimage();}
+			if (!noloadside && !renderpron) {loadsideimage();}
 		}
 	}
 }
@@ -281,7 +281,7 @@ async function timer(bpm, isup, startcount=4){
 
 	timerimage.style.display = "none";
 	timerimage.removeAttribute("src");
-	loadsideimage(true);
+	if (!renderpron) loadsideimage(true);
 }
 
 function getScaledPositionToWrapper(element) {
@@ -573,8 +573,30 @@ async function score(score){
 	endscore();
 }
 
+function loadbga(rep=false){
+
+}
+
+function systemsound(type, sound){
+	const systemsound = document.getElementById('system');
+	if(type==0){
+		systemsound.src = `./skin/2series/sounds/selsong/${sound}.mp3`;
+	}
+	systemsound.play();
+}
+
 function startkar(){
 	//입실화면 표시
+	const systemsound = document.getElementById('system');
+	const bga = document.getElementById('bga');
+	systemsound.src = './skin/2series/sounds/join.mp3';
+	bga.src = './skin/2series/videos/join.mp4';
+	systemsound.play();
+	bga.play();
+
+	bga.addEventListener("ended", (event) => {
+		loadbga();
+	});
 }
 
 //songs: 부른 곡 목록, scores: 부른 곡 점수 목록 (배열로 입력)

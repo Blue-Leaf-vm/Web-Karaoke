@@ -11,6 +11,7 @@ let reservedsong = [];
 let nowplaying;
 let playingphase;
 let playingline;
+let timecoin = 0;
 let isusing = false;
 let autoplay = true;
 let songdir = null;
@@ -33,10 +34,9 @@ let ontime;
 
 //설정
 let iscoin = false;
-let timecoin = 0;
 let freeplay = false;
 let remcointime = 5;
-let renderpron = true;
+let renderpron = false;
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달

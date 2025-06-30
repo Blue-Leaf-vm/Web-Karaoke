@@ -36,7 +36,7 @@ let iscoin = false;
 let timecoin = 0;
 let freeplay = false;
 let remcointime = 5;
-let renderpron = true;
+let renderpron = false;
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
@@ -275,7 +275,7 @@ async function songreserve(number){
         return;
     }
     if (!reservedsong.includes(number)) info(0, `${number} 예약되었습니다.`);
-    else info(0, `${number} 중복예약되었습니다.`);
+    else info(0, `${number} 곡이 중복 예약되었습니다.`);
     try{
         const js = await getsongdata(number);
         reservedsong.push(number);
@@ -446,12 +446,14 @@ document.addEventListener('keydown', async function(event) {
     } else if (event.key === 'u' || event.key === 'U') {
         if (!remotemode){
             try{
-                if(inpnum == ''&&reservedsong.length>0){
-                    info(0, `${reservedsong[0]} 예약취소되었습니다.`);
-                    reservedsong.shift();
+                if(inpnum == ''){
                     if(reservedsong.length>0){
-                        const js = await getsongdata(reservedsong[0]);
-                        await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
+                        info(0, `${reservedsong[0]} 예약취소되었습니다.`);
+                        reservedsong.shift();
+                        if(reservedsong.length>0){
+                            const js = await getsongdata(reservedsong[0]);
+                            await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
+                        }
                     }
                 } else {
                     if(reservedsong.includes(inpnum||-1)){
@@ -465,7 +467,7 @@ document.addEventListener('keydown', async function(event) {
                             await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
                         }
                     } else {
-                        info(0, `예약되지 않은 곡입니다.`);
+                        info(0, `해당 곡이 예약되지 않았습니다.`);
                     }
                 }
                 inpnum = '';

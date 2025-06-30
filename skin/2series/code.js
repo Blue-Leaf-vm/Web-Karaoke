@@ -266,7 +266,7 @@ async function timer(bpm, isup, startcount=4){
 	const pos = getScaledPositionToWrapper(lyricElem);
 
 	let left = pos.x;
-	let top = pos.y - 180;
+	let top = pos.y - 220;
 
 	timerimage.style.left = left + "px";
 	timerimage.style.top = top + "px";
@@ -338,9 +338,9 @@ async function renderlyric(showpron, data, isup, lang){
 	lyricpron.setAttribute("data-content", showpron ? data.pronunciation.join('') : "");
 
 	if(showpron&&isup){
-		lyricbox.style.top = "520px";
+		lyricbox.style.top = "400px";
 	} else if (showpron&&!isup){
-		lyricbox.style.top = "720px";
+		lyricbox.style.top = "625px";
 	}
 
 	lyrictextbox.appendChild(lyrictext);
@@ -409,6 +409,7 @@ function hidelyric(isup){
 	try{
 		const lyricbox = document.getElementById(isup ? "upperlyricbox" : "lowerlyricbox");
 		lyricbox.remove();
+		timerimage.style.display = "none";
 	} catch {};
 }
 
@@ -534,7 +535,7 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 		if (!noshow) sideimage.style.visibility = "hidden";
 	} else if (ifmv==true&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "visible";
-		sideimage.style.top = "450px";
+		sideimage.style.top = "467px";
 		if(!onlyshow){
 			for(let i=0;i<22;i++){
 				sideimage.src = `./skin/2series/assets/song/playing/MV/${i+1}.png`;

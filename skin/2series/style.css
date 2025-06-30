@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
+#forcebox {
+    width: 1920px;
+    height: 1080px;
+    position: absolute;
+    z-index: 100;
+    display: none;
+    top: 0;
+    left: 0;
+}
+
 #upperbox {
     position: absolute;
     left: 50%;

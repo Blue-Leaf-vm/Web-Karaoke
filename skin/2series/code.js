@@ -589,20 +589,25 @@ function startkar(evacuation=false){
 	//입실화면 표시
 	if(evacuation){
 		isinscore = true;
-		topbar.style.opacity = "0";
-		networkbox.style.visibility = "hidden";
+		topbar.style.opacity = '0';
+		networkbox.style.visibility = 'hidden';
+		const forceimg = document.createElement("img");
+		forceimg.id = 'forcebox';
+		wrapper.appendChild(forceimg);
+		forceimg.src = './skin/2series/assets/ui/evacuation.png';
+		forceimg.style.display = 'block';
 
 		const systemsound = document.getElementById('system');
 		const bga = document.getElementById('bga');
 		systemsound.src = './skin/2series/sounds/evacuation.mp3';
-		bga.src = './skin/2series/videos/evacuation.mp4';
 		systemsound.play();
 		bga.play();
 
-		bga.addEventListener('ended', function(){
+		systemsound.addEventListener('ended', function(){
+			forceimg.remove();
 			startkar(false);
 			isinscore = false;
-			bga.removeEventListener('ended', arguments.callee);
+			systemsound.removeEventListener('ended', arguments.callee);
 		});
 	} else {
 		topbar.style.opacity = "1";

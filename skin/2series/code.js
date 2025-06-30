@@ -585,24 +585,48 @@ function systemsound(type, sound){
 	systemsound.play();
 }
 
-function startkar(){
+function startkar(evacuation=false){
 	//입실화면 표시
-	const systemsound = document.getElementById('system');
-	const bga = document.getElementById('bga');
-	systemsound.src = './skin/2series/sounds/join.mp3';
-	bga.src = './skin/2series/videos/join.mp4';
-	systemsound.play();
-	bga.play();
+	if(evacuation){
+		isinscore = true;
+		topbar.style.opacity = "0";
+		networkbox.style.visibility = "hidden";
 
-	bga.addEventListener("ended", (event) => {
-		loadbga();
-	});
+		const systemsound = document.getElementById('system');
+		const bga = document.getElementById('bga');
+		systemsound.src = './skin/2series/sounds/evacuation.mp3';
+		bga.src = './skin/2series/videos/evacuation.mp4';
+		systemsound.play();
+		bga.play();
+
+		bga.addEventListener('ended', function(){
+			startkar(false);
+			isinscore = false;
+			bga.removeEventListener('ended', arguments.callee);
+		});
+	} else {
+		topbar.style.opacity = "1";
+		networkbox.style.visibility = "visible";
+		const systemsound = document.getElementById('system');
+		const bga = document.getElementById('bga');
+		systemsound.src = './skin/2series/sounds/join.mp3';
+		bga.src = './skin/2series/videos/join.mp4';
+		systemsound.play();
+		bga.play();
+
+		bga.addEventListener('ended', function(){
+			loadbga();
+			bga.removeEventListener('ended', arguments.callee);
+		});
+	}
 }
 
 //songs: 부른 곡 목록, scores: 부른 곡 점수 목록 (배열로 입력)
 function endkar(songs, scores){
 	//퇴장화면 표시
-	info(0, "이용시간이 종료되었습니다.");
+	const systemsound = document.getElementById('system');
+	systemsound.src = './skin/2series/sounds/exit.mp3';
+	systemsound.play();
 }
 
 function safeJoin(arr, maxLength, sep) {

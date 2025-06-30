@@ -37,6 +37,7 @@ let iscoin = false;
 let freeplay = false;
 let remcointime = 5;
 let renderpron = false;
+let evacuationenable = true;
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
@@ -395,14 +396,14 @@ function setlimit(chkend=true) {
 }
 
 function addtimecoin(type, amount) {
+    let first = false;
+    if(timecoin==0&&!isusing){first = true;}
     isusing = true;
-    if(timecoin==0){
-        startkar();
-    }
     info(0, `${amount}${type=="coin"?"개":"분"} ${timecoin==0?"입력":"추가"}하였습니다.`);
     timecoin+=amount;
     iscoin=type=="coin"?true:false;
     setlimit();
+    setTimeout(()=>{if(first){startkar(evacuationenable);}},500);
 }
 
 function addservice(amount){
@@ -429,6 +430,7 @@ function wait(ms) {
 }
 
 document.addEventListener('keydown', async function(event) {
+    if (isinscore) {return;}
 	if (event.key === 'Enter') {
         if (!isplaying && !remotemode) {
             try{

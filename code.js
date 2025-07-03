@@ -155,10 +155,12 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
                 for (let j = 0; j < line.lyrics.length; j++) {
                     sum += line.timing[j] + line.wait[j];
                 }
-                await wait(Math.max(0, sum - drift));
+                if(sum!=0){
+                    await wait(Math.max(0, sum - drift));
 
-                drift = Date.now() - starttime - sum;
-                if (drift < 0) drift = 0;
+                    drift = Date.now() - starttime - sum;
+                    if (drift < 0) drift = 0;
+                }
 
                 if(!isplaying||num!=playnum){return;}
                 if (isLastLine) {

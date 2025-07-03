@@ -83,7 +83,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
             isplaying = false;
         } else if (phase!=0||isplaying){
             if(!skipinter) hidestartbox(false);
-            else hidestartbox(false, true);
+            else hidestartbox(false, true, true);
             hidelyric(true);
             hidelyric(false);     
             //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함

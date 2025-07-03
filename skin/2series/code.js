@@ -239,10 +239,10 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	}, 410);
 }
 
-async function hidestartbox(isstop=false, noloadside=false){
+async function hidestartbox(isstop=false, noloadside=false, forcehide=false){
 	//곡 시작 화면 숨기기 (애니메이션이 모두 작동한 후 숨겨져야 함)
 	const infobox = document.getElementById("infobox");
-	if(!inanime || isstop) { 
+	if(!inanime || isstop || forcehide) { 
 		infobox.remove();
 		isshowed = false;
 		setTimeout(()=>{

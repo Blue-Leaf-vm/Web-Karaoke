@@ -17,6 +17,7 @@ let autoplay = true;
 let songdir = null;
 let ininterlude = false;
 let localmode = true;
+let prioritysong = null;
 
 let ifmv = false;
 let ifmr = false;
@@ -272,17 +273,22 @@ async function loadsongandvideo(number, time=0, fileload=false){
     }
 }
 
-async function songreserve(number){
+async function songreserve(number, priority=false){
     if(!freeplay&&timecoin==0){
         info(0, "시간/코인을 입력하세요.");
         return;
     }
-    if (!reservedsong.includes(number)) info(0, `${number} 예약되었습니다.`);
+    if(prioritysong!=null){priority = false;}
+    if (!reservedsong.includes(number)) {
+        if(priority) info(0, `${number} 우선예약되었습니다.`);
+        else info(0, `${number} 예약되었습니다.`);
+    }
     else info(0, `${number} 곡이 중복 예약되었습니다.`);
     try{
         const js = await getsongdata(number);
-        reservedsong.push(number);
-        if(reservedsong.length==1) setnextreservesong(number, js.title, js.description||null, js.group||js.sing);
+        if(priority) {reservedsong.unshift(number); prioritysong = number;}
+        else reservedsong.push(number);
+        if(reservedsong.length==1 || priority) setnextreservesong(number, js.title, js.description||null, js.group||js.sing);
     } catch (err) {
         info(0, `카운터에 문의하세요(${err.name})`)
     }
@@ -363,6 +369,7 @@ async function endscore(){
     if(reservedsong.length>0&&timecoin>0){
         const js = await getsongdata(reservedsong[0]);
         setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
+        if (prioritysong!=null) { prioritysong=null; }
     }
 }
 
@@ -439,7 +446,8 @@ document.addEventListener('keydown', async function(event) {
                 if(inpnum==''&&reservedsong.length>0){
                     songstart(reservedsong[0], ++playnum);
                     reservedsong.shift();
-                    if(reservedsong.length>0){
+                    if (prioritysong!=null) { prioritysong=null; }
+                    if (reservedsong.length>0){
                         const js = await getsongdata(reservedsong[0]);
                         await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
                     }
@@ -456,17 +464,19 @@ document.addEventListener('keydown', async function(event) {
             try{
                 if(inpnum == ''){
                     if(reservedsong.length>0){
-                        info(0, `${reservedsong[0]} 예약취소되었습니다.`);
-                        reservedsong.shift();
+                        const last = reservedsong.pop();
+                        info(0, `${last} 예약취소되었습니다.`);
+                        if(last==prioritysong && reservedsong.length==0) prioritysong = null;
                         if(reservedsong.length>0){
-                            const js = await getsongdata(reservedsong[0]);
-                            await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
+                            const js = await getsongdata(reservedsong[reservedsong.length - 1]);
+                            await setnextreservesong(reservedsong[reservedsong.length - 1], js.title, js.description, js.group||js.sing);
                         }
                     }
                 } else {
                     if(reservedsong.includes(inpnum||-1)){
                         info(0, `${inpnum} 예약취소되었습니다.`);
                         const index = reservedsong.indexOf(inpnum);
+                        if(inpnum==prioritysong && index==0) prioritysong = null;
                         if (index !== -1) {
                             reservedsong.splice(index, 1);
                         }
@@ -486,6 +496,15 @@ document.addEventListener('keydown', async function(event) {
             try{
                 if(typeof await getsongdata(inpnum)=="object"){
                     songreserve(inpnum);
+                    inpnum = '';
+                }
+            } catch {}
+        }
+    } else if (event.key === 'p' || event.key === 'P') {
+        if (!remotemode) {
+            try{
+                if(typeof await getsongdata(inpnum)=="object"){
+                    songreserve(inpnum, true);
                     inpnum = '';
                 }
             } catch {}

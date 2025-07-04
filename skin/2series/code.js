@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 				if (isplaying) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; await wait(3000); }
 				if (reservedsong.length>0) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong2.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; await wait(3000); }
 				if (reservedsong.length>0) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; await wait(3000); }
-				if (reservedsong.length>1) { topimgimg.src = "./skin/2series/assets/song/playing/reserve.png"; toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${reservedsong.length}</span>`; await wait(3000); }
+				if (reservedsong.length>1) { topimgimg.src = "./skin/2series/assets/song/playing/reserve.png"; toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${String(reservedsong.length).padStart(2, "0")}</span>`; await wait(3000); }
 				if (reservedsong.length==0 && !isplaying) {	topimgbox.style.visibility = "hidden"; topblackbar.style.visibility = "hidden";}
 			}
 			await wait(100);
@@ -103,7 +103,7 @@ async function setnextreservesong(number, title, dis, group){
 	rollbacktxt = reservetext;
 	rollbackimg = `./skin/2series/assets/song/playing/nextsong.png`;
 	rollbackview = 'visible';
-	if(printinfo==0&&printser==0&&!isplaying){rollbackupbar();}
+	if(hidetime==-1&&!isplaying){rollbackupbar();}
 }
 
 //네트워크 표시
@@ -120,7 +120,7 @@ setInterval(()=>{
 },9000);
 
 setInterval(()=>{
-	if(hidetime>-1){
+	if(hidetime>0){
 		hidetime--;
 		if(hidetime<=0){rollbackupbar();}
 	}

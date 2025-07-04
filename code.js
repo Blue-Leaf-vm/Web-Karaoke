@@ -36,9 +36,9 @@ let ontime;
 //설정
 let iscoin = false;
 let freeplay = false;
-let remcointime = 5;
+let remcointime = 0;
 let renderpron = false;
-let evacuationenable = true;
+let evacuationenable = false;
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
@@ -127,7 +127,10 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
             hidesideimage();
             if (item.lines.length >= 2) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
-                setTimeout(()=>{renderlyric(renderpron, item.lines[1], false, js.lang);}, 30);
+                setTimeout(()=>{
+                    if(!isplaying||num!=playnum){return;}
+                    renderlyric(renderpron, item.lines[1], false, js.lang);
+                }, 30);
             } else if (item.lines.length == 1) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
             }

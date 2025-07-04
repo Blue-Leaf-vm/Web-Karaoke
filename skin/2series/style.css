@@ -235,6 +235,7 @@
 #topimgtext {
     color: #CCCCCC;
     font-family: 'Noto Sans';
+    font-weight: 500;
     margin: 0;
     align-self: center;
     position: absolute;

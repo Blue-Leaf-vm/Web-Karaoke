@@ -591,7 +591,8 @@ function startkar(evacuation=false){
 	//입실화면 표시
 	if(evacuation){
 		isinscore = true;
-		topbar.style.opacity = '0';
+		toptimeimg.style.opacity = '1';
+		toptimebox.style.zIndex = '101';
 		networkbox.style.visibility = 'hidden';
 		const forceimg = document.createElement("img");
 		forceimg.id = 'forcebox';
@@ -612,7 +613,7 @@ function startkar(evacuation=false){
 			systemsound.removeEventListener('ended', arguments.callee);
 		});
 	} else {
-		topbar.style.opacity = "1";
+		toptimeimg.style.opacity = "0.67";
 		networkbox.style.visibility = "visible";
 		const systemsound = document.getElementById('system');
 		const bga = document.getElementById('bga');

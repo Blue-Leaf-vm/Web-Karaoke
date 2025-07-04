@@ -279,7 +279,7 @@ async function songreserve(number, priority=false){
         return;
     }
     if(prioritysong!=null){priority = false;}
-    if (!reservedsong.includes(number)) {
+    if (!reservedsong.includes(number) || priority) {
         if(priority) info(0, `${number} 우선예약되었습니다.`);
         else info(0, `${number} 예약되었습니다.`);
     }
@@ -475,7 +475,7 @@ document.addEventListener('keydown', async function(event) {
                 } else {
                     if(reservedsong.includes(inpnum||-1)){
                         info(0, `${inpnum} 예약취소되었습니다.`);
-                        const index = reservedsong.indexOf(inpnum);
+                        const index = reservedsong.lastIndexOf(inpnum);
                         if(inpnum==prioritysong && index==0) prioritysong = null;
                         if (index !== -1) {
                             reservedsong.splice(index, 1);

@@ -281,7 +281,7 @@
     align-self: center;
     position: absolute;
     font-size: 49px;
-    padding: 7px 27px 0 0;
+    padding: 0 27px 0 0;
     transform: scaleX(0.85);
     transform-origin: right;
 }

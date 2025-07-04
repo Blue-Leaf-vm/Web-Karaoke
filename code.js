@@ -418,7 +418,7 @@ function addtimecoin(type, amount) {
 function addservice(amount){
     isusing = true;
     loadimage("service");
-    info(0, `${amount}${iscoin?"개":"분"} 서비스하였습니다.`);
+    info(0, `${amount}${iscoin?"개":"분"} 서비스하였습니다.`, 10);
     timecoin+=amount;
     setlimit();
 }
@@ -439,7 +439,7 @@ function wait(ms) {
 }
 
 document.addEventListener('keydown', async function(event) {
-    if (isinscore) {return;}
+    if (isinscore && !(event.key === 'r' || event.key === 'R') && !remotemode) {return;}
 	if (event.key === 'Enter') {
         if (!isplaying && !remotemode) {
             try{

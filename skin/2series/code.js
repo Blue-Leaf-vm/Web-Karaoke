@@ -1,9 +1,7 @@
 let inanime = false;
 let isshowed = false;
 let lanimg = 1;
-let printinfo = 0;
-let printser = 0;
-let printlevel = 0;
+let hidetime = -1;
 let rollbackimg;
 let rollbackview;
 let songtext;
@@ -84,7 +82,7 @@ wrapper.appendChild(timerimage);
 document.addEventListener("DOMContentLoaded", async function() {
 	try{
 		while(true){
-			if(printinfo==0&&printser==0){
+			if(hidetime==-1){
 				if (isplaying) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong2.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; await wait(3000); }
 				if (isplaying) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; await wait(3000); }
 				if (reservedsong.length>0) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong2.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; await wait(3000); }
@@ -122,11 +120,11 @@ setInterval(()=>{
 },9000);
 
 setInterval(()=>{
-	if(lasthap!=0&&printinfo+printser==lasthap){
-		rollbackupbar();
+	if(hidetime>-1){
+		hidetime--;
+		if(hidetime<=0){rollbackupbar();}
 	}
-	lasthap = printinfo+printser;
-},11000);
+},1000);
 
 //number: 곡 번호, title: 곡 제목, dis: 곡 설명, sing: 가수, gender: 성별, songint: 원음정, curint: 현재음정, lyrics: 작사, compos: 작곡, original: 원작자, banner: 배너, lang: 곡 언어, type: [0: 오리지널, 1: MV, 2: MR, 3: LIVE, 4: 음악]
 function startsong(number, title, dis, group, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR"){
@@ -143,7 +141,7 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	topimgtext.innerText = '';
 	rollbacktxt = songtext;
 	rollbackimg = `./skin/2series/assets/song/playing/nowsong.png`;
-
+	hidetime = -1;
 	//곡 시작 화면 표출
 	const infobox = document.getElementById("infobox") || document.createElement("div");
 	infobox.id = "infobox";
@@ -455,20 +453,17 @@ function rollbackupbar(){
 	topimgbox.style.visibility = rollbackview;
 	topblackbar.style.visibility = rollbackview;
 	topimgtext.innerText = '';
-	printinfo=0;
-	printser=0;
+	hidetime=-1;
 }
 
 //status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
-async function searchsong(status = 1, number, s, inter, title, dis, group, level=printlevel+1){ 
+async function searchsong(status = 1, number, s, inter, title, dis, group){ 
 	//검색 처리
-	printlevel++;
-	if (printser==0&&printinfo==0){
+	if (hidetime==-1){
 		rollbackimg = topimgimg.src;
 		rollbacktxt = toptext.innerHTML;
 		rollbackview = topblackbar.style.visibility;
 	}
-	printser++;
 	if(status==0){
 		if(s==0){topimgimg.src = "./skin/2series/assets/song/select/man.png";}
 		else if(s==1){topimgimg.src = "./skin/2series/assets/song/select/woman.png";}
@@ -482,45 +477,24 @@ async function searchsong(status = 1, number, s, inter, title, dis, group, level
 	}
 	topimgbox.style.visibility = 'visible';
 	topblackbar.style.visibility = 'visible';
-	await wait(10000);
-	printser--;
-	if(printser<=-1){printser=1;}
-	if(level==printlevel){
-		topimgimg.src = rollbackimg;
-		toptext.innerHTML = rollbacktxt;
-		topimgbox.style.visibility = rollbackview;
-		topblackbar.style.visibility = rollbackview;
-		topimgtext.innerText = '';
-		return;
-	}
+	hidetime = 10;
 }
 
 //type: [0: 일반 안내, 1: 오류 안내], message: 안내 메세지
-async function info(type=0, message="카운터에 문의하세요(CODE:00)", level=printlevel+1){
+async function info(type=0, message="카운터에 문의하세요(CODE:00)", time=3){
 	//안내 처리
-	printlevel++;
-	if (printinfo==0 && printser==0){
+	if (hidetime==-1){
 		rollbackimg = topimgimg.src;
 		rollbacktxt = toptext.innerHTML;
 		rollbackview = topblackbar.style.visibility;
 	}
-	printinfo++;
 	if(type==0){topimgimg.src = "./skin/2series/assets/ui/info.png";}
 	else if(type==1){topimgimg.src = "./skin/2series/assets/ui/einfo.png";}
 	toptext.innerHTML = message;
 	topimgtext.innerText = '';
 	topimgbox.style.visibility = 'visible';
 	topblackbar.style.visibility = 'visible';
-	await wait(3000);
-	printinfo--;
-	if(printinfo<=-1){printinfo=1;}
-	if(level==printlevel){
-		topimgimg.src = rollbackimg;
-		toptext.innerHTML = rollbacktxt;
-		topimgbox.style.visibility = rollbackview;
-		topblackbar.style.visibility = rollbackview;
-		return;
-	}
+	hidetime = time;
 }
 
 //img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]

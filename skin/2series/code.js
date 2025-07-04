@@ -398,9 +398,13 @@ async function draglyric(data, isup, lang) {
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
 
 			await wait(Math.max(0, data.timing[j]+data.wait[j] - sdrift) - 10);
-			sdrift = Date.now() - sstarttime - data.timing[j]+data.wait[j];
-			if (sdrift < 0) sdrift = 0;
+		} else {
+			lyrictextboxdrag.style.transition = `width 0ms linear`;
+			const targetWidth = lyrictextdrag.scrollWidth;
+			lyrictextboxdrag.style.width = `${targetWidth}px`;
 		}
+		sdrift = Date.now() - sstarttime - data.timing[j]+data.wait[j];
+		if (sdrift < 0) sdrift = 0;
 	}
 }
 

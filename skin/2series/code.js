@@ -82,14 +82,12 @@ wrapper.appendChild(timerimage);
 document.addEventListener("DOMContentLoaded", async function() {
 	try{
 		while(true){
-			if(hidetime==-1){
-				if (isplaying) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong2.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; await wait(3000); }
-				if (isplaying) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; await wait(3000); }
-				if (reservedsong.length>0) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong2.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; await wait(3000); }
-				if (reservedsong.length>0) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; await wait(3000); }
-				if (reservedsong.length>1) { topimgimg.src = "./skin/2series/assets/song/playing/reserve.png"; toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${String(reservedsong.length).padStart(2, "0")}</span>`; await wait(3000); }
-				if (reservedsong.length==0 && !isplaying) {	topimgbox.style.visibility = "hidden"; topblackbar.style.visibility = "hidden";}
-			}
+			if (isplaying && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong2.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (isplaying && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong2.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (reservedsong.length>1 && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/reserve.png"; toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${String(reservedsong.length).padStart(2, "0")}</span>`; await wait(3000); }
+			if (reservedsong.length==0 && !isplaying && hidetime==-1) {	topimgbox.style.visibility = "hidden"; topblackbar.style.visibility = "hidden";}
 			await wait(100);
 		}
 	} catch (e) {

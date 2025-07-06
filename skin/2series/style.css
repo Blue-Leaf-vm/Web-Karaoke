@@ -36,6 +36,7 @@
     font-weight: 700;
     font-size: 100px;
     position: absolute;
+    white-space: nowrap;
     left: 50%;
     top: -10px;
     transform: translateX(-50%);
@@ -247,6 +248,9 @@
 
 #topblackbar {
     background: #000000aa;
+    width: 1295px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     flex: 1;
     display: flex;
     justify-content: flex-start;

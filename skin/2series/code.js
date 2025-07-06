@@ -179,6 +179,16 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	upperbox.appendChild(border);
 	infobox.appendChild(upperbox);
 
+	requestAnimationFrame(() => {
+		const maxWidth = 1150;
+		const actualWidth = titletxt.clientWidth;
+		console.log(actualWidth);
+		if (actualWidth > maxWidth) {
+			const scaleX = maxWidth / actualWidth;
+			titletxt.style.transform = `translateX(-50%) scaleX(${scaleX})`;
+		}
+	});
+
 	if(banner){
 		const bannerimage = document.createElement("img");
 		bannerimage.id = "bannerimage";

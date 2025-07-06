@@ -118,6 +118,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
                 await wait(expected);
                 drift = Date.now() - starttime - expected;
             } else {
+                ininterlude = false;
                 const expected = 60000 / js.bpm;
                 await wait(expected);
                 drift = Date.now() - starttime - expected;
@@ -125,6 +126,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
             }
             if(!isplaying||num!=playnum){return;}
             hidesideimage();
+            ininterlude = false;
             if (item.lines.length >= 2) {
                 renderlyric(renderpron, item.lines[0], true, js.lang);
                 setTimeout(()=>{
@@ -136,7 +138,6 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
             }
 
             let isup = true;
-            ininterlude = false;
             starttime = Date.now();
             await wait(Math.max(0, (60000 / js.bpm) - drift));
             timer(js.bpm, isup);

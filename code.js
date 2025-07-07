@@ -5,8 +5,38 @@ let isplaying = false;
 let isinscore = false;
 let playnum = 0;
 let remotemode = false;
-let sangsong = [];
-let sangsongscore = [];
+const sangsong = [
+  { song: 2011, score: 1 },
+  { song: 2011, score: 62 },
+  { song: 2011, score: 2 },
+  { song: 2011, score: 21 },
+  { song: 2011, score: 11 },
+  { song: 2011, score: 74 },
+  { song: 2011, score: 83 },
+  { song: 2011, score: 100 },
+  { song: 2011, score: 99 },
+  { song: 2011, score: 85 },
+  { song: 2011, score: 32 },
+  { song: 2011, score: 47 },
+  { song: 2011, score: 11 },
+  { song: 2011, score: 48 },
+  { song: 2011, score: 95 },
+  { song: 2011, score: 21 },
+  { song: 2011, score: 51 },
+  { song: 2011, score: 56 },
+  { song: 2011, score: 82 },
+  { song: 2011, score: 77 },
+  { song: 2011, score: 10 },
+  { song: 2011, score: 89 },
+  { song: 2011, score: 100 },
+  { song: 2011, score: 21 },
+  { song: 2011, score: 66 },
+  { song: 2011, score: 62 },
+  { song: 2011, score: 36 },
+  { song: 2011, score: 21 },
+  { song: 2011, score: 11 },
+  { song: 2011, score: 20 }
+];
 let reservedsong = [];
 let nowplaying;
 let playingphase;
@@ -405,7 +435,7 @@ function setlimit(chkend=true) {
     if (freeplay) {limit("free", timecoin);}
     else if (iscoin) {limit("coin", timecoin);}
     else {limit("time", timecoin);}
-    if (!isplaying&&timecoin==0&&!isinscore&&chkend&&isusing) {endkar(sangsong, sangsongscore);isusing=false;reservedsong = [];}
+    if (!isplaying&&timecoin==0&&!isinscore&&chkend&&isusing) {endkar(sangsong);isusing=false;reservedsong = [];}
 }
 
 function addtimecoin(type, amount) {

@@ -326,3 +326,66 @@
     top: 250px;
     transform: translateX(-50%);
 }
+
+#sangcount {
+    position: absolute;
+    z-index: 102;
+    font-size: 70px;
+    right: 210px;
+    top: 80px;
+    font-family: 'Noto Sans';
+    font-weight: 500;
+    color: #33407B;
+}
+
+#sangcount::after {
+    z-index: -1;
+    content: attr(data-content);
+    position: absolute;
+    left: 0;
+    -webkit-text-stroke: 10px #fff;
+    white-space: nowrap;
+}
+
+#highscorebox {
+    position: absolute;
+    z-index: 101;
+    left: 780px;
+    top: 195px;
+    font-size: 50px;
+    font-weight: 400;
+    line-height: 60px;
+    display: flex;
+    justify-content: space-between;
+    width: 700px;
+    font-family: 'Noto Sans';
+}
+
+#highscorename {
+    margin: 0;
+    color: #fff;
+}
+
+#highscorescore {
+    margin: 0;
+    color: #ff0;
+    text-align: right;
+}
+
+#highscorename::after {
+    content: var(--highscorename);
+    left: 0;
+}
+
+#highscorescore::after {
+    content: var(--highscorescore);
+    right: 0;
+}
+
+#highscorename::after, #highscorescore::after {
+    top: 0;
+    z-index: -1;
+    position: absolute;
+    -webkit-text-stroke: 9px #000;
+    white-space: pre-line;
+}

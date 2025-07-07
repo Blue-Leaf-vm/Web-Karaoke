@@ -620,7 +620,6 @@ function startkar(evacuation=false){
 		const bga = document.getElementById('bga');
 		systemsound.src = './skin/2series/sounds/evacuation.mp3';
 		systemsound.play();
-		bga.play();
 
 		systemsound.addEventListener('ended', function(){
 			forceimg.remove();
@@ -646,11 +645,92 @@ function startkar(evacuation=false){
 }
 
 //songs: 부른 곡 목록, scores: 부른 곡 점수 목록 (배열로 입력)
-function endkar(songs, scores){
+async function endkar(songs){
 	//퇴장화면 표시
+	await wait(500);
 	const systemsound = document.getElementById('system');
 	systemsound.src = './skin/2series/sounds/exit.mp3';
 	systemsound.play();
+	
+	if(songs.length >= 10){
+		
+		isinscore = true;
+		networkbox.style.visibility = 'hidden';
+		const forceimg = document.createElement("img");
+		forceimg.id = 'forcebox';
+		wrapper.appendChild(forceimg);
+		forceimg.src = './skin/2series/assets/ui/exit/todaysang.png';
+		forceimg.style.display = 'block';
+		setTimeout(()=>{
+			forceimg.remove();
+			isinscore = false;
+			systemsound.pause();
+		},38500000);
+		songs.sort((a, b) => b.score - a.score);
+
+		const titleList = [];
+		const cache = {};
+
+		for (const item of songs) {
+			const songNum = item.song;
+
+			if (cache[songNum]) {
+			titleList.push(cache[songNum]);
+			continue;
+			}
+
+			try {
+				const data = await getsongdata(songNum);
+				const title = data?.title || null;
+				cache[songNum] = title;
+				titleList.push(title);
+			} catch (err) {
+				console.error(`곡 ${songNum} 정보 가져오기 실패`, err);
+				cache[songNum] = null;
+				titleList.push(null);
+			}
+		}
+
+		console.log("곡 제목 리스트:", titleList);
+		console.log("점수 순 정렬 결과:", songs);
+
+		const sangcount = document.createElement('p');
+		const highscorebox = document.createElement('div');
+		const highscorename = document.createElement('p');
+		const highscorescore = document.createElement('p');
+		const score1box = document.createElement('div');
+		const score1name = document.createElement('p');
+		const score1score = document.createElement('p');
+		const score2box = document.createElement('div');
+		const score2name = document.createElement('p');
+		const score2score = document.createElement('p');
+		sangcount.innerText = songs.length;
+		sangcount.setAttribute("data-content", songs.length);
+		highscorename.innerText = `${titleList[0]}\n${titleList[1]}\n${titleList[2]}`;
+		highscorename.style.setProperty('--highscorename', `"${titleList[0]} \\A ${titleList[1]} \\A ${titleList[2]}"`);
+		highscorescore.innerText = `${songs[0].score}점\n${songs[1].score}점\n${songs[2].score}점`;
+		highscorescore.style.setProperty('--highscorescore', `"${songs[0].score}점 \\A ${songs[1].score}점 \\A ${songs[2].score}점"`);
+
+		sangcount.id = 'sangcount';
+		highscorebox.id = 'highscorebox';
+		highscorename.id = 'highscorename';
+		highscorescore.id = 'highscorescore';
+
+		wrapper.appendChild(sangcount);
+		highscorebox.appendChild(highscorename);
+		highscorebox.appendChild(highscorescore);
+		wrapper.appendChild(highscorebox);
+		//한줄당 8개씩
+		//4초동안 한줄 렌더링
+		//2초 뒤 다음 줄 렌더링
+
+		for(const item of titleList){
+			score1box.id = 'score1box';
+			score1name.id = 'score1name';
+			score2box.id = 'score2box';
+			score2name.id = 'score2name';
+		}
+	}
 }
 
 function safeJoin(arr, maxLength, sep) {

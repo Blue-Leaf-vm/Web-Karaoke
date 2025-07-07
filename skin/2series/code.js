@@ -517,6 +517,8 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 //img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, num=centernum+1){
 	//중간이미지 렌더링
+	await wait(100);
+	if(isshowed) return;
 	centernum++;
 	loadsideimage(false, true);
 	iscentershowed = true;

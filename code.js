@@ -581,10 +581,10 @@ document.addEventListener('keydown', async function(event) {
     } else if (event.key === 'ArrowUp') {
         if(isplaying&&(freeplay||timecoin!=0&&!iscoin)) {
             songstart(nowplaying, ++playnum, playingphase-1>=0?playingphase-1:0, 0);
-            info(0, "절을 점프합니다.");
+            info(0, "절을 점프합니다."); //마디점프 개발 끝나면 삭제
         }
     } else if (event.key === 'ArrowDown') {
-        if(isplaying) {
+        if(isplaying&&(freeplay||!iscoin)) {
             songstart(nowplaying, ++playnum, playingphase+1, 0);
             info(0, "절을 점프합니다.");
             loadimage('phasejump');

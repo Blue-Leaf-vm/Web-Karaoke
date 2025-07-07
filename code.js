@@ -561,6 +561,7 @@ document.addEventListener('keydown', async function(event) {
             addservice(toupcoin);
             remotemode=false;
             inpnum = '';
+            loadimage('services');
         }
     } else if (event.key === 'd' || event.key === 'D') {
         if(!freeplay&&remotemode&&!freeplay) {

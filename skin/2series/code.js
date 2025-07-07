@@ -528,7 +528,7 @@ async function loadimage(img, num=centernum+1){
 	wrapper.appendChild(centerimage);
 	for(let i=0;i<22;i++){
 		if (num!=centernum) return;
-		centerimage.src = `./skin/2series/assets/song/playing/${img}/${i+1}.png`;
+		centerimage.src = `./skin/2series/assets/song/center/${img}/${i+1}.png`;
 		await wait(1000/22);
 	}
 	await wait(1000);

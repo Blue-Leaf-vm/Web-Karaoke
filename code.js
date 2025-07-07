@@ -421,7 +421,7 @@ function addtimecoin(type, amount) {
 
 function addservice(amount){
     isusing = true;
-    loadimage("services");
+    loadimage("services", 9);
     info(0, `${amount}${iscoin?"개":"분"} 서비스하였습니다.`, 10);
     timecoin+=amount;
     setlimit();

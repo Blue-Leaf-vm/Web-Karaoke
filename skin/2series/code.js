@@ -130,6 +130,7 @@ setInterval(()=>{
 function startsong(number, title, dis, group, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR"){
 	inanime = true;
 	isshowed = true;
+	hidecenterimage()
 	//상단바 숨기기
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
@@ -433,8 +434,7 @@ function endsong(){
 	topblackbar.style.visibility = "hidden";
 	timerimage.style.display = "none";
 	hidesideimage();
-	const centerimage = document.getElementById("centerimage");
-	if(centerimage) centerimage.remove();
+	hidecenterimage();
 	timerimage.removeAttribute("src")
 	hidelyric(true);
 	hidelyric(false);
@@ -515,7 +515,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 }
 
 //img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
-async function loadimage(img, num=centernum+1){
+async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
 	await wait(100);
 	if(isshowed) return;
@@ -531,7 +531,7 @@ async function loadimage(img, num=centernum+1){
 		centerimage.src = `./skin/2series/assets/ui/center/${img}/${i+1}.png`;
 		await wait(1000/22);
 	}
-	await wait(1000);
+	await wait(1000*(time-1));
 	if (num!=centernum) return;
 	timerimage.style.display = "block";
 	centerimage.remove();
@@ -540,6 +540,11 @@ async function loadimage(img, num=centernum+1){
 
 function hidesideimage(){
 	sideimage.style.visibility = "hidden";
+}
+
+function hidecenterimage(){
+	const centerimage = document.getElementById("centerimage");
+	if(centerimage) centerimage.remove();
 }
 
 async function loadsideimage(onlyshow=false, noshow=false) {

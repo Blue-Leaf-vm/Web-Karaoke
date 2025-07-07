@@ -389,3 +389,78 @@
     -webkit-text-stroke: 9px #000;
     white-space: pre-line;
 }
+
+#score1box, #score2box {
+    position: absolute;
+    z-index: 101;
+    left: 330px;
+    top: 405px;
+    font-size: 38px;
+    font-weight: 400;
+    line-height: 60px;
+    display: flex;
+    justify-content: space-between;
+    width: 590px;
+    font-family: 'Noto Sans';
+    overflow: hidden;
+    transition: height 4s linear;
+}
+
+#score2box {
+    left: 990px;
+}
+
+#score1num, #score2num {
+    margin: 0;
+    color: #0ff;
+    text-align: right;
+    margin-right: 20px;
+}
+
+#score1name, #score2name {
+    margin: 0;
+    color: #fff;
+    flex: 1;
+}
+
+#score1score, #score2score {
+    margin: 0;
+    color: #ff0;
+    text-align: right;
+}
+
+#score1num::after {
+    content: var(--score1num);
+    left: 0;
+}
+
+#score1name::after {
+    content: var(--score1name);
+}
+
+#score1score::after {
+    content: var(--score1score);
+    right: 0;
+}
+
+#score1num::after, #score1name::after, #score1score::after, #score2num::after, #score2name::after, #score2score::after {
+    top: 0;
+    z-index: -1;
+    position: absolute;
+    -webkit-text-stroke: 8px #000;
+    white-space: pre-line;
+}
+
+#score2num::after {
+    content: var(--score2num);
+    left: 0;
+}
+
+#score2name::after {
+    content: var(--score2name);
+}
+
+#score2score::after {
+    content: var(--score2score);
+    right: 0;
+}

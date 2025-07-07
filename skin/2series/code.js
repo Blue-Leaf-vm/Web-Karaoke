@@ -699,9 +699,11 @@ async function endkar(songs){
 		const highscorename = document.createElement('p');
 		const highscorescore = document.createElement('p');
 		const score1box = document.createElement('div');
+		const score1num = document.createElement('p');
 		const score1name = document.createElement('p');
 		const score1score = document.createElement('p');
 		const score2box = document.createElement('div');
+		const score2num = document.createElement('p');
 		const score2name = document.createElement('p');
 		const score2score = document.createElement('p');
 		sangcount.innerText = songs.length;
@@ -716,19 +718,84 @@ async function endkar(songs){
 		highscorename.id = 'highscorename';
 		highscorescore.id = 'highscorescore';
 
+		score1box.id = 'score1box';
+		score1num.id = 'score1num';
+		score1name.id = 'score1name';
+		score1score.id = 'score1score';
+		score2box.id = 'score2box';
+		score2num.id = 'score2num';
+		score2name.id = 'score2name';
+		score2score.id = 'score2score';
+
 		wrapper.appendChild(sangcount);
 		highscorebox.appendChild(highscorename);
 		highscorebox.appendChild(highscorescore);
 		wrapper.appendChild(highscorebox);
+
+		score1box.appendChild(score1num);
+		score1box.appendChild(score1name);
+		score1box.appendChild(score1score);
+		wrapper.appendChild(score1box);
+		score2box.appendChild(score2num);
+		score2box.appendChild(score2name);
+		score2box.appendChild(score2score);
+		wrapper.appendChild(score2box);
 		//한줄당 8개씩
 		//4초동안 한줄 렌더링
 		//2초 뒤 다음 줄 렌더링
+		let start = 3;
+		let isfirst = true;
+		while(start<songs.length){
+			await wait(2000);
+			let songdata = "";
+			let scoredata = "";
+			let scorenum = "";
+			for(let i=0;i<8;i++){
+				if(start+i>=songs.length) break;
+				songdata+=`${titleList[start+i]}\n`;
+				scoredata+=`${songs[start+i].score}점\n`;
+				scorenum+=`${i+start+1}위\n`;
+			}
+			if(isfirst){
+				score1box.style.transition = 'none';
+				score1box.style.height = '0';
+				score2box.style.height = '0';
 
-		for(const item of titleList){
-			score1box.id = 'score1box';
-			score1name.id = 'score1name';
-			score2box.id = 'score2box';
-			score2name.id = 'score2name';
+				score2num.innerText = '';
+				score2num.style.setProperty('--score2num', `""`);
+				score2name.innerText = '';
+				score2name.style.setProperty('--score2name', `""`);
+				score2score.innerText = '';
+				score2score.style.setProperty('--score2score', `""`);
+
+				score1num.innerText = scorenum;
+				score1num.style.setProperty('--score1num', `"${scorenum.replace(/\n/g, " \\A ")}"`);
+				score1name.innerText = songdata;
+				score1name.style.setProperty('--score1name', `"${songdata.replace(/\n/g, " \\A ")}"`);
+				score1score.innerText = scoredata;
+				score1score.style.setProperty('--score1score', `"${scoredata.replace(/\n/g, " \\A ")}"`);
+				
+				requestAnimationFrame(() => {
+					score1box.style.transition = '';
+					requestAnimationFrame(() => {
+						score1box.style.height = '500px';
+					});
+				});
+			} else {
+				score2box.style.height = '0';
+
+				score2num.innerText = scorenum;
+				score2num.style.setProperty('--score2num', `"${scorenum.replace(/\n/g, " \\A ")}"`);
+				score2name.innerText = songdata;
+				score2name.style.setProperty('--score2name', `"${songdata.replace(/\n/g, " \\A ")}"`);
+				score2score.innerText = scoredata;
+				score2score.style.setProperty('--score2score', `"${scoredata.replace(/\n/g, " \\A ")}"`);
+
+				requestAnimationFrame(() => {score2box.style.height = '500px';});
+			}
+			isfirst=!isfirst;
+			start+=8;
+			await wait(4000);
 		}
 	}
 }

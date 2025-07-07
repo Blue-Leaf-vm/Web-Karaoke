@@ -396,8 +396,8 @@ function songend(){
     ifmr = false;
     iflive = false;
     endsong();
-    if(Math.floor(Math.random() * random100) == 0) score(100);
-    else score(Math.floor(Math.random() * (100 - minscore + 1)) + minscore);
+    if(Math.floor(Math.random() * random100) == 0) score(nowplaying, 100);
+    else score(nowplaying, Math.floor(Math.random() * (100 - minscore + 1)) + minscore);
 }
 
 async function endscore(){

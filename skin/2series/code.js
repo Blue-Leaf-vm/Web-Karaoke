@@ -583,8 +583,9 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 }
 
 //score: 점수
-async function score(score){
+async function score(song, score=0){
 	//점수 화면 표시
+	if(score!=0) sangsong.push({song: song, score: score});
 	isinscore = true;
 	isinscore = false;
 	await wait(500);
@@ -605,6 +606,7 @@ function systemsound(type, sound){
 
 function startkar(evacuation=false){
 	//입실화면 표시
+	sangsong.length = 0;
 	if(evacuation){
 		isinevacuationenable = true;
 		toptimeimg.style.opacity = '1';

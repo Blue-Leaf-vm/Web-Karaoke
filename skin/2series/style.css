@@ -319,3 +319,10 @@
     position: absolute;
     left: 79px;
 }
+
+#centerimage {
+    position: absolute;
+    left: 50%;
+    top: 250px;
+    transform: translateX(-50%);
+}

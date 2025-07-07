@@ -1,5 +1,6 @@
 let inanime = false;
 let isshowed = false;
+let iscentershowed = false;
 let lanimg = 1;
 let hidetime = -1;
 let rollbackimg;
@@ -7,6 +8,7 @@ let rollbackview;
 let songtext;
 let reservetext;
 let lasthap = 0;
+let centernum = 0;
 
 //상단바 생성
 const topbar = document.createElement("div");
@@ -267,7 +269,8 @@ async function hidestartbox(isstop=false, noloadside=false, forcehide=false){
 //bpm: 곡 BPM, isup: [true: 위, false: 아래], startcount: [4, 3, 2, 1]
 async function timer(bpm, isup, startcount=4){
 	//4,3,2,1표출
-	if (!isshowed) timerimage.style.display = "block";
+	if (!isshowed && !iscentershowed) timerimage.style.display = "block";
+	else timerimage.style.display = "none";
 	const lyricElem = document.getElementById(isup ? "upperlyrictext" : "lowerlyrictext");
 	const pos = getScaledPositionToWrapper(lyricElem);
 
@@ -430,6 +433,8 @@ function endsong(){
 	topblackbar.style.visibility = "hidden";
 	timerimage.style.display = "none";
 	hidesideimage();
+	const centerimage = document.getElementById("centerimage");
+	if(centerimage) centerimage.remove();
 	timerimage.removeAttribute("src")
 	hidelyric(true);
 	hidelyric(false);
@@ -510,8 +515,25 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 }
 
 //img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
-async function loadimage(img){
+async function loadimage(img, num=centernum+1){
 	//중간이미지 렌더링
+	centernum++;
+	loadsideimage(false, true);
+	iscentershowed = true;
+	timerimage.style.display = "none";
+	const centerimage = document.getElementById("centerimage") || document.createElement("img");
+	centerimage.id = "centerimage";
+	wrapper.appendChild(centerimage);
+	for(let i=0;i<22;i++){
+		if (num!=centernum) return;
+		centerimage.src = `./skin/2series/assets/song/playing/${img}/${i+1}.png`;
+		await wait(1000/22);
+	}
+	await wait(1000);
+	if (num!=centernum) return;
+	timerimage.style.display = "block";
+	centerimage.remove();
+	iscentershowed = false;
 }
 
 function hidesideimage(){

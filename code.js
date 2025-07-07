@@ -587,11 +587,13 @@ document.addEventListener('keydown', async function(event) {
         if(isplaying) {
             songstart(nowplaying, ++playnum, playingphase+1, 0);
             info(0, "절을 점프합니다.");
+            loadimage('phasejump');
         }
     } else if (event.key === 'j' || event.key === 'J') {
         if(isplaying&&ininterlude) {
             songstart(nowplaying, ++playnum, playingphase, 0, true);
             info(0, "간주를 점프합니다.");
+            loadimage('interludejump');
         }
 	} else if (Number(event.key) >= 0 && Number(event.key) < 10){
 		input(Number(event.key));

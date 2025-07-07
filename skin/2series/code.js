@@ -606,7 +606,7 @@ function systemsound(type, sound){
 function startkar(evacuation=false){
 	//입실화면 표시
 	if(evacuation){
-		isinscore = true;
+		isinevacuationenable = true;
 		toptimeimg.style.opacity = '1';
 		toptimebox.style.zIndex = '101';
 		networkbox.style.visibility = 'hidden';
@@ -617,14 +617,13 @@ function startkar(evacuation=false){
 		forceimg.style.display = 'block';
 
 		const systemsound = document.getElementById('system');
-		const bga = document.getElementById('bga');
 		systemsound.src = './skin/2series/sounds/evacuation.mp3';
 		systemsound.play();
 
 		systemsound.addEventListener('ended', function(){
 			forceimg.remove();
 			startkar(false);
-			isinscore = false;
+			isinevacuationenable = false;
 			systemsound.removeEventListener('ended', arguments.callee);
 		});
 	} else {
@@ -644,6 +643,23 @@ function startkar(evacuation=false){
 	}
 }
 
+function hideexitscr(){
+	if(isinexit){
+		const forceimg = document.getElementById('forcebox');
+		const systemsound = document.getElementById('system');
+		forceimg.remove();
+		isinexit = false;
+		systemsound.pause();
+		toptimebox.style.visibility = 'visible';
+		networkbox.style.visibility = 'visible';
+
+		document.getElementById('sangcount').remove();
+		document.getElementById('highscorebox').remove();
+		document.getElementById('score1box').remove();
+		document.getElementById('score2box').remove();
+	}
+}
+
 //songs: 부른 곡 목록, scores: 부른 곡 점수 목록 (배열로 입력)
 async function endkar(songs){
 	//퇴장화면 표시
@@ -653,8 +669,10 @@ async function endkar(songs){
 	systemsound.play();
 	
 	if(songs.length >= 10){
-		
-		isinscore = true;
+		toptimebox.style.visibility = 'hidden';
+		networkbox.style.visibility = 'hidden';
+
+		isinexit = true;
 		networkbox.style.visibility = 'hidden';
 		const forceimg = document.createElement("img");
 		forceimg.id = 'forcebox';
@@ -662,9 +680,7 @@ async function endkar(songs){
 		forceimg.src = './skin/2series/assets/ui/exit/todaysang.png';
 		forceimg.style.display = 'block';
 		setTimeout(()=>{
-			forceimg.remove();
-			isinscore = false;
-			systemsound.pause();
+			hideexitscr();
 		},38500);
 		songs.sort((a, b) => b.score - a.score);
 
@@ -690,9 +706,6 @@ async function endkar(songs){
 				titleList.push(null);
 			}
 		}
-
-		console.log("곡 제목 리스트:", titleList);
-		console.log("점수 순 정렬 결과:", songs);
 
 		const sangcount = document.createElement('p');
 		const highscorebox = document.createElement('div');

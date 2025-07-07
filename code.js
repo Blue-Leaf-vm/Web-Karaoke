@@ -3,6 +3,8 @@ let inpnum = "";
 let delnum = 0;
 let isplaying = false;
 let isinscore = false;
+let isinevacuationenable = false;
+let isinexit = false;
 let playnum = 0;
 let remotemode = false;
 const sangsong = [
@@ -69,6 +71,8 @@ let freeplay = false;
 let remcointime = 0;
 let renderpron = false;
 let evacuationenable = false;
+let minscore = 0;
+let random100 = 10;
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
@@ -392,7 +396,8 @@ function songend(){
     ifmr = false;
     iflive = false;
     endsong();
-    score(100);
+    if(Math.floor(Math.random() * random100) == 0) score(100);
+    else score(Math.floor(Math.random() * (100 - minscore + 1)) + minscore);
 }
 
 async function endscore(){
@@ -474,7 +479,7 @@ function wait(ms) {
 }
 
 document.addEventListener('keydown', async function(event) {
-    if (isinscore && !(event.key === 'r' || event.key === 'R') && !remotemode) {return;}
+    if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R') && !(event.key === 'Escape') && !remotemode) {return;}
 	if (event.key === 'Enter') {
         if (!isplaying && !remotemode) {
             try{
@@ -552,6 +557,9 @@ document.addEventListener('keydown', async function(event) {
             inpnum = '';
         }
     } else if (event.key === 'Escape') {
+        if (isinevacuationenable) return;
+        if (isinexit) hideexitscr();
+        else if (isinscore) hidesocre();
         document.getElementById('system').pause();
         if (inpnum.length != 0){
             inpnum = '';

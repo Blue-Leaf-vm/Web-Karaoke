@@ -429,17 +429,18 @@ function hidelyric(isup){
 	} catch {};
 }
 
-function endsong(){
+async function endsong(){
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
 	timerimage.style.display = "none";
 	hidesideimage();
-	hidecenterimage();
 	timerimage.removeAttribute("src")
 	hidelyric(true);
 	hidelyric(false);
 	hidestartbox(true);
 	rollbackview = "hidden";
+	await wait(35);
+	hidecenterimage();
 }
 
 //type: [free, time, coin, remote]
@@ -517,7 +518,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 //img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
-	await wait(100);
+	await wait(30);
 	if(isshowed) return;
 	centernum++;
 	loadsideimage(false, true);

@@ -421,7 +421,7 @@ function addtimecoin(type, amount) {
 
 function addservice(amount){
     isusing = true;
-    loadimage("service");
+    loadimage("services");
     info(0, `${amount}${iscoin?"개":"분"} 서비스하였습니다.`, 10);
     timecoin+=amount;
     setlimit();
@@ -561,7 +561,6 @@ document.addEventListener('keydown', async function(event) {
             addservice(toupcoin);
             remotemode=false;
             inpnum = '';
-            loadimage('services');
         }
     } else if (event.key === 'd' || event.key === 'D') {
         if(!freeplay&&remotemode&&!freeplay) {

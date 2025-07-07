@@ -76,8 +76,9 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
     //그와 동시에 가사 렌더링
     //1절의 startwait에서 ((1000/bpm)*4)를 뺀 만큼 기다린 후 timer(bpm) 실행
     let skipinter = skipinter1;
-    if(!freeplay&&timecoin==0&&phase==0){
+    if(!freeplay&&timecoin==0&&phase==0&&!isplaying){
         info(0, "시간/코인을 입력하세요.");
+        console.log('timecoin');
         return;
     }
     try{

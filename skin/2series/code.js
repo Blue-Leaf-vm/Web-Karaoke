@@ -665,7 +665,7 @@ async function endkar(songs){
 			forceimg.remove();
 			isinscore = false;
 			systemsound.pause();
-		},38500000);
+		},38500);
 		songs.sort((a, b) => b.score - a.score);
 
 		const titleList = [];

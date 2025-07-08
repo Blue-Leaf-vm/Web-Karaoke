@@ -613,14 +613,13 @@ async function draglyric(data, isup, lang) {
 			else lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift}ms linear`;
 			const targetWidth = lyrictextdrag.scrollWidth;
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
-
-			await wait(Math.max(0, data.timing[j]+data.wait[j] - sdrift) - 10);
+			await wait(Math.max(0, data.timing[j]+data.wait[j] - sdrift));
 		} else {
 			lyrictextboxdrag.style.transition = `width 0ms linear`;
 			const targetWidth = lyrictextdrag.scrollWidth;
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
 		}
-		sdrift = Date.now() - sstarttime - data.timing[j]+data.wait[j];
+		sdrift = Date.now() - sstarttime - (data.timing[j]+data.wait[j]);
 		if (sdrift < 0) sdrift = 0;
 	}
 }
@@ -723,17 +722,32 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 //img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
+	const centerimage = document.getElementById("centerimage") || document.createElement("img");	
 	await wait(30);
 	if(isshowed || isinscore || isinexit || isinevacuationenable) return;
 	centernum++;
 	loadsideimage(false, true);
 	iscentershowed = true;
 	timerimage.style.display = "none";
-	const centerimage = document.getElementById("centerimage") || document.createElement("img");
 	centerimage.id = "centerimage";
 	wrapper.appendChild(centerimage);
-	centerimage.src = getCachedURL(`./skin/2series/assets/ui/center/${img}.webp`);
-	await wait(1000*(time-1));
+
+	let newUrl;
+	const url = getCachedURL(`./skin/2series/assets/ui/center/${img}.webp`);
+	if (typeof url === 'string') {
+		const response = await fetch(url);
+		const blob = await response.blob();
+		newUrl = URL.createObjectURL(blob);
+	} else {
+		newUrl = URL.createObjectURL(url);
+	}
+	if (centerimage.dataset.prevUrl) {
+		URL.revokeObjectURL(centerimage.dataset.prevUrl);
+	}
+	centerimage.src = newUrl;
+	centerimage.dataset.prevUrl = newUrl;
+
+	await wait(1000*time);
 	if (num!=centernum) return;
 	timerimage.style.display = "block";
 	centerimage.remove();

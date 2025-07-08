@@ -168,8 +168,20 @@ setInterval(()=>{
 	}
 }, 500);
 
-async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null) {
+async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 	//로딩화면 표시
+	if (status!=2||(status==2&&stat==null)){
+		const forceimg = document.getElementById('forcebox');
+		if (forceimg) forceimg.remove();
+		const modalbox = document.getElementById('modalbox');
+		if (modalbox) modalbox.remove();
+	}
+	if (status!=2){
+		const updbox = document.getElementById('updbox');
+		if (updbox) updbox.remove();
+		wrapper.style.background = '#000000';
+	}
+	if (status!=0) await wait(200);
 	if (status==0) {
 		loadingstat=1;
 		toptimebox.style.visibility = 'hidden';
@@ -216,11 +228,11 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null
 		modalbox.appendChild(modalbottombox);
 		wrapper.appendChild(modalbox);
 	} else if (status==2) {
-		loadingstat=3;
 		const forceimg = document.getElementById('forcebox');
 		if (forceimg) forceimg.remove();
 		const modalbox = document.getElementById('modalbox');
 		if (modalbox) modalbox.remove();
+		loadingstat=3;
 		//업뎃화면
 		wrapper.style.background = '#38424A';
 		let updbox = document.getElementById('updbox');
@@ -261,10 +273,6 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null
 <p id="updcanceltext">취소 버튼을 누르면 현재 다운로드 진행중인 콘텐츠까지 완료 후 건너 뜁니다.</p>
 		`
 	} else if (status==3) {
-		const forceimg = document.getElementById('forcebox');
-		if (forceimg) forceimg.remove();
-		const updbox = document.getElementById('updbox');
-		if (updbox) updbox.remove();
 		loadingstat=4;
 		if(evacuationenable){
 			const forceimg = document.createElement("img");

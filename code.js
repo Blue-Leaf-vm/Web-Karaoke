@@ -1,44 +1,11 @@
+const version = '0';
+
 let isup = true;
 let inpnum = "";
 let delnum = 0;
-let isplaying = false;
-let isinscore = false;
-let isinevacuationenable = false;
-let isinexit = false;
 let playnum = 0;
 let remotemode = false;
-const sangsong = [
-  { song: 2011, score: 1 },
-  { song: 2011, score: 62 },
-  { song: 2011, score: 2 },
-  { song: 2011, score: 21 },
-  { song: 2011, score: 11 },
-  { song: 2011, score: 74 },
-  { song: 2011, score: 83 },
-  { song: 2011, score: 100 },
-  { song: 2011, score: 99 },
-  { song: 2011, score: 85 },
-  { song: 2011, score: 32 },
-  { song: 2011, score: 47 },
-  { song: 2011, score: 11 },
-  { song: 2011, score: 48 },
-  { song: 2011, score: 95 },
-  { song: 2011, score: 21 },
-  { song: 2011, score: 51 },
-  { song: 2011, score: 56 },
-  { song: 2011, score: 82 },
-  { song: 2011, score: 77 },
-  { song: 2011, score: 10 },
-  { song: 2011, score: 89 },
-  { song: 2011, score: 100 },
-  { song: 2011, score: 21 },
-  { song: 2011, score: 66 },
-  { song: 2011, score: 62 },
-  { song: 2011, score: 36 },
-  { song: 2011, score: 21 },
-  { song: 2011, score: 11 },
-  { song: 2011, score: 20 }
-];
+const sangsong = [];
 let reservedsong = [];
 let nowplaying;
 let playingphase;
@@ -50,6 +17,12 @@ let songdir = null;
 let ininterlude = false;
 let localmode = true;
 let prioritysong = null;
+
+let isplaying = false;
+let isinscore = false;
+let isinevacuationenable = false;
+let isinexit = false;
+let loadingstat = 0;
 
 let ifmv = false;
 let ifmr = false;
@@ -335,8 +308,9 @@ async function songreserve(number, priority=false){
 
 async function getsongdata(number){
     if (!songdir&&localmode) {
-        info(0, "곡 폴더를 선택해주세요.")
+        if (loadingstat != 2) info(0, "곡 폴더를 선택해주세요.")
         songdir = await window.showDirectoryPicker();
+        if (loadingstat == 2) loading(2);
         return 1;
     }
     try{
@@ -479,8 +453,14 @@ function wait(ms) {
 }
 
 document.addEventListener('keydown', async function(event) {
-    if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R') && !(event.key === 'Escape') && !remotemode) {return;}
+    if (loadingstat > 0 && !(event.key === 'Enter' || event.key === 'Escape')) return;
+    if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R') && !(event.key === 'Escape') && !remotemode) return;
 	if (event.key === 'Enter') {
+        if (loadingstat == 2) {
+            getsongdata(0);
+            return;
+        } else if (loadingstat > 0) return;
+
         if (!isplaying && !remotemode) {
             try{
                 if(inpnum==''&&reservedsong.length>0){
@@ -657,3 +637,5 @@ setInterval(() => {
 }, 60000);
 
 setlimit(false);
+loading(0);
+setTimeout(()=>{loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');}, 2000);

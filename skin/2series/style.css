@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css');
 
 #forcebox {
     width: 1920px;
@@ -463,4 +464,161 @@
 #score2score::after {
     content: var(--score2score);
     right: 0;
+}
+
+#modalbox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Nanum Gothic', 'Noto Sans';
+    background: white;
+    border-radius: 20px;
+}
+
+#modaltitlebox {
+    background: linear-gradient(to bottom, #892613, #380d05);
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 20px 20px 0 0;
+}
+
+#modaltitletext {
+    margin: 0;
+    color: #fff;
+    font-size: 52px;
+    font-weight: 600;
+}
+
+#modaltext {
+    padding: 50px 15px 30px 15px;
+    font-size: 43px;
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.1em;
+    color: #444;
+}
+
+#modalbottombox {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#modalbuttombtn {
+    background: #892613;
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+#modalbuttombtntext {
+    color: white;
+    font-weight: 500;
+    font-size: 40px;
+    margin: 0;
+}
+
+#modalbottomtext {
+    color: #555;
+    font-size: 40px;
+    margin: 0;
+    font-weight: 600;
+    margin-left: 5px;
+    transform: scaleY(1.15) translateY(-2px);
+}
+
+.modaltexthighlight {
+    color: #892613
+}
+
+/* 업데이트 텍스트 박스 */
+#updtextbox {
+}
+
+#updtext {
+}
+
+#updtexts {
+}
+
+
+/* 중요 알림 박스 */
+#updnoticebox {
+}
+
+#updnotice {
+}
+
+#updbotices {
+}
+
+
+/* 버전 정보 박스 */
+#updversionbox {
+}
+
+#updversionver {
+}
+
+#updversiondate {
+}
+
+
+/* PC 업데이트 항목 박스 */
+#updpcbox {
+}
+
+.updpc {
+}
+
+#updprogram {
+}
+
+#updcontents {
+}
+
+
+/* 업데이트 건너뛰기 박스 */
+#updskipbox {
+}
+
+#updskipbtn {
+}
+
+#updskiptext {
+}
+
+
+/* 업데이트 메시지 */
+#updmessage {
+}
+
+
+/* 업데이트 진행 바 */
+#updupdprgbox {
+}
+
+#updupdcur {
+}
+
+#updupdbox {
+}
+
+#updupddragbox {
+}
+
+
+/* 진행 상태 텍스트 */
+#updupdsize {
+}
+
+#updupdper {
+}
+
+
+/* 취소 안내 텍스트 */
+#updcanceltext {
 }

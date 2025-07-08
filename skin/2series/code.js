@@ -97,6 +97,138 @@ document.addEventListener("DOMContentLoaded", async function() {
 	}
 });
 
+async function loading(status=0, file='', cursize=0.01, filesize=0.02) {
+	//로딩화면 표시
+	if (status==0) {
+		loadingstat=1;
+		toptimebox.style.visibility = 'hidden';
+		networkbox.style.visibility = 'hidden';
+		const forceimg = document.createElement("img");
+		forceimg.id = 'forcebox';
+		wrapper.appendChild(forceimg);
+		forceimg.src = './skin/2series/assets/ui/tjstart.png';
+		forceimg.style.display = 'block';
+	} else if (status==1) {
+		loadingstat=2;
+		const forceimg = document.getElementById('forcebox');
+		if (forceimg) forceimg.remove();
+		//모달화면
+		const modalbox = document.createElement('div');
+		const modaltitlebox = document.createElement('div');
+		const modaltitletext = document.createElement('p');
+		const modaltext = document.createElement('div');
+		const modalbottombox = document.createElement('div');
+		const modalbottombtn = document.createElement('div');
+		const modalbottombtntext = document.createElement('p');
+		const modalbottomtext = document.createElement('p');
+
+		modaltitletext.innerText = '주의';
+		modaltext.innerHTML = file;
+		modalbottombtntext.innerText = '확인';
+		modalbottomtext.innerText = '곡 선택';
+
+		modalbox.id = 'modalbox';
+		modaltitlebox.id = 'modaltitlebox';
+		modaltitletext.id = 'modaltitletext';
+		modaltext.id = 'modaltext';
+		modalbottombox.id = 'modalbottombox';
+		modalbottombtn.id = 'modalbuttombtn';
+		modalbottombtntext.id = 'modalbuttombtntext';
+		modalbottomtext.id = 'modalbottomtext';
+		
+		modaltitlebox.appendChild(modaltitletext);
+		modalbottombtn.appendChild(modalbottombtntext);
+		modalbottombox.appendChild(modalbottombtn);
+		modalbottombox.appendChild(modalbottomtext);
+		modalbox.appendChild(modaltitlebox);
+		modalbox.appendChild(modaltext);
+		modalbox.appendChild(modalbottombox);
+		wrapper.appendChild(modalbox);
+	} else if (status==2) {
+		loadingstat=3;
+		const forceimg = document.getElementById('forcebox');
+		if (forceimg) forceimg.remove();
+		const modalbox = document.getElementById('modalbox');
+		if (modalbox) modalbox.remove();
+		//업뎃화면
+		wrapper.style.background = '#38424A';
+		let updbox = document.getElementById('updbox');
+		if (!updbox) {
+			updbox = document.createElement('div');
+			updbox.id = 'updbox';
+			wrapper.appendChild(updbox);
+		}
+		updbox.innerHTML = `
+<div id="updtextbox">
+	<p id="updtext">업데이트</p>
+	<p id="updtexts">버전 확인 및 업데이트 중...</p>
+</div>
+<div id="updnoticebox">
+	<p id="updnotice">절대 전원을 끄지 마십시오!</p>
+	<p id="updbotices">업데이트 진행 중 전원을 끄면 HDD 등<br>반주기에 치명적인 불량이 발행할 수 있습니다.</p>
+</div>
+<div id="updversionbox">
+	<p id="updversionver">최종버전 : <span style="#fff">${String(version||1).padStart(4, '0')}</p>
+	<p id="updversiondate">날짜 : <span style="#fff">${String(version||1).padStart(4, '0')}</p>
+</div>
+<div id="updpcbox">
+	<p id="updprogram" class="updpc">프로그램</p>
+	<p id="updcontents" class="updpc">콘텐츠</p>
+</div>
+<div id="updskipbox">
+	<p id="updskipbtn">취소</p>
+	<p id="updskiptext">업데이트 건너뛰기</p>
+</div>
+<p id="updmessage">${file}</p>
+<div id="updupdprgbox">
+	<p id="updupdcur">현재</p>
+	<div id="updupdbox"></div>
+	<div id="updupddragbox" style="width=${Math.round((cursize/filesize)*100)}%"></div>
+	<p id="updupdsize">${cursize}MB / ${filesize}MB</p>
+	<p id="updupdper">${Math.round((cursize/filesize)*100)}%</p>
+</div>
+<p id="updcanceltext">취소 버튼을 누르면 현재 다운로드 진행중인 콘텐츠까지 완료 후 건너 뜁니다.</p>
+		`
+	} else if (status==3) {
+		const forceimg = document.getElementById('forcebox');
+		if (forceimg) forceimg.remove();
+		loadingstat=4;
+		if(evacuationenable){
+			const forceimg = document.createElement("img");
+			forceimg.id = 'forcebox';
+			wrapper.appendChild(forceimg);
+			forceimg.src = './skin/2series/assets/ui/evacuation.png';
+			forceimg.style.display = 'block';
+
+			const systemsound = document.getElementById('system');
+			systemsound.src = './skin/2series/sounds/evacuation.mp3';
+			systemsound.play();
+
+			systemsound.addEventListener('ended', function(){
+				forceimg.remove();
+				loading(4);
+				systemsound.removeEventListener('ended', arguments.callee);
+			});
+		} else {
+			const systemsound = document.getElementById('system');
+			const bga = document.getElementById('bga');
+			systemsound.src = './skin/2series/sounds/join.mp3';
+			bga.src = './skin/2series/videos/join.mp4';
+			systemsound.play();
+			bga.play();
+
+			bga.addEventListener('ended', function(){
+				loading(4);
+				bga.removeEventListener('ended', arguments.callee);
+			});
+		}
+	} else {
+		loadingstat=0;
+		toptimebox.style.visibility = 'visible';
+		networkbox.style.visibility = 'visible';
+	}
+}
+
 //status: [0: 곡 없음,1: 곡 있음], number: 곡 번호, s: 성별, inter: 음정, title: 제목, dis: 곡 설명, sing: 가수
 async function setnextreservesong(number, title, dis, group){
 	reservetext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${group}</span>`;
@@ -519,7 +651,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
 	await wait(30);
-	if(isshowed) return;
+	if(isshowed || isinscore || isinexit || isinevacuationenable || isloading) return;
 	centernum++;
 	loadsideimage(false, true);
 	iscentershowed = true;

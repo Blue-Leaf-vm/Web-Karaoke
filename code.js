@@ -103,7 +103,7 @@ async function preload() {
         }
 
         await updateProgress(filename);
-        await wait(100);
+        await wait(50);
     }
 }
 

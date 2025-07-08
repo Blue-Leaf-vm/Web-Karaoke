@@ -42,6 +42,13 @@ const imagePaths = [
 	"./skin/2series/assets/song/playing/changes/man.png",
 	"./skin/2series/assets/song/playing/changes/woman.png",
 	"./skin/2series/assets/song/playing/changes/multi.png",
+	"./skin/2series/assets/song/playing/MV.webp",
+	"./skin/2series/assets/song/playing/MR.webp",
+	"./skin/2series/assets/song/playing/LIVE.webp",
+	"./skin/2series/assets/ui/center/clap.webp",
+	"./skin/2series/assets/ui/center/interludejump.webp",
+	"./skin/2series/assets/ui/center/phasejump.webp",
+	"./skin/2series/assets/ui/center/services.webp",
 ];
 
 const audioPaths = [
@@ -229,7 +236,7 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null
 </div>
 <div id="updnoticebox">
 	<p id="updnotice" style="color: ${document.getElementById('updnotice') ? document.getElementById('updnotice').style.color : 'rgb(255, 255, 255)'}">절대 전원을 끄지 마십시오!</p>
-	<p id="updbotices">업데이트 진행 중 전원을 끄면 HDD 등<br>반주기에 치명적인 불량이 발행할 수 있습니다.</p>
+	<p id="updbotices">업데이트 진행 중 전원을 끄면 HDD 등<br>반주기에 치명적인 불량이 발생할 수 있습니다.</p>
 </div>
 <div id="updversionbox">
 	<p id="updversionver">최종버전 : <span style="color: #fff">${String(version||1).padStart(4, '0')}</p>
@@ -725,11 +732,7 @@ async function loadimage(img, time=2, num=centernum+1){
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");
 	centerimage.id = "centerimage";
 	wrapper.appendChild(centerimage);
-	for(let i=0;i<22;i++){
-		if (num!=centernum) return;
-		centerimage.src = getCachedURL(`./skin/2series/assets/ui/center/${img}/${i+1}.png`);
-		await wait(1000/22);
-	}
+	centerimage.src = getCachedURL(`./skin/2series/assets/ui/center/${img}.webp`);
 	await wait(1000*(time-1));
 	if (num!=centernum) return;
 	timerimage.style.display = "block";
@@ -754,29 +757,20 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "467px";
 		if(!onlyshow){
-			for(let i=0;i<22;i++){
-				sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MV/${i+1}.png`);
-				await wait(1000/22);
-			}
+			sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MV.webp`);
 		}
 	} else if (ifmr==true){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "300px";
 			if(!onlyshow){
-			for(let i=0;i<19;i++){
-				sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MR/${i+1}.png`);
-				await wait(1000/19);
-			}
+			sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MR.webp`);
 		}
 	}
  	else if (iflive==true){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "450px";
 		if(!onlyshow){
-			for(let i=0;i<22;i++){
-				sideimage.src = `./skin/2series/assets/song/playing/LIVE/${i+1}.png`;
-				await wait(1000/22);
-			}
+			sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/LIVE.webp`);
 		}
 	}
 }

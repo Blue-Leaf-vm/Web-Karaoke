@@ -32,7 +32,7 @@
 }
 
 #uppertitle {
-    font-family: "Noto Sans", sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     color: #fff;
     font-weight: 700;
     font-size: 100px;
@@ -45,7 +45,7 @@
 }
 
 #upperdesc {
-    font-family: "Noto Sans", sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     color: #C2C2C2;
     font-size: 38px;
     position: absolute;
@@ -56,7 +56,7 @@
 }
 
 #uppersing {
-    font-family: "Noto Sans", sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     position: absolute;
     font-size: 38px;
     left: 50%;
@@ -89,7 +89,7 @@
 }
 
 #datatext {
-    font-family: "Noto Sans", sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     position: relative;
     font-size: 30px;
     z-index: 1;
@@ -104,7 +104,7 @@
 }
 
 #upperlyricbox {
-    font-family: "TJ 노래하는즐거움체 TTF", "Noto Sans", sans-serif;
+    font-family: "TJ 노래하는즐거움체 TTF", 'Noto Sans KR', sans-serif;
     font-weight: 600;
     position: relative;
     top: 545px;
@@ -121,7 +121,7 @@
 }
 
 #lowerlyricbox {
-    font-family: "TJ 노래하는즐거움체 TTF", "Noto Sans", sans-serif;
+    font-family: "TJ 노래하는즐거움체 TTF", 'Noto Sans KR', sans-serif;
     font-weight: 600;
     position: relative;
     top: 700px;
@@ -155,7 +155,7 @@
 
 .lyricpron {
   margin: 0;
-  font-family: 'Noto Sans';
+  font-family: 'Noto Sans KR';
   font-size: 53px;
   font-weight: 500;
   top: 129px;
@@ -236,7 +236,7 @@
 
 #topimgtext {
     color: #CCCCCC;
-    font-family: 'Noto Sans';
+    font-family: 'Noto Sans KR';
     font-weight: 500;
     margin: 0;
     align-self: center;
@@ -263,7 +263,7 @@
 }
 
 #toptext {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     color: #8B70FC;
     font-size: 50px;
     margin: 0;
@@ -282,7 +282,7 @@
 
 #toptimetext {
     color: #ff0;
-    font-family: 'Noto Sans';
+    font-family: 'Noto Sans KR';
     margin: 0;
     align-self: center;
     position: absolute;
@@ -334,7 +334,7 @@
     font-size: 70px;
     right: 210px;
     top: 80px;
-    font-family: 'Noto Sans';
+    font-family: 'Noto Sans KR';
     font-weight: 500;
     color: #33407B;
 }
@@ -359,7 +359,7 @@
     display: flex;
     justify-content: space-between;
     width: 700px;
-    font-family: 'Noto Sans';
+    font-family: 'Noto Sans KR';
 }
 
 #highscorename {
@@ -402,7 +402,7 @@
     display: flex;
     justify-content: space-between;
     width: 590px;
-    font-family: 'Noto Sans';
+    font-family: 'Noto Sans KR';
     overflow: hidden;
     transition: height 4s linear;
 }
@@ -422,6 +422,9 @@
     margin: 0;
     color: #fff;
     flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
 }
 
 #score1score, #score2score {
@@ -449,6 +452,10 @@
     z-index: -1;
     position: absolute;
     -webkit-text-stroke: 8px #000;
+    white-space: pre;
+}
+
+#score1score::after, #score2score::after {
     white-space: pre-line;
 }
 
@@ -471,7 +478,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-family: 'Nanum Gothic', 'Noto Sans';
+    font-family: 'Nanum Gothic', 'Noto Sans KR';
     background: white;
     border-radius: 20px;
 }
@@ -592,7 +599,7 @@
 
 #updprogram[selected]::before, #updcontents[selected]::before, #updprogram[selected]::after, #updcontents[selected]::after {
   position: absolute;
-  font-family: 'Noto Sans';
+  font-family: 'Noto Sans KR';
   font-weight: 700;
   font-size: 67px;
   color: red;
@@ -612,20 +619,14 @@
     letter-spacing: 7px;
 }
 
-
-/* 업데이트 건너뛰기 박스 */
 #updskipbox {position: absolute;top: 496px;left: 1010px;display: flex;}
 
 #updskipbtn {margin: 0;padding-top: 11px;font-size: 39px;color: #fff;width: 106px;height: 51px;text-align: center;background: #979d9e;border-radius: 9px;text-shadow: 0 0 4px black;}
 
 #updskiptext {margin: 0;font-size: 50px;padding-top: 6px;transform: scaleX(0.92);color: #979d9e;}
 
-
-/* 업데이트 메시지 */
 #updmessage {position: absolute;top: 680px;left: 420px;font-size: 50px;color: #fff;margin: 0;}
 
-
-/* 업데이트 진행 바 */
 #updupdprgbox {
     position: absolute;
     display: flex;
@@ -639,8 +640,6 @@
 
 #updupddragbox {position: absolute;left: 157px;background: #4c00ff;height: 20px;margin-top: 17px;}
 
-
-/* 진행 상태 텍스트 */
 #updupdsize {margin: 0;position: absolute;left: 50%;top: 15px;color: #fff;font-size: 24px;transform: translateX(-50%);}
 
 #updupdper {
@@ -650,6 +649,4 @@
     margin-left: 70px;
 }
 
-
-/* 취소 안내 텍스트 */
 #updcanceltext {text-align: center;position: absolute;width: -webkit-fill-available;bottom: 0;font-size: 26px;color: #979d9e;}

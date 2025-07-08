@@ -115,7 +115,6 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
     let skipinter = skipinter1;
     if(!freeplay&&timecoin==0&&phase==0&&!isplaying){
         info(0, "시간/코인을 입력하세요.");
-        console.log('timecoin');
         return;
     }
     try{

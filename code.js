@@ -1,4 +1,4 @@
-const version = '0';
+const version = '2';
 
 let isup = true;
 let inpnum = "";
@@ -23,6 +23,7 @@ let isinscore = false;
 let isinevacuationenable = false;
 let isinexit = false;
 let loadingstat = 0;
+let skiploading = false;
 
 let ifmv = false;
 let ifmr = false;
@@ -68,12 +69,21 @@ async function preload() {
             loading(0);
             await wait(3000);
             loading(3);
+            return;
         }
     };
 
     await wait(1000);
 
     for (const asset of allPaths) {
+        if(skiploading){
+            await wait(500);
+            loading(0);
+            await wait(3000);
+            loading(3);
+            return;
+        }
+        
         const filename = getFileName(asset.path);
 
         if (asset.type === 'image') {
@@ -513,7 +523,7 @@ function wait(ms) {
 
 document.addEventListener('keydown', async function(event) {
     if (loadingstat > 0 && !(event.key === 'Enter' || event.key === 'Escape')) return;
-    if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R') && !(event.key === 'Escape') && !remotemode) return;
+    else if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R') && !(event.key === 'Escape') && !remotemode) return;
 	if (event.key === 'Enter') {
         if (loadingstat == 2) {
             getsongdata(0);
@@ -596,6 +606,7 @@ document.addEventListener('keydown', async function(event) {
             inpnum = '';
         }
     } else if (event.key === 'Escape') {
+        if (loadingstat==3) skiploading = true;
         if (isinevacuationenable) return;
         if (isinexit) hideexitscr();
         else if (isinscore) hidesocre();
@@ -696,5 +707,7 @@ setInterval(() => {
 }, 60000);
 
 setlimit(false);
+
+skiploading=false;
 loading(0);
 setTimeout(()=>{loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');}, 2000);

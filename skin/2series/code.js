@@ -11,30 +11,59 @@ let lasthap = 0;
 let centernum = 0;
 
 const imagePaths = [
-	"/skin/2series/assets/ui/evacuation.png",
-	"/skin/2series/assets/ui/tjstart.png"
+	"./skin/2series/assets/ui/evacuation.png",
+	"./skin/2series/assets/ui/tjstart.png",
+	"./skin/2series/assets/ui/info.png",
+	"./skin/2series/assets/ui/einfo.png",
+	"./skin/2series/assets/ui/time/coin.png",
+	"./skin/2series/assets/ui/time/remote.png",
+	"./skin/2series/assets/ui/network/LAN/1.png",
+	"./skin/2series/assets/ui/network/LAN/2.png",
+	"./skin/2series/assets/ui/network/LAN/3.png",
+	"./skin/2series/assets/ui/network/LAN/4.png",
+	"./skin/2series/assets/ui/network/WIFI/1.png",
+	"./skin/2series/assets/ui/network/WIFI/2.png",
+	"./skin/2series/assets/ui/network/WIFI/3.png",
+	"./skin/2series/assets/ui/network/WIFI/4.png",
+	"./skin/2series/assets/ui/exit/todaysang.png",
+	"./skin/2series/assets/song/select/man.png",
+	"./skin/2series/assets/song/select/woman.png",
+	"./skin/2series/assets/song/select/multi.png",
+	"./skin/2series/assets/song/start/CI.png",
+	"./skin/2series/assets/song/playing/nextsong.png",
+	"./skin/2series/assets/song/playing/nextsong2.png",
+	"./skin/2series/assets/song/playing/nowsong.png",
+	"./skin/2series/assets/song/playing/nowsong2.png",
+	"./skin/2series/assets/song/playing/reserve.png",
+	"./skin/2series/assets/song/playing/timer/1.png",
+	"./skin/2series/assets/song/playing/timer/2.png",
+	"./skin/2series/assets/song/playing/timer/3.png",
+	"./skin/2series/assets/song/playing/timer/4.png",
+	"./skin/2series/assets/song/playing/changes/man.png",
+	"./skin/2series/assets/song/playing/changes/woman.png",
+	"./skin/2series/assets/song/playing/changes/multi.png",
 ];
 
 const audioPaths = [
-	"/skin/2series/sounds/evacuation.mp3",
-	"/skin/2series/sounds/exit.mp3",
-	"/skin/2series/sounds/explore.mp3",
-	"/skin/2series/sounds/join.mp3",
-	"/skin/2series/sounds/openmenu.mp3",
-	"/skin/2series/sounds/selsong/0.mp3",
-	"/skin/2series/sounds/selsong/1.mp3",
-	"/skin/2series/sounds/selsong/2.mp3",
-	"/skin/2series/sounds/selsong/3.mp3",
-	"/skin/2series/sounds/selsong/4.mp3",
-	"/skin/2series/sounds/selsong/5.mp3",
-	"/skin/2series/sounds/selsong/6.mp3",
-	"/skin/2series/sounds/selsong/7.mp3",
-	"/skin/2series/sounds/selsong/8.mp3",
-	"/skin/2series/sounds/selsong/9.mp3"
+	"./skin/2series/sounds/evacuation.mp3",
+	"./skin/2series/sounds/exit.mp3",
+	"./skin/2series/sounds/explore.mp3",
+	"./skin/2series/sounds/join.mp3",
+	"./skin/2series/sounds/openmenu.mp3",
+	"./skin/2series/sounds/selsong/0.mp3",
+	"./skin/2series/sounds/selsong/1.mp3",
+	"./skin/2series/sounds/selsong/2.mp3",
+	"./skin/2series/sounds/selsong/3.mp3",
+	"./skin/2series/sounds/selsong/4.mp3",
+	"./skin/2series/sounds/selsong/5.mp3",
+	"./skin/2series/sounds/selsong/6.mp3",
+	"./skin/2series/sounds/selsong/7.mp3",
+	"./skin/2series/sounds/selsong/8.mp3",
+	"./skin/2series/sounds/selsong/9.mp3",
 ];
 
 const videoPaths = [
-	"/skin/2series/videos/join.mp4",
+	"./skin/2series/videos/join.mp4",
 ];
 
 //상단바 생성
@@ -111,11 +140,11 @@ wrapper.appendChild(timerimage);
 document.addEventListener("DOMContentLoaded", async function() {
 	try{
 		while(true){
-			if (isplaying && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong2.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
-			if (isplaying && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png"; toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
-			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong2.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
-			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/nextsong.png"; toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
-			if (reservedsong.length>1 && hidetime==-1) { topimgimg.src = "./skin/2series/assets/song/playing/reserve.png"; toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${String(reservedsong.length).padStart(2, "0")}</span>`; await wait(3000); }
+			if (isplaying && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nowsong2.png"); toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (isplaying && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nowsong.png"); toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nextsong2.png"); toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nextsong.png"); toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (reservedsong.length>1 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/reserve.png"); toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${String(reservedsong.length).padStart(2, "0")}</span>`; await wait(3000); }
 			if (reservedsong.length==0 && !isplaying && hidetime==-1) {	topimgbox.style.visibility = "hidden"; topblackbar.style.visibility = "hidden";}
 			await wait(100);
 		}
@@ -141,7 +170,7 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null
 		const forceimg = document.createElement("img");
 		forceimg.id = 'forcebox';
 		wrapper.appendChild(forceimg);
-		forceimg.src = './skin/2series/assets/ui/tjstart.png';
+		forceimg.src = getCachedURL('./skin/2series/assets/ui/tjstart.png');
 		forceimg.style.display = 'block';
 	} else if (status==1) {
 		loadingstat=2;
@@ -234,11 +263,11 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null
 			const forceimg = document.createElement("img");
 			forceimg.id = 'forcebox';
 			wrapper.appendChild(forceimg);
-			forceimg.src = './skin/2series/assets/ui/evacuation.png';
+			forceimg.src = getCachedURL('./skin/2series/assets/ui/evacuation.png');
 			forceimg.style.display = 'block';
 
 			const systemsound = document.getElementById('system');
-			systemsound.src = './skin/2series/sounds/evacuation.mp3';
+			systemsound.src = getCachedURL('./skin/2series/sounds/evacuation.mp3');
 			systemsound.play();
 
 			systemsound.addEventListener('ended', function(){
@@ -249,8 +278,8 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null
 		} else {
 			const systemsound = document.getElementById('system');
 			const bga = document.getElementById('bga');
-			systemsound.src = './skin/2series/sounds/join.mp3';
-			bga.src = './skin/2series/videos/join.mp4';
+			systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
+			bga.src = getCachedURL('./skin/2series/videos/join.mp4');
 			systemsound.play();
 			bga.play();
 
@@ -277,8 +306,8 @@ async function setnextreservesong(number, title, dis, group){
 
 //네트워크 표시
 setInterval(()=>{
-	networklanimg.src = `./skin/2series/assets/ui/network/LAN/${lanimg}.png`;
-	networkwifiimg.src = `./skin/2series/assets/ui/network/WIFI/${lanimg}.png`;
+	networklanimg.src = getCachedURL(`./skin/2series/assets/ui/network/LAN/${lanimg}.png`);
+	networkwifiimg.src = getCachedURL(`./skin/2series/assets/ui/network/WIFI/${lanimg}.png`);
 	lanimg++;
 	if(lanimg>4){lanimg=1;}
 },2500);
@@ -305,7 +334,7 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	topblackbar.style.visibility = "hidden";
 	toptimebox.style.visibility = "hidden";
 	networkbox.style.visibility = "hidden";
-	topimgimg.src = "./skin/2series/assets/song/playing/nowsong.png";
+	topimgimg.src = getCachedURL('./skin/2series/assets/song/playing/nowsong.png');
 	songtext = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${group}</span>`;
 	toptext.innerHTML = songtext;
 	topimgtext.innerText = '';
@@ -336,8 +365,8 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 		desctxt.id = "upperdesc";
 	}
 
-	border.src = `./skin/2series/assets/song/start/startborder/${Math.floor(Math.random() * 5)+1}.png`;
-	backimage.src = "./skin/2series/assets/song/start/startbg.png";
+	border.src = getCachedURL(`./skin/2series/assets/song/start/startborder/${Math.floor(Math.random() * 5)+1}.png`);
+	backimage.src = getCachedURL('./skin/2series/assets/song/start/startbg.png');
 
 	backimage.id = "upbackimage";
 	border.id = "upborder";
@@ -384,8 +413,8 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 		</br><span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${compos}</span>
 		${original ? `</br><span style="color: #8B70FC">원곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${original}</span>` : ' '}
 	`;
-	ad.src = `./skin/2series/assets/song/start/ad/${Math.floor(Math.random() * 7)+1}.png`;
-	ci.src = "./skin/2series/assets/song/start/CI.png";
+	ad.src = getCachedURL(`./skin/2series/assets/song/start/ad/${Math.floor(Math.random() * 7)+1}.png`);
+	ci.src = getCachedURL('./skin/2series/assets/song/start/CI.png');
 
 	downblackbox.appendChild(datatxt);
 	downbox.appendChild(downblackbox);
@@ -451,7 +480,7 @@ async function timer(bpm, isup, startcount=4){
 	timerimage.style.top = top + "px";
 
 	for (let i = startcount; i > 0; i--) {
-		timerimage.src = `./skin/2series/assets/song/playing/timer/${i}.png`;
+		timerimage.src = getCachedURL(`./skin/2series/assets/song/playing/timer/${i}.png`);
 		timerimage.style.left = left + "px";
 		left += 50;
 		await wait(60000 / bpm);
@@ -618,17 +647,17 @@ function limit(type="free", number){
 	if (type=="free"){toptimebox.style.visibility = "hidden";}
 	else if (type=="time"){
 		toptimebox.style.visibility = "visible";
-		toptimeimg.src = "./skin/2series/assets/ui/time/time.png";
+		toptimeimg.src = getCachedURL('./skin/2series/assets/ui/time/time.png');
 		toptimetext.innerText = `${String(number).padStart(3, '0')}분`;
 	}
 	else if (type=="coin"){
 		toptimebox.style.visibility = "visible";
-		toptimeimg.src = "./skin/2series/assets/ui/time/coin.png";
+		toptimeimg.src = getCachedURL('./skin/2series/assets/ui/time/coin.png');
 		toptimetext.innerText = `${String(number).padStart(3, '0')}곡`;
 	}
 	else if (type=="remote"){
 		toptimebox.style.visibility = "visible";
-		toptimeimg.src = "./skin/2series/assets/ui/time/remote.png";
+		toptimeimg.src = getCachedURL('./skin/2series/assets/ui/time/remote.png');
 		toptimetext.innerText = `${String(number).padStart(5, '0')}`;
 	}
 }
@@ -652,13 +681,13 @@ async function searchsong(status = 1, number, s, inter, title, dis, group){
 		rollbackview = topblackbar.style.visibility;
 	}
 	if(status==0){
-		if(s==0){topimgimg.src = "./skin/2series/assets/song/select/man.png";}
-		else if(s==1){topimgimg.src = "./skin/2series/assets/song/select/woman.png";}
-		else if(s==2){topimgimg.src = "./skin/2series/assets/song/select/multi.png";}
+		if(s==0){topimgimg.src = getCachedURL('./skin/2series/assets/song/select/man.png');}
+		else if(s==1){topimgimg.src = getCachedURL('./skin/2series/assets/song/select/woman.png');}
+		else if(s==2){topimgimg.src = getCachedURL('/skin/2series/assets/song/select/multi.png');}
 		toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">${title}${dis?`(${dis})`:''}</span> <span style="color: #FFFF7F">- ${group}</span>`;
 		topimgtext.innerText = inter;
 	} else if (status==1){
-		topimgimg.src = "./skin/2series/assets/ui/einfo.png";
+		topimgimg.src = getCachedURL('./skin/2series/assets/ui/einfo.png');
 		toptext.innerHTML = `<span style="color: #8B70FC; letter-spacing: -2px">${number}</span>&nbsp;&nbsp;<span style="color: #fff">곡이 없습니다.</span>`;
 		topimgtext.innerText = '';
 	}
@@ -675,8 +704,8 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 		rollbacktxt = toptext.innerHTML;
 		rollbackview = topblackbar.style.visibility;
 	}
-	if(type==0){topimgimg.src = "./skin/2series/assets/ui/info.png";}
-	else if(type==1){topimgimg.src = "./skin/2series/assets/ui/einfo.png";}
+	if(type==0){topimgimg.src = getCachedURL('./skin/2series/assets/ui/info.png');}
+	else if(type==1){topimgimg.src = getCachedURL('./skin/2series/assets/ui/einfo.png');}
 	toptext.innerHTML = message;
 	topimgtext.innerText = '';
 	topimgbox.style.visibility = 'visible';
@@ -688,7 +717,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
 	await wait(30);
-	if(isshowed || isinscore || isinexit || isinevacuationenable || isloading) return;
+	if(isshowed || isinscore || isinexit || isinevacuationenable) return;
 	centernum++;
 	loadsideimage(false, true);
 	iscentershowed = true;
@@ -698,7 +727,7 @@ async function loadimage(img, time=2, num=centernum+1){
 	wrapper.appendChild(centerimage);
 	for(let i=0;i<22;i++){
 		if (num!=centernum) return;
-		centerimage.src = `./skin/2series/assets/ui/center/${img}/${i+1}.png`;
+		centerimage.src = getCachedURL(`./skin/2series/assets/ui/center/${img}/${i+1}.png`);
 		await wait(1000/22);
 	}
 	await wait(1000*(time-1));
@@ -715,6 +744,7 @@ function hidesideimage(){
 function hidecenterimage(){
 	const centerimage = document.getElementById("centerimage");
 	if(centerimage) centerimage.remove();
+	iscentershowed = false;
 }
 
 async function loadsideimage(onlyshow=false, noshow=false) {
@@ -725,7 +755,7 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 		sideimage.style.top = "467px";
 		if(!onlyshow){
 			for(let i=0;i<22;i++){
-				sideimage.src = `./skin/2series/assets/song/playing/MV/${i+1}.png`;
+				sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MV/${i+1}.png`);
 				await wait(1000/22);
 			}
 		}
@@ -734,7 +764,7 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 		sideimage.style.top = "300px";
 			if(!onlyshow){
 			for(let i=0;i<19;i++){
-				sideimage.src = `./skin/2series/assets/song/playing/MR/${i+1}.png`;
+				sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MR/${i+1}.png`);
 				await wait(1000/19);
 			}
 		}
@@ -768,7 +798,7 @@ function loadbga(rep=false){
 function systemsound(type, sound){
 	const systemsound = document.getElementById('system');
 	if(type==0){
-		systemsound.src = `./skin/2series/sounds/selsong/${sound}.mp3`;
+		systemsound.src = getCachedURL(`./skin/2series/sounds/selsong/${sound}.mp3`);
 	}
 	systemsound.play();
 }
@@ -784,11 +814,11 @@ function startkar(evacuation=false){
 		const forceimg = document.createElement("img");
 		forceimg.id = 'forcebox';
 		wrapper.appendChild(forceimg);
-		forceimg.src = './skin/2series/assets/ui/evacuation.png';
+		forceimg.src = getCachedURL('./skin/2series/assets/ui/evacuation.png');
 		forceimg.style.display = 'block';
 
 		const systemsound = document.getElementById('system');
-		systemsound.src = './skin/2series/sounds/evacuation.mp3';
+		systemsound.src = getCachedURL('./skin/2series/sounds/evacuation.mp3');
 		systemsound.play();
 
 		systemsound.addEventListener('ended', function(){
@@ -802,8 +832,8 @@ function startkar(evacuation=false){
 		networkbox.style.visibility = "visible";
 		const systemsound = document.getElementById('system');
 		const bga = document.getElementById('bga');
-		systemsound.src = './skin/2series/sounds/join.mp3';
-		bga.src = './skin/2series/videos/join.mp4';
+		systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
+		bga.src = getCachedURL('./skin/2series/videos/join.mp4');
 		systemsound.play();
 		bga.play();
 
@@ -836,7 +866,7 @@ async function endkar(songs){
 	//퇴장화면 표시
 	await wait(500);
 	const systemsound = document.getElementById('system');
-	systemsound.src = './skin/2series/sounds/exit.mp3';
+	systemsound.src = getCachedURL('./skin/2series/sounds/exit.mp3');
 	systemsound.play();
 	
 	if(songs.length >= 10){
@@ -848,7 +878,7 @@ async function endkar(songs){
 		const forceimg = document.createElement("img");
 		forceimg.id = 'forcebox';
 		wrapper.appendChild(forceimg);
-		forceimg.src = './skin/2series/assets/ui/exit/todaysang.png';
+		forceimg.src = getCachedURL('./skin/2series/assets/ui/exit/todaysang.png');
 		forceimg.style.display = 'block';
 		setTimeout(()=>{
 			hideexitscr();

@@ -39,6 +39,8 @@ let starttime;
 let drift;
 let ontime;
 
+const cachedAssets = {};
+
 //설정
 let iscoin = false;
 let freeplay = false;
@@ -48,12 +50,18 @@ let evacuationenable = false;
 let minscore = 0;
 let random100 = 10;
 
+function getCachedURL(path) {
+    return cachedAssets[path] || path;
+}
+
 async function preload() {
     loading(2, '파일 목록을 불러오는 중...', 0, 1);
 
-    const allPaths = [...imagePaths.map(p => ({ type: 'image', path: p })), 
-                      ...audioPaths.map(p => ({ type: 'audio', path: p })),
-                      ...videoPaths.map(p => ({ type: 'video', path: p }))];
+    const allPaths = [
+        ...imagePaths.map(p => ({ type: 'image', path: p })),
+        ...audioPaths.map(p => ({ type: 'audio', path: p })),
+        ...videoPaths.map(p => ({ type: 'video', path: p })),
+    ];
 
     let loadedCount = 0;
     const totalAssets = allPaths.length;
@@ -69,49 +77,32 @@ async function preload() {
             loading(0);
             await wait(3000);
             loading(3);
-            return;
         }
     };
 
     await wait(1000);
 
     for (const asset of allPaths) {
-        if(skiploading){
+        if (skiploading) {
             await wait(500);
             loading(0);
             await wait(3000);
             loading(3);
             return;
         }
-        
+
         const filename = getFileName(asset.path);
 
-        if (asset.type === 'image') {
-            await new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => { updateProgress(filename); resolve(); };
-                img.onerror = () => { updateProgress(filename); resolve(); };
-                img.src = asset.path;
-            });
-        } else if (asset.type === 'audio') {
-            await new Promise((resolve) => {
-                const audio = new Audio();
-                audio.oncanplaythrough = () => { updateProgress(filename); resolve(); };
-                audio.onerror = () => { updateProgress(filename); resolve(); };
-                audio.src = asset.path;
-                audio.load();
-            });
-        } else if (asset.type === 'video') {
-            await new Promise((resolve) => {
-                const video = document.createElement('video');
-                video.preload = 'auto';
-                video.onloadeddata = () => { updateProgress(filename); resolve(); };
-                video.onerror = () => { updateProgress(filename); resolve(); };
-                video.src = asset.path;
-                video.load();
-            });
+        try {
+            const response = await fetch(asset.path);
+            const blob = await response.blob();
+            const blobURL = URL.createObjectURL(blob);
+            cachedAssets[asset.path] = blobURL;
+        } catch (e) {
+            console.error(`Failed to load ${asset.path}:`, e);
         }
 
+        await updateProgress(filename);
         await wait(100);
     }
 }

@@ -10,6 +10,33 @@ let reservetext;
 let lasthap = 0;
 let centernum = 0;
 
+const imagePaths = [
+	"/skin/2series/assets/ui/evacuation.png",
+	"/skin/2series/assets/ui/tjstart.png"
+];
+
+const audioPaths = [
+	"/skin/2series/sounds/evacuation.mp3",
+	"/skin/2series/sounds/exit.mp3",
+	"/skin/2series/sounds/explore.mp3",
+	"/skin/2series/sounds/join.mp3",
+	"/skin/2series/sounds/openmenu.mp3",
+	"/skin/2series/sounds/selsong/0.mp3",
+	"/skin/2series/sounds/selsong/1.mp3",
+	"/skin/2series/sounds/selsong/2.mp3",
+	"/skin/2series/sounds/selsong/3.mp3",
+	"/skin/2series/sounds/selsong/4.mp3",
+	"/skin/2series/sounds/selsong/5.mp3",
+	"/skin/2series/sounds/selsong/6.mp3",
+	"/skin/2series/sounds/selsong/7.mp3",
+	"/skin/2series/sounds/selsong/8.mp3",
+	"/skin/2series/sounds/selsong/9.mp3"
+];
+
+const videoPaths = [
+	"/skin/2series/videos/join.mp4",
+];
+
 //상단바 생성
 const topbar = document.createElement("div");
 const topimgbox = document.createElement("div");
@@ -97,7 +124,15 @@ document.addEventListener("DOMContentLoaded", async function() {
 	}
 });
 
-async function loading(status=0, file='', cursize=0.01, filesize=0.02) {
+setInterval(()=>{
+	if (loadingstat == 3) {
+		const updnotice = document.getElementById('updnotice');
+		if (updnotice.style.color === 'rgb(0, 0, 0)') updnotice.style.color = 'rgb(255, 255, 255)';
+		else updnotice.style.color = 'rgb(0, 0, 0)';
+	}
+}, 500);
+
+async function loading(status=0, file='', cursize=0.01, filesize=0.02, stat=null) {
 	//로딩화면 표시
 	if (status==0) {
 		loadingstat=1;
@@ -122,7 +157,7 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02) {
 		const modalbottombtntext = document.createElement('p');
 		const modalbottomtext = document.createElement('p');
 
-		modaltitletext.innerText = '주의';
+		modaltitletext.innerHTML = '주&nbsp;&nbsp;의';
 		modaltext.innerHTML = file;
 		modalbottombtntext.innerText = '확인';
 		modalbottomtext.innerText = '곡 선택';
@@ -164,16 +199,16 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02) {
 	<p id="updtexts">버전 확인 및 업데이트 중...</p>
 </div>
 <div id="updnoticebox">
-	<p id="updnotice">절대 전원을 끄지 마십시오!</p>
+	<p id="updnotice" style="color: ${document.getElementById('updnotice') ? document.getElementById('updnotice').style.color : 'rgb(255, 255, 255)'}">절대 전원을 끄지 마십시오!</p>
 	<p id="updbotices">업데이트 진행 중 전원을 끄면 HDD 등<br>반주기에 치명적인 불량이 발행할 수 있습니다.</p>
 </div>
 <div id="updversionbox">
-	<p id="updversionver">최종버전 : <span style="#fff">${String(version||1).padStart(4, '0')}</p>
-	<p id="updversiondate">날짜 : <span style="#fff">${String(version||1).padStart(4, '0')}</p>
+	<p id="updversionver">최종버전 : <span style="color: #fff">${String(version||1).padStart(4, '0')}</p>
+	<p id="updversiondate">날　　짜 : <span style="color: #fff">${String(version||1).padStart(4, '0')}</p>
 </div>
 <div id="updpcbox">
-	<p id="updprogram" class="updpc">프로그램</p>
-	<p id="updcontents" class="updpc">콘텐츠</p>
+	<p id="updprogram" class="updpc" ${stat==1 ? 'selected':''}>프로그램</p>
+	<p id="updcontents" class="updpc" ${stat==2 ? 'selected':''}>콘 텐 츠</p>
 </div>
 <div id="updskipbox">
 	<p id="updskipbtn">취소</p>
@@ -181,10 +216,10 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02) {
 </div>
 <p id="updmessage">${file}</p>
 <div id="updupdprgbox">
-	<p id="updupdcur">현재</p>
+	<p id="updupdcur">현　재</p>
 	<div id="updupdbox"></div>
-	<div id="updupddragbox" style="width=${Math.round((cursize/filesize)*100)}%"></div>
-	<p id="updupdsize">${cursize}MB / ${filesize}MB</p>
+	<div id="updupddragbox" style="width: ${((cursize/filesize)) * 900}px"></div>
+	<p id="updupdsize">${cursize} / ${filesize}</p>
 	<p id="updupdper">${Math.round((cursize/filesize)*100)}%</p>
 </div>
 <p id="updcanceltext">취소 버튼을 누르면 현재 다운로드 진행중인 콘텐츠까지 완료 후 건너 뜁니다.</p>
@@ -192,6 +227,8 @@ async function loading(status=0, file='', cursize=0.01, filesize=0.02) {
 	} else if (status==3) {
 		const forceimg = document.getElementById('forcebox');
 		if (forceimg) forceimg.remove();
+		const updbox = document.getElementById('updbox');
+		if (updbox) updbox.remove();
 		loadingstat=4;
 		if(evacuationenable){
 			const forceimg = document.createElement("img");

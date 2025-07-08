@@ -47,6 +47,65 @@ let evacuationenable = false;
 let minscore = 0;
 let random100 = 10;
 
+async function preload() {
+    loading(2, '파일 목록을 불러오는 중...', 0, 1);
+
+    const allPaths = [...imagePaths.map(p => ({ type: 'image', path: p })), 
+                      ...audioPaths.map(p => ({ type: 'audio', path: p })),
+                      ...videoPaths.map(p => ({ type: 'video', path: p }))];
+
+    let loadedCount = 0;
+    const totalAssets = allPaths.length;
+
+    const getFileName = (path) => path.split('/').pop();
+
+    const updateProgress = async (filename) => {
+        loadedCount++;
+        loading(2, filename, loadedCount, totalAssets, 1);
+
+        if (loadedCount === totalAssets) {
+            await wait(500);
+            loading(0);
+            await wait(3000);
+            loading(3);
+        }
+    };
+
+    await wait(1000);
+
+    for (const asset of allPaths) {
+        const filename = getFileName(asset.path);
+
+        if (asset.type === 'image') {
+            await new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => { updateProgress(filename); resolve(); };
+                img.onerror = () => { updateProgress(filename); resolve(); };
+                img.src = asset.path;
+            });
+        } else if (asset.type === 'audio') {
+            await new Promise((resolve) => {
+                const audio = new Audio();
+                audio.oncanplaythrough = () => { updateProgress(filename); resolve(); };
+                audio.onerror = () => { updateProgress(filename); resolve(); };
+                audio.src = asset.path;
+                audio.load();
+            });
+        } else if (asset.type === 'video') {
+            await new Promise((resolve) => {
+                const video = document.createElement('video');
+                video.preload = 'auto';
+                video.onloadeddata = () => { updateProgress(filename); resolve(); };
+                video.onerror = () => { updateProgress(filename); resolve(); };
+                video.src = asset.path;
+                video.load();
+            });
+        }
+
+        await wait(100);
+    }
+}
+
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
     //startwait의 절반만큼 기다린 후 hidestartbox() 실행
@@ -310,7 +369,7 @@ async function getsongdata(number){
     if (!songdir&&localmode) {
         if (loadingstat != 2) info(0, "곡 폴더를 선택해주세요.")
         songdir = await window.showDirectoryPicker();
-        if (loadingstat == 2) loading(2);
+        if (loadingstat == 2) preload();
         return 1;
     }
     try{

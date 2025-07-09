@@ -24,11 +24,16 @@
     position: absolute;
     left: 25px;
     top: 25px;
+    width: 1392px;
+    height: 373px;
+    opacity: 0.8;
 }
 
 #upborder {
     position: relative;
     z-index: 0;
+    width: 1440px;
+    height: 420px;
 }
 
 #uppertitle {

@@ -29,7 +29,12 @@ const imagePaths = [
 	"./skin/2series/assets/song/select/man.png",
 	"./skin/2series/assets/song/select/woman.png",
 	"./skin/2series/assets/song/select/multi.png",
-	"./skin/2series/assets/song/start/CI.png",
+	"./skin/2series/assets/song/start/startbg.svg",
+	"./skin/2series/assets/song/start/startborder/1.svg",
+	"./skin/2series/assets/song/start/startborder/2.svg",
+	"./skin/2series/assets/song/start/startborder/3.svg",
+	"./skin/2series/assets/song/start/startborder/4.svg",
+	"./skin/2series/assets/song/start/startborder/5.svg",
 	"./skin/2series/assets/song/playing/nextsong.png",
 	"./skin/2series/assets/song/playing/nextsong2.png",
 	"./skin/2series/assets/song/playing/nowsong.png",
@@ -380,8 +385,8 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 		desctxt.id = "upperdesc";
 	}
 
-	border.src = getCachedURL(`./skin/2series/assets/song/start/startborder/${Math.floor(Math.random() * 5)+1}.png`);
-	backimage.src = getCachedURL('./skin/2series/assets/song/start/startbg.png');
+	border.src = getCachedURL(`./skin/2series/assets/song/start/startborder/${Math.floor(Math.random() * 5)+1}.svg`);
+	backimage.src = getCachedURL('./skin/2series/assets/song/start/startbg.svg');
 
 	backimage.id = "upbackimage";
 	border.id = "upborder";

@@ -65,46 +65,34 @@ async function preload() {
 
     let loadedCount = 0;
     const totalAssets = allPaths.length;
-
     const getFileName = (path) => path.split('/').pop();
 
-    const updateProgress = async (filename) => {
+    const updateProgress = (filename) => {
         loadedCount++;
         loading(2, filename, loadedCount, totalAssets, 1);
-
-        if (loadedCount === totalAssets) {
-            await wait(500);
-            loading(0);
-            await wait(3000);
-            loading(3);
-        }
     };
 
-    await wait(1000);
-
-    for (const asset of allPaths) {
-        if (skiploading) {
-            await wait(500);
-            loading(0);
-            await wait(3000);
-            loading(3);
-            return;
-        }
-
+    const loadAsset = async (asset) => {
         const filename = getFileName(asset.path);
-
         try {
             const response = await fetch(asset.path);
             const blob = await response.blob();
             const blobURL = URL.createObjectURL(blob);
             cachedAssets[asset.path] = blobURL;
+            updateProgress(filename);
         } catch (e) {
             console.error(`Failed to load ${asset.path}:`, e);
+            updateProgress(filename);
         }
+    };
 
-        await updateProgress(filename);
-        await wait(50);
-    }
+    await wait(1000);
+    await Promise.all(allPaths.map(loadAsset));
+
+    await wait(500);
+    loading(0);
+    await wait(3000);
+    loading(3);
 }
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){

@@ -648,6 +648,18 @@ document.addEventListener('keydown', async function(event) {
             remotemode=false;
             setlimit();
             inpnum = '';
+        } else if (!remotemode) {
+            if (firstphase){
+                info(0, '1절 연주를 해제합니다.');
+                firstphase = false;
+                loadsideimage(false);
+                loadimage('firstphaseoff');
+            } else {
+                info(0, '1절만 연주합니다.');
+                firstphase = true;
+                loadsideimage(false);
+                loadimage('firstphaseon');
+            }
         }
     } else if (event.key === 't' || event.key === 'T') {
         if(remotemode && (!iscoin || timecoin==0) && !freeplay) {

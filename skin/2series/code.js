@@ -52,8 +52,9 @@ const imagePaths = [
 	"./skin/2series/assets/song/playing/MV.webp",
 	"./skin/2series/assets/song/playing/MR.webp",
 	"./skin/2series/assets/song/playing/LIVE.webp",
-	"./skin/2series/assets/song/playing/noscore.png",
-	"./skin/2series/assets/song/playing/nochorus.png",
+	"./skin/2series/assets/ui/noscore.png",
+	"./skin/2series/assets/ui/nochorus.png",
+	"./skin/2series/assets/ui/firstphase.png",
 	"./skin/2series/assets/ui/center/interludejump.webp",
 	"./skin/2series/assets/ui/center/phasejump.webp",
 	"./skin/2series/assets/ui/center/frontbarjump.webp",
@@ -62,6 +63,8 @@ const imagePaths = [
 	"./skin/2series/assets/ui/center/scoreon.webp",
 	"./skin/2series/assets/ui/center/chorusoff.webp",
 	"./skin/2series/assets/ui/center/choruson.webp",
+	"./skin/2series/assets/ui/center/firstphaseoff.webp",
+	"./skin/2series/assets/ui/center/firstphaseon.webp",
 	"./skin/2series/assets/ui/center/services.webp",
 	"./skin/2series/assets/ui/center/clap.webp",
 	"./skin/2series/assets/ui/center/pause.webp",
@@ -173,9 +176,11 @@ wrapper.appendChild(nochorusimagebox);
 wrapper.appendChild(firstphaseimagebox);
 
 noscoreimage.src = './skin/2series/assets/ui/center/scoreoff.webp';
-noscoreimagetxt.src = './skin/2series/assets/song/playing/noscore.png';
+noscoreimagetxt.src = './skin/2series/assets/ui/noscore.png';
 nochorusimage.src = './skin/2series/assets/ui/center/chorusoff.webp';
-nochorusimagetxt.src = './skin/2series/assets/song/playing/nochorus.png';
+nochorusimagetxt.src = './skin/2series/assets/ui/nochorus.png';
+firstphaseimage.src = './skin/2series/assets/ui/center/firstphaseon.webp';
+firstphaseimagetxt.src = './skin/2series/assets/ui/firstphase.png';
 
 //카운터 생성
 const timerimage = document.createElement("img");
@@ -846,6 +851,10 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 		if (!noshow) noscoreimagebox.style.visibility = "visible";
 		if (!onlyshow) noscoreimage.src = getCachedURL(`./skin/2series/assets/ui/center/scoreoff.webp`);
 	} else noscoreimagebox.style.visibility = "hidden";
+	if (firstphase) {
+		if (!noshow) firstphaseimagebox.style.visibility = "visible";
+		if (!onlyshow) firstphaseimage.src = getCachedURL(`./skin/2series/assets/ui/center/firstphaseon.webp`);
+	} else firstphaseimagebox.style.visibility = "hidden";
 }
 
 //score: 점수

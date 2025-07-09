@@ -340,6 +340,31 @@
     transform: translateX(-50%);
 }
 
+#noscoreimagebox {
+    position: absolute;
+    right: 77px;
+    top: 198px;
+    visibility: hidden;
+}
+
+#nochorusimagebox {
+    position: absolute;
+    right: 77px;
+    top: 198px;
+    visibility: hidden;
+}
+
+#firstphaseimagebox {
+    position: absolute;
+    right: 77px;
+    top: 198px;
+    visibility: hidden;
+}
+
+#noscoreimage, #nochorusimage, #firstphaseimage {
+    width: 100px;
+}
+
 #sangcount {
     position: absolute;
     z-index: 102;

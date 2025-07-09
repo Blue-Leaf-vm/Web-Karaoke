@@ -29,6 +29,7 @@ const imagePaths = [
 	"./skin/2series/assets/song/select/man.png",
 	"./skin/2series/assets/song/select/woman.png",
 	"./skin/2series/assets/song/select/multi.png",
+	"./skin/2series/assets/song/start/CI.png",
 	"./skin/2series/assets/song/start/startbg.svg",
 	"./skin/2series/assets/song/start/startborder/1.svg",
 	"./skin/2series/assets/song/start/startborder/2.svg",
@@ -137,17 +138,38 @@ wrapper.appendChild(networkbox);
 
 //측면 이미지 생성
 const sideimage = document.createElement("img");
+const noscoreimagebox = document.createElement("div");
+const nochorusimagebox = document.createElement("div");
+const firstphaseimagebox = document.createElement("div");
 const noscoreimage = document.createElement("img");
 const nochorusimage = document.createElement("img");
 const firstphaseimage = document.createElement("img");
+const noscoreimagetxt = document.createElement("img");
+const nochorusimagetxt = document.createElement("img");
+const firstphaseimagetxt = document.createElement("img");
 sideimage.id = "sideimage";
+noscoreimagebox.id = "noscoreimagebox";
+nochorusimagebox.id = "nochorusimagebox";
+firstphaseimagebox.id = "firstphaseimagebox";
 noscoreimage.id = "noscoreimage";
 nochorusimage.id = "nochorusimage";
 firstphaseimage.id = "firstphaseimage";
+noscoreimagetxt.id = "noscoreimagetxt";
+nochorusimagetxt.id = "nochorusimagetxt";
+firstphaseimagetxt.id = "firstphaseimagetxt";
 wrapper.appendChild(sideimage);
-wrapper.appendChild(noscoreimage);
-wrapper.appendChild(nochorusimage);
-wrapper.appendChild(firstphaseimage);
+noscoreimagebox.appendChild(noscoreimagetxt);
+nochorusimagebox.appendChild(nochorusimagetxt);
+firstphaseimagebox.appendChild(firstphaseimagetxt);
+noscoreimagebox.appendChild(noscoreimage);
+nochorusimagebox.appendChild(nochorusimage);
+firstphaseimagebox.appendChild(firstphaseimage);
+wrapper.appendChild(noscoreimagebox);
+wrapper.appendChild(nochorusimagebox);
+wrapper.appendChild(firstphaseimagebox);
+
+nochorusimage.src = './skin/2series/assets/ui/center/chorusoff.webp';
+nochorusimagetxt.src = './skin/2series/assets/song/playing/nochorus.png';
 
 //카운터 생성
 const timerimage = document.createElement("img");
@@ -780,6 +802,9 @@ async function loadimage(img, time=2, num=centernum+1){
 
 function hidesideimage(){
 	sideimage.style.visibility = "hidden";
+	noscoreimagebox.style.visibility = "hidden";
+	nochorusimagebox.style.visibility = "hidden";
+	firstphaseimagebox.style.visibility = "hidden";
 }
 
 function hidecenterimage(){
@@ -789,28 +814,27 @@ function hidecenterimage(){
 }
 
 async function loadsideimage(onlyshow=false, noshow=false) {
+	if (isshowed) return;
 	if (ifmv==false&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "hidden";
 	} else if (ifmv==true&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "467px";
-		if(!onlyshow){
-			sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MV.webp`);
-		}
+		if (!onlyshow) sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MV.webp`);
 	} else if (ifmr==true){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "300px";
-			if(!onlyshow){
-			sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MR.webp`);
-		}
+		if (!onlyshow) sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/MR.webp`);
 	}
  	else if (iflive==true){
 		if (!noshow) sideimage.style.visibility = "visible";
 		sideimage.style.top = "450px";
-		if(!onlyshow){
-			sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/LIVE.webp`);
-		}
+		if (!onlyshow) sideimage.src = getCachedURL(`./skin/2series/assets/song/playing/LIVE.webp`);
 	}
+	if (nochorus) {
+		if (!noshow) nochorusimagebox.style.visibility = "visible";
+		if (!onlyshow) nochorusimage.src = getCachedURL(`./skin/2series/assets/ui/center/chorusoff.webp`);
+	} else nochorusimagebox.style.visibility = "hidden";
 }
 
 //score: 점수
@@ -876,7 +900,7 @@ function startkar(evacuation=false){
 	}
 }
 
-function hideexitscr(){
+async function hideexitscr(){
 	if(isinexit){
 		const forceimg = document.getElementById('forcebox');
 		const systemsound = document.getElementById('system');
@@ -890,6 +914,10 @@ function hideexitscr(){
 		document.getElementById('highscorebox').remove();
 		document.getElementById('score1box').remove();
 		document.getElementById('score2box').remove();
+
+		await wait(500);
+		if (startediscoin && !iscoin) {iscoin = true; info(0, '관리 방식이 코인으로 변경되었습니다.'); setlimit();}
+		else if (!startediscoin && iscoin) {iscoin = false; info(0, '관리 방식이 시간으로 변경되었습니다.'); setlimit();}
 	}
 }
 
@@ -1043,6 +1071,10 @@ async function endkar(songs){
 			start+=8;
 			await wait(4000);
 		}
+	} else {
+		await wait(500);
+		if (startediscoin && !iscoin) {iscoin = true; info(0, '관리 방식이 코인으로 변경되었습니다.'); setlimit();}
+		else if (!startediscoin && iscoin) {iscoin = false; info(0, '관리 방식이 시간으로 변경되었습니다.'); setlimit();}
 	}
 }
 

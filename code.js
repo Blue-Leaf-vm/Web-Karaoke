@@ -18,6 +18,10 @@ let ininterlude = false;
 let localmode = true;
 let prioritysong = null;
 
+let noscore = false;
+let nochorus = false;
+let firstphase = false;
+
 let isplaying = false;
 let isinscore = false;
 let isinevacuationenable = false;
@@ -49,6 +53,8 @@ let evacuationenable = false;
 let minscore = 0;
 let random100 = 10;
 
+const startediscoin = iscoin;
+
 function getCachedURL(path) {
     return cachedAssets[path] || path;
 }
@@ -56,7 +62,12 @@ function getCachedURL(path) {
 let abortControllers = [];
 
 async function preload(upd=false) {
-    cachedAssets.length = 0;
+    for (let key in cachedAssets) {
+        if (cachedAssets.hasOwnProperty(key)) {
+            delete cachedAssets[key];
+        }
+    }
+
     if (upd) loading(2, '파일 목록을 불러오는 중...', 0, 1);
 
     const allPaths = [
@@ -413,7 +424,7 @@ async function getbannerdata(number){
     }
 }
 
-function songend(){
+async function songend(){
     const bga = document.getElementById('bga');
     const music = document.getElementById('music');
     const melody = document.getElementById('melody');
@@ -425,12 +436,18 @@ function songend(){
     melody.removeAttribute("src");
     isplaying = false;
     ininterlude = false;
+    nochorus = false;
     ifmv = false;
     ifmr = false;
     iflive = false;
     endsong();
-    if(Math.floor(Math.random() * random100) == 0) score(nowplaying, 100);
-    else score(nowplaying, Math.floor(Math.random() * (100 - minscore + 1)) + minscore);
+    if (!noscore){
+        if(Math.floor(Math.random() * random100) == 0) score(nowplaying, 100);
+        else score(nowplaying, Math.floor(Math.random() * (100 - minscore + 1)) + minscore);
+    } else {
+        await wait(500);
+        endscore();
+    }
 }
 
 async function endscore(){
@@ -444,6 +461,7 @@ async function endscore(){
         setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
         if (prioritysong!=null) { prioritysong=null; }
     }
+    loadsideimage();
 }
 
 async function input(n) {
@@ -474,7 +492,15 @@ function setlimit(chkend=true) {
     if (freeplay) {limit("free", timecoin);}
     else if (iscoin) {limit("coin", timecoin);}
     else {limit("time", timecoin);}
-    if (!isplaying&&timecoin==0&&!isinscore&&chkend&&isusing) {endkar(sangsong);isusing=false;reservedsong = [];}
+    if (!isplaying&&timecoin==0&&!isinscore&&chkend&&isusing) {
+        noscore = false;
+        nochorus = false;
+        firstphase = false;
+        hidesideimage();
+        endkar(sangsong);
+        isusing=false;
+        reservedsong = [];
+    }
 }
 
 function addtimecoin(type, amount) {
@@ -636,6 +662,25 @@ document.addEventListener('keydown', async function(event) {
             addtimecoin("coin", toupcoin);
             remotemode=false;
             inpnum = '';
+        } else if (!remotemode) {
+            if (isplaying){
+                const chorus = document.getElementById('chorus');
+                if (nochorus){
+                    info(0, '육성/코러스가 동작됩니다.');
+                    nochorus = false;
+                    loadsideimage(false);
+                    loadimage('choruson');
+                    chorus.volume = '1';
+                } else {
+                    info(0, '육성/코러스 동작을 중지합니다.');
+                    nochorus = true;
+                    loadsideimage(false);
+                    loadimage('chorusoff');
+                    chorus.volume = '0';
+                }
+            } else {
+                info(0, '연주 중에만 동작됩니다');
+            }
         }
     } else if (event.key === 's' || event.key === 'S') {
         if(!freeplay&&remotemode&&!freeplay) {

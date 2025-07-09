@@ -15,6 +15,7 @@ const imagePaths = [
 	"./skin/2series/assets/ui/tjstart.png",
 	"./skin/2series/assets/ui/info.png",
 	"./skin/2series/assets/ui/einfo.png",
+	"./skin/2series/assets/ui/time/time.png",
 	"./skin/2series/assets/ui/time/coin.png",
 	"./skin/2series/assets/ui/time/remote.png",
 	"./skin/2series/assets/ui/network/LAN/1.png",

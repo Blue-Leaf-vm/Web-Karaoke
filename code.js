@@ -23,7 +23,6 @@ let isinscore = false;
 let isinevacuationenable = false;
 let isinexit = false;
 let loadingstat = 0;
-let skiploading = false;
 
 let ifmv = false;
 let ifmr = false;
@@ -54,8 +53,11 @@ function getCachedURL(path) {
     return cachedAssets[path] || path;
 }
 
-async function preload() {
-    loading(2, '파일 목록을 불러오는 중...', 0, 1);
+let abortControllers = [];
+
+async function preload(upd=false) {
+    cachedAssets.length = 0;
+    if (upd) loading(2, '파일 목록을 불러오는 중...', 0, 1);
 
     const allPaths = [
         ...imagePaths.map(p => ({ type: 'image', path: p })),
@@ -69,30 +71,40 @@ async function preload() {
 
     const updateProgress = (filename) => {
         loadedCount++;
-        loading(2, filename, loadedCount, totalAssets, 1);
+        if (upd) loading(2, filename, loadedCount, totalAssets, 1);
     };
+
+    abortControllers.forEach(controller => controller.abort());
+    abortControllers = [];
 
     const loadAsset = async (asset) => {
         const filename = getFileName(asset.path);
+        const controller = new AbortController();
+        abortControllers.push(controller);
         try {
-            const response = await fetch(asset.path);
+            const response = await fetch(asset.path, { signal: controller.signal });
             const blob = await response.blob();
             const blobURL = URL.createObjectURL(blob);
             cachedAssets[asset.path] = blobURL;
             updateProgress(filename);
         } catch (e) {
-            console.error(`Failed to load ${asset.path}:`, e);
-            updateProgress(filename);
+            if (e.name === 'AbortError') {
+                console.log(`Loading aborted: ${filename}`);
+            } else {
+                console.error(`Failed to load ${asset.path}:`, e);
+                updateProgress(filename);
+            }
         }
     };
 
     await wait(1000);
     await Promise.all(allPaths.map(loadAsset));
-
-    await wait(500);
-    loading(0);
-    await wait(3000);
-    loading(3);
+    if (upd) {
+        await wait(500);
+        loading(0);
+        await wait(3000);
+        loading(3);
+    }
 }
 
 async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
@@ -357,7 +369,7 @@ async function getsongdata(number){
     if (!songdir&&localmode) {
         if (loadingstat != 2) info(0, "곡 폴더를 선택해주세요.")
         songdir = await window.showDirectoryPicker();
-        if (loadingstat == 2) preload();
+        if (loadingstat == 2) preload(true);
         return 1;
     }
     try{
@@ -584,7 +596,10 @@ document.addEventListener('keydown', async function(event) {
             inpnum = '';
         }
     } else if (event.key === 'Escape') {
-        if (loadingstat==3) skiploading = true;
+        if (loadingstat==3) {
+            abortControllers.forEach(controller => controller.abort());
+            abortControllers = [];
+        }
         if (isinevacuationenable) return;
         if (isinexit) hideexitscr();
         else if (isinscore) hidesocre();

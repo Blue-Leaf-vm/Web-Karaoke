@@ -403,7 +403,6 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	requestAnimationFrame(() => {
 		const maxWidth = 1150;
 		const actualWidth = titletxt.clientWidth;
-		console.log(actualWidth);
 		if (actualWidth > maxWidth) {
 			const scaleX = maxWidth / actualWidth;
 			titletxt.style.transform = `translateX(-50%) scaleX(${scaleX})`;
@@ -433,8 +432,13 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 		</br><span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${compos}</span>
 		${original ? `</br><span style="color: #8B70FC">원곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${original}</span>` : ' '}
 	`;
+	ad.id = 'ad';
 	ad.src = getCachedURL(`./skin/2series/assets/song/start/ad/${Math.floor(Math.random() * 7)+1}.png`);
 	ci.src = getCachedURL('./skin/2series/assets/song/start/CI.png');
+
+	ad.onerror = () => {
+		ad.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="614" height="371"></svg>';
+	};
 
 	downblackbox.appendChild(datatxt);
 	downbox.appendChild(downblackbox);
@@ -450,12 +454,13 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	datatxt.id = "datatext";
 	if(Math.floor(Math.random() * 2)==0){
 		upperbox.style.top = "-400px";
-		downbox.style.bottom = "-400px";
+		downbox.style.bottom = "-200px";
 		setTimeout(() => {upperbox.style.top = "150px";}, 20);
-		setTimeout(() => {downbox.style.bottom = "100px";}, 200);
+		setTimeout(() => {downbox.style.bottom = "298px";}, 200);
 	} else {
 		upperbox.style.left = "150%";
 		downbox.style.left = "-50%";
+		downbox.style.bottom = "298px";
 		setTimeout(() => {upperbox.style.left = "50%";}, 20);
 		setTimeout(() => {downbox.style.left = "50%";}, 200);
 	}

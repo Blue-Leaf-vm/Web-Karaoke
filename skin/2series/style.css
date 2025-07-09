@@ -83,8 +83,15 @@
     background-color: #000000A6;
     position: relative;
     z-index: 0;
-    width: 770px;
+    width: 1382px;
     height: fit-content;
+}
+
+#ad {
+    width: 614px;
+    height: 371px;
+    position: absolute;
+    left: 769px;
 }
 
 #ci {

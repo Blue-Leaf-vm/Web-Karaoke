@@ -51,11 +51,14 @@ const imagePaths = [
 	"./skin/2series/assets/song/playing/MV.webp",
 	"./skin/2series/assets/song/playing/MR.webp",
 	"./skin/2series/assets/song/playing/LIVE.webp",
+	"./skin/2series/assets/song/playing/noscore.png",
 	"./skin/2series/assets/song/playing/nochorus.png",
 	"./skin/2series/assets/ui/center/interludejump.webp",
 	"./skin/2series/assets/ui/center/phasejump.webp",
 	"./skin/2series/assets/ui/center/frontbarjump.webp",
 	"./skin/2series/assets/ui/center/backbarjump.webp",
+	"./skin/2series/assets/ui/center/scoreoff.webp",
+	"./skin/2series/assets/ui/center/scoreon.webp",
 	"./skin/2series/assets/ui/center/chorusoff.webp",
 	"./skin/2series/assets/ui/center/choruson.webp",
 	"./skin/2series/assets/ui/center/services.webp",
@@ -168,6 +171,8 @@ wrapper.appendChild(noscoreimagebox);
 wrapper.appendChild(nochorusimagebox);
 wrapper.appendChild(firstphaseimagebox);
 
+noscoreimage.src = './skin/2series/assets/ui/center/scoreoff.webp';
+noscoreimagetxt.src = './skin/2series/assets/song/playing/noscore.png';
 nochorusimage.src = './skin/2series/assets/ui/center/chorusoff.webp';
 nochorusimagetxt.src = './skin/2series/assets/song/playing/nochorus.png';
 
@@ -376,7 +381,8 @@ setInterval(()=>{
 function startsong(number, title, dis, group, sing, gender, songint, curint, lyrics, compos, original, banner, lang="KR"){
 	inanime = true;
 	isshowed = true;
-	hidecenterimage()
+	hidecenterimage();
+	hidesideimage();
 	//상단바 숨기기
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
@@ -835,6 +841,10 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 		if (!noshow) nochorusimagebox.style.visibility = "visible";
 		if (!onlyshow) nochorusimage.src = getCachedURL(`./skin/2series/assets/ui/center/chorusoff.webp`);
 	} else nochorusimagebox.style.visibility = "hidden";
+	if (noscore) {
+		if (!noshow) noscoreimagebox.style.visibility = "visible";
+		if (!onlyshow) noscoreimage.src = getCachedURL(`./skin/2series/assets/ui/center/scoreoff.webp`);
+	} else noscoreimagebox.style.visibility = "hidden";
 }
 
 //score: 점수

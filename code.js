@@ -461,7 +461,7 @@ async function endscore(){
         setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
         if (prioritysong!=null) { prioritysong=null; }
     }
-    loadsideimage();
+    loadsideimage(true);
 }
 
 async function input(n) {
@@ -688,6 +688,18 @@ document.addEventListener('keydown', async function(event) {
             addservice(toupcoin);
             remotemode=false;
             inpnum = '';
+        } else if (!remotemode) {
+            if (noscore){
+                info(0, '점수를 표시합니다.');
+                noscore = false;
+                loadsideimage(false);
+                loadimage('scoreon');
+            } else {
+                info(0, '점수를 표시하지 않습니다.');
+                noscore = true;
+                loadsideimage(false);
+                loadimage('scoreoff');
+            }
         }
     } else if (event.key === 'd' || event.key === 'D') {
         if(!freeplay&&remotemode&&!freeplay) {
@@ -748,4 +760,8 @@ setlimit(false);
 
 skiploading=false;
 loading(0);
-setTimeout(()=>{loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');}, 2000);
+
+addEventListener("DOMContentLoaded", async (event) => {
+    await wait(1000);
+    loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
+});

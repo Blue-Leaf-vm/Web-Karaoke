@@ -42,12 +42,17 @@ let starttime;
 let drift;
 let ontime;
 
+let forcestarttime = 0;
+
 const cachedAssets = {};
 
 //설정
-let iscoin = false;
+let iscoin = true;
 let freeplay = false;
-let remcointime = 0;
+let remcointime = 5;
+let remcoinamount = 1;
+let coinwaitmessage = true;
+let coinwaittime = 120;
 let renderpron = false;
 let evacuationenable = false;
 let minscore = 0;
@@ -148,7 +153,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
             if (!freeplay&&iscoin){
                 setTimeout(() => {
                     if(!isplaying||nowplaying!=number){return;}
-                    timecoin--;
+                    timecoin-=remcoinamount;
                     setlimit();
                     if(timecoin==2){info(0, "2곡 남았습니다.");}
                 }, remcointime*1000);
@@ -496,9 +501,10 @@ function setlimit(chkend=true) {
         noscore = false;
         nochorus = false;
         firstphase = false;
+        nowplaying = null;
         hidesideimage();
         endkar(sangsong);
-        isusing=false;
+        isusing = false;
         reservedsong = [];
     }
 }
@@ -540,10 +546,14 @@ function wait(ms) {
 document.addEventListener('keydown', async function(event) {
     if (loadingstat > 0 && !(event.key === 'Enter' || event.key === 'Escape')) return;
     else if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R') && !(event.key === 'Escape') && !remotemode) return;
+    hideforcestart();
+    forcestarttime = 0;
 	if (event.key === 'Enter') {
-        if (loadingstat == 2) {
+        if (loadingstat == 2 && localmode) {
             getsongdata(0);
             return;
+        } else if (loadingstat == 2 && !localmode) {
+            preload(true);
         } else if (loadingstat > 0) return;
 
         if (!isplaying && !remotemode) {
@@ -622,7 +632,11 @@ document.addEventListener('keydown', async function(event) {
             inpnum = '';
         }
     } else if (event.key === 'Escape') {
-        if (loadingstat==3) {
+        if (loadingstat == 2 && localmode) {
+            localmode = false;
+            loading(1, '<span class="modaltexthighlight">취소</span> 버튼을 누르셨습니다.<br>이에 따라 일부 기능이 제한된 상태로<br> 서버에서 곡을 불러옵니다.<br>계속하려면 확인 버튼을 누르십시오.');
+            return;
+        } else if (loadingstat==3) {
             abortControllers.forEach(controller => controller.abort());
             abortControllers = [];
         }
@@ -777,3 +791,36 @@ addEventListener("DOMContentLoaded", async (event) => {
     await wait(1000);
     loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
 });
+
+setInterval(async () => {
+    if(iscoin&&timecoin>0&&!freeplay&&!isplaying&&!isinevacuationenable&&!isinscore&&!isinexit&&coinwaitmessage){
+        forcestarttime++;
+        if (forcestarttime==Math.floor(coinwaittime/2)){
+            hideforcestart();
+            systemsound(1, 'forcestart');
+            forcestart('강제시작 안내', '잠시후 곡이 랜덤으로 연주됩니다', 'rgb(255, 107, 103)');
+        } else if (forcestarttime==coinwaittime){
+            hideforcestart();
+            setlimit();
+            forcestarttime = 0;
+            if(reservedsong.length>0){
+                songstart(reservedsong[0], ++playnum);
+                reservedsong.shift();
+            } else if (nowplaying) {
+                songstart(nowplaying);
+            } else {
+                const subdirs = [];
+                for await (const [name, handle] of songdir.entries()) {
+                    if (handle.kind === 'directory') {
+                    subdirs.push({ name, handle });
+                    }
+                }
+                if (subdirs.length === 0) {
+                    info(1, '연주 가능한 곡이 없습니다.');
+                }
+                const randomIndex = Math.floor(Math.random() * subdirs.length);
+                songstart(subdirs[randomIndex].name, ++playnum);
+            }
+        }
+    }
+}, 1000);

@@ -86,6 +86,7 @@ const audioPaths = [
 	"./skin/2series/sounds/selsong/7.mp3",
 	"./skin/2series/sounds/selsong/8.mp3",
 	"./skin/2series/sounds/selsong/9.mp3",
+	"./skin/2series/sounds/forcestart.mp3",
 ];
 
 const videoPaths = [
@@ -212,6 +213,41 @@ setInterval(()=>{
 	}
 }, 500);
 
+async function forcestart(title, message, color) {
+	const forcestartbox = document.createElement('div');
+	const forcestarttextbox = document.createElement('div');
+	const forcestarttitletext = document.createElement('p');
+	const forcestarttext = document.createElement('div');
+	const forcestartbottomtext = document.createElement('p');
+
+	forcestarttitletext.innerHTML = title;
+	forcestarttext.innerHTML = message;
+	forcestartbottomtext.innerHTML = '<span style="color: #0ff; transform: unset; font-size: 33px">취소</span> 닫기';
+
+	forcestartbox.id = 'forcestartbox';
+	forcestarttextbox.id = 'forcestarttextbox';
+	forcestarttitletext.id = 'forcestarttitletext';
+	forcestarttext.id = 'forcestarttext';
+	forcestartbottomtext.id = 'forcestartbottomtext';
+
+	forcestartbox.style.backgroundColor = color;
+	
+	forcestarttextbox.appendChild(forcestarttext);
+	forcestarttextbox.appendChild(forcestartbottomtext);
+	forcestartbox.appendChild(forcestarttitletext);
+	forcestartbox.appendChild(forcestarttextbox);
+	wrapper.appendChild(forcestartbox);
+}
+
+async function hideforcestart() {
+	const forcestartbox = document.getElementById('forcestartbox');
+	if (forcestartbox) {
+		forcestartbox.remove();
+		const systemsound = document.getElementById('system');
+		systemsound.pause();
+	}
+}
+
 async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 	//로딩화면 표시
 	if (status!=2||(status==2&&stat==null)){
@@ -252,7 +288,7 @@ async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 		modaltitletext.innerHTML = '주&nbsp;&nbsp;의';
 		modaltext.innerHTML = file;
 		modalbottombtntext.innerText = '확인';
-		modalbottomtext.innerText = '곡 선택';
+		modalbottomtext.innerText = '다음';
 
 		modalbox.id = 'modalbox';
 		modaltitlebox.id = 'modaltitlebox';
@@ -875,6 +911,8 @@ function systemsound(type, sound){
 	const systemsound = document.getElementById('system');
 	if(type==0){
 		systemsound.src = getCachedURL(`./skin/2series/sounds/selsong/${sound}.mp3`);
+	} else if (type==1){
+		systemsound.src = getCachedURL(`./skin/2series/sounds/${sound}.mp3`);
 	}
 	systemsound.play();
 }

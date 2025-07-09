@@ -50,10 +50,16 @@ const imagePaths = [
 	"./skin/2series/assets/song/playing/MV.webp",
 	"./skin/2series/assets/song/playing/MR.webp",
 	"./skin/2series/assets/song/playing/LIVE.webp",
-	"./skin/2series/assets/ui/center/clap.webp",
+	"./skin/2series/assets/song/playing/nochorus.png",
 	"./skin/2series/assets/ui/center/interludejump.webp",
 	"./skin/2series/assets/ui/center/phasejump.webp",
+	"./skin/2series/assets/ui/center/frontbarjump.webp",
+	"./skin/2series/assets/ui/center/backbarjump.webp",
+	"./skin/2series/assets/ui/center/chorusoff.webp",
+	"./skin/2series/assets/ui/center/choruson.webp",
 	"./skin/2series/assets/ui/center/services.webp",
+	"./skin/2series/assets/ui/center/clap.webp",
+	"./skin/2series/assets/ui/center/pause.webp",
 ];
 
 const audioPaths = [
@@ -737,7 +743,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 	hidetime = time;
 }
 
-//img: [service, noscore, nochorus, firstphase, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
+//img: [service, scoreon/off, choruson/off, firstphaseon/off, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");	

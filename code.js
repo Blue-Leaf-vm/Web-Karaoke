@@ -9,7 +9,7 @@ const sangsong = [];
 let reservedsong = [];
 let nowplaying;
 let playingphase;
-let playingline;
+let playingtime;
 let timecoin = 0;
 let isusing = false;
 let autoplay = true;
@@ -93,7 +93,7 @@ async function preload(upd=false, songs=false) {
     const getFileName = (path) => path.split('/').pop();
 
     if (!songs) {
-        if (upd) loading(2, '파일 목록을 불러오는 중...', 0, 1);
+        if (upd) loading(2, '파일을 확인하는 중입니다...', 0, 1);
         
         const allPaths = [
             ...imagePaths.map(p => ({ type: 'image', path: p })),
@@ -128,7 +128,7 @@ async function preload(upd=false, songs=false) {
         await wait(1000);
         await Promise.all(allPaths.map(loadAsset));
     } else {
-        if (upd) loading(2, '곡을 불러오는 중...', 0, 1);
+        if (upd) loading(2, '곡을 확인하는 중입니다...', 0, 1);
         for await (const [, handle] of songdir.entries()) {
             if (handle.kind === 'directory') {
                 totalAssets++;
@@ -145,7 +145,7 @@ async function preload(upd=false, songs=false) {
                 const json = JSON.parse(text);
 
                 cachedSongs[dirname] = json;
-                updateProgress(`곡 번호: ${dirname}`);
+                updateProgress(`곡 번호　:　${dirname}.......[${loadedCount+1}/${totalAssets}]`);
             } catch (e) {
                 console.warn(`'${dirname}' 곡을 불러오지 못했습니다.`, e);
                 cachedSongs[dirname] = null;
@@ -164,7 +164,7 @@ async function preload(upd=false, songs=false) {
     }
 }
 
-async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false){
+async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false){
     //곡 정보 파싱 후 startsong에 전달
     //startwait의 절반만큼 기다린 후 hidestartbox() 실행
     //그와 동시에 가사 렌더링
@@ -178,7 +178,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
         const js = await getsongdata(number);
         if(js==1){info(0, `카운터에 문의하세요(CODE:01)`); return;}
         const banner = await getbannerdata(number);
-        if(phase==0&&line==0&&!isplaying&&!skipinter){
+        if(phase==0&&time==0&&!isplaying&&!skipinter){
             ininterlude = true;
             ontime = Date.now();
             startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang);
@@ -231,6 +231,11 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
         }
 
         for (let k=phase;k<js.lyricsd.length;k++) {
+            if(k==1&&firstphase){
+                songend();
+                autoplay = false;
+                isplaying = false;
+            }
             console.log(Date.now()-ontime);
             playingphase = k;
             ininterlude = true;
@@ -276,7 +281,6 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
                 const line = item.lines[i];
                 const isLastLine = (i === item.lines.length - 1);
                 const isNextLastLine = (i + 1 === item.lines.length - 1);
-                playingline = i;
 
                 draglyric(line, isup, js.lang);
                 starttime = Date.now();
@@ -290,6 +294,7 @@ async function songstart(number, num=playnum, phase=0, line=0, skipinter1=false)
                     drift = Date.now() - starttime - sum;
                     if (drift < 0) drift = 0;
                 }
+                playingtime = sum;
 
                 if(!isplaying||num!=playnum){return;}
                 if (isLastLine) {
@@ -480,17 +485,16 @@ async function songend(){
     const music = document.getElementById('music');
     const melody = document.getElementById('melody');
     const chorus = document.getElementById('chorus');
-    music.pause();
-    melody.pause();
-    chorus.pause();
-    music.removeAttribute("src");
-    melody.removeAttribute("src");
+    fadeOutAndPause(music);
+    fadeOutAndPause(melody);
+    fadeOutAndPause(chorus);
     isplaying = false;
     ininterlude = false;
     nochorus = false;
     ifmv = false;
     ifmr = false;
     iflive = false;
+    await wait(300);
     endsong();
     if (!noscore){
         if(Math.floor(Math.random() * random100) == 0) score(nowplaying, 100);
@@ -686,7 +690,7 @@ document.addEventListener('keydown', async function(event) {
             abortControllers.forEach(controller => controller.abort());
             abortControllers = [];
         }
-        if (isinevacuationenable) return;
+        if (isinevacuationenable || loadingstat==4) return;
         if (isinexit) hideexitscr();
         else if (isinscore) hidesocre();
         document.getElementById('system').pause();
@@ -712,12 +716,10 @@ document.addEventListener('keydown', async function(event) {
             if (firstphase){
                 info(0, '1절 연주를 해제합니다.');
                 firstphase = false;
-                loadsideimage(false);
                 loadimage('firstphaseoff');
             } else {
                 info(0, '1절만 연주합니다.');
                 firstphase = true;
-                loadsideimage(false);
                 loadimage('firstphaseon');
             }
         }
@@ -740,13 +742,11 @@ document.addEventListener('keydown', async function(event) {
                 if (nochorus){
                     info(0, '육성/코러스가 동작됩니다.');
                     nochorus = false;
-                    loadsideimage(false);
                     loadimage('choruson');
                     chorus.volume = '1';
                 } else {
                     info(0, '육성/코러스 동작을 중지합니다.');
                     nochorus = true;
-                    loadsideimage(false);
                     loadimage('chorusoff');
                     chorus.volume = '0';
                 }
@@ -764,12 +764,10 @@ document.addEventListener('keydown', async function(event) {
             if (noscore){
                 info(0, '점수를 표시합니다.');
                 noscore = false;
-                loadsideimage(false);
                 loadimage('scoreon');
             } else {
                 info(0, '점수를 표시하지 않습니다.');
                 noscore = true;
-                loadsideimage(false);
                 loadimage('scoreoff');
             }
         }
@@ -818,6 +816,25 @@ async function fileExists(url) {
     } catch (e) {
         return false;
     }
+}
+
+function fadeOutAndPause(audio, duration = 200, step = 0.05) {
+  if (!audio || audio.paused) return;
+
+  const interval = duration * step;
+  const originalVolume = audio.volume;
+
+  const fade = setInterval(() => {
+    if (audio.volume > step) {
+      audio.volume -= step;
+    } else {
+      audio.volume = 0;
+      audio.pause();
+      clearInterval(fade);
+      audio.volume = originalVolume;
+      audio.removeAttribute("src");
+    }
+  }, interval);
 }
 
 setInterval(() => {

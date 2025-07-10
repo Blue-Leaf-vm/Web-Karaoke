@@ -819,8 +819,9 @@ async function loadimage(img, time=2, num=centernum+1){
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");	
 	await wait(30);
 	if(isshowed || isinscore || isinexit || isinevacuationenable) return;
+	if(timerimage.src) return;
 	centernum++;
-	loadsideimage(false, true);
+	loadsideimage(false);
 	iscentershowed = true;
 	timerimage.style.display = "none";
 	centerimage.id = "centerimage";

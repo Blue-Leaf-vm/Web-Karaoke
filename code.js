@@ -45,6 +45,7 @@ let ontime;
 let forcestarttime = 0;
 
 const cachedAssets = {};
+const cachedSongs = [];
 
 //설정
 let iscoin = true;
@@ -66,60 +67,98 @@ function getCachedURL(path) {
 
 let abortControllers = [];
 
-async function preload(upd=false) {
-    for (let key in cachedAssets) {
-        if (cachedAssets.hasOwnProperty(key)) {
-            delete cachedAssets[key];
+async function preload(upd=false, songs=false) {
+    if (!songs){
+        for (let key in cachedAssets) {
+            if (cachedAssets.hasOwnProperty(key)) {
+                delete cachedAssets[key];
+            }
         }
+    } else {
+        cachedSongs.length = 0;
     }
 
-    if (upd) loading(2, '파일 목록을 불러오는 중...', 0, 1);
-
-    const allPaths = [
-        ...imagePaths.map(p => ({ type: 'image', path: p })),
-        ...audioPaths.map(p => ({ type: 'audio', path: p })),
-        ...videoPaths.map(p => ({ type: 'video', path: p })),
-    ];
-
     let loadedCount = 0;
-    const totalAssets = allPaths.length;
-    const getFileName = (path) => path.split('/').pop();
+    let totalAssets = 0;
 
     const updateProgress = (filename) => {
         loadedCount++;
-        if (upd) loading(2, filename, loadedCount, totalAssets, 1);
+        if (upd) loading(2, filename, loadedCount, totalAssets, songs?2:1);
     };
 
-    abortControllers.forEach(controller => controller.abort());
-    abortControllers = [];
+    const getFileName = (path) => path.split('/').pop();
 
-    const loadAsset = async (asset) => {
-        const filename = getFileName(asset.path);
-        const controller = new AbortController();
-        abortControllers.push(controller);
-        try {
-            const response = await fetch(asset.path, { signal: controller.signal });
-            const blob = await response.blob();
-            const blobURL = URL.createObjectURL(blob);
-            cachedAssets[asset.path] = blobURL;
-            updateProgress(filename);
-        } catch (e) {
-            if (e.name === 'AbortError') {
-                console.log(`Loading aborted: ${filename}`);
-            } else {
-                console.error(`Failed to load ${asset.path}:`, e);
+    if (!songs) {
+        if (upd) loading(2, '파일 목록을 불러오는 중...', 0, 1);
+        
+        const allPaths = [
+            ...imagePaths.map(p => ({ type: 'image', path: p })),
+            ...audioPaths.map(p => ({ type: 'audio', path: p })),
+            ...videoPaths.map(p => ({ type: 'video', path: p })),
+        ];
+        totalAssets = allPaths.length
+
+        abortControllers.forEach(controller => controller.abort());
+        abortControllers = [];
+
+        const loadAsset = async (asset) => {
+            const filename = getFileName(asset.path);
+            const controller = new AbortController();
+            abortControllers.push(controller);
+            try {
+                const response = await fetch(asset.path, { signal: controller.signal });
+                const blob = await response.blob();
+                const blobURL = URL.createObjectURL(blob);
+                cachedAssets[asset.path] = blobURL;
                 updateProgress(filename);
+            } catch (e) {
+                if (e.name === 'AbortError') {
+                    console.log(`Loading aborted: ${filename}`);
+                } else {
+                    console.error(`Failed to load ${asset.path}:`, e);
+                    updateProgress(filename);
+                }
+            }
+        };
+
+        await wait(1000);
+        await Promise.all(allPaths.map(loadAsset));
+    } else {
+        if (upd) loading(2, '곡을 불러오는 중...', 0, 1);
+        for await (const [, handle] of songdir.entries()) {
+            if (handle.kind === 'directory') {
+                totalAssets++;
             }
         }
-    };
+        await wait(100);
+        for await (const [dirname, dirHandle] of songdir.entries()) {
+            if (dirHandle.kind !== 'directory') continue;
 
-    await wait(1000);
-    await Promise.all(allPaths.map(loadAsset));
-    if (upd) {
+            try {
+                const fileHandle = await dirHandle.getFileHandle('song.json');
+                const file = await fileHandle.getFile();
+                const text = await file.text();
+                const json = JSON.parse(text);
+
+                cachedSongs.push({
+                    name: dirname,
+                    data: json
+                });
+                updateProgress(`곡 번호: ${dirname}`);
+            } catch (e) {
+                console.warn(`'${dirname}' 디렉터리에 song.json이 없거나 읽기 실패`, e);
+            }
+        }
+    }
+    
+    if (upd&&songs||upd&&!localmode) {
         await wait(500);
         loading(0);
         await wait(3000);
         loading(3);
+    } else if (upd&&!songs) {
+        await wait(100);
+        preload(true, true);
     }
 }
 

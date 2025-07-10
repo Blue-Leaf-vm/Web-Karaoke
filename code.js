@@ -45,7 +45,7 @@ let ontime;
 let forcestarttime = 0;
 
 const cachedAssets = {};
-const cachedSongs = [];
+const cachedSongs = {};
 
 //설정
 let iscoin = true;
@@ -75,7 +75,11 @@ async function preload(upd=false, songs=false) {
             }
         }
     } else {
-        cachedSongs.length = 0;
+        for (let key in cachedSongs) {
+            if (cachedSongs.hasOwnProperty(key)) {
+                delete cachedSongs[key];
+            }
+        }
     }
 
     let loadedCount = 0;
@@ -140,13 +144,11 @@ async function preload(upd=false, songs=false) {
                 const text = await file.text();
                 const json = JSON.parse(text);
 
-                cachedSongs.push({
-                    name: dirname,
-                    data: json
-                });
+                cachedSongs[dirname] = json;
                 updateProgress(`곡 번호: ${dirname}`);
             } catch (e) {
                 console.warn(`'${dirname}' 디렉터리에 song.json이 없거나 읽기 실패`, e);
+                cachedSongs[dirname] = null;
             }
         }
     }
@@ -429,6 +431,7 @@ async function getsongdata(number){
     }
     try{
         if(localmode){
+            /*
             const folderHandle = await songdir.getDirectoryHandle(number);
             const fileHandle = await folderHandle.getFileHandle('song.json');
 
@@ -438,6 +441,9 @@ async function getsongdata(number){
                 const js = JSON.parse(content);
                 return js;
             }
+            */
+           if(cachedSongs[number]) return cachedSongs[number];
+           else return 1;
         } else {
             const res = await fetch(`./songs/${number}/song.json`);
             const data = await res.text();

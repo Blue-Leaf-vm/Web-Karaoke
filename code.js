@@ -147,7 +147,7 @@ async function preload(upd=false, songs=false) {
                 cachedSongs[dirname] = json;
                 updateProgress(`곡 번호: ${dirname}`);
             } catch (e) {
-                console.warn(`'${dirname}' 디렉터리에 song.json이 없거나 읽기 실패`, e);
+                console.warn(`'${dirname}' 곡을 불러오지 못했습니다.`, e);
                 cachedSongs[dirname] = null;
             }
         }
@@ -427,6 +427,7 @@ async function getsongdata(number){
         if (loadingstat != 2) info(0, "곡 폴더를 선택해주세요.")
         songdir = await window.showDirectoryPicker();
         if (loadingstat == 2) preload(true);
+        else preload(false, true);
         return 1;
     }
     try{

@@ -192,12 +192,14 @@ wrapper.appendChild(timerimage);
 document.addEventListener("DOMContentLoaded", async function() {
 	try{
 		while(true){
-			if (isplaying && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nowsong2.png"); toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (isplaying && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nowsong2.png"); toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; await wait(3000); }
 			if (isplaying && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nowsong.png"); toptext.innerHTML = songtext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
-			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nextsong2.png"); toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
-			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nextsong.png"); toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; rollbackview = 'visible'; await wait(3000); }
+			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nextsong2.png"); toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; await wait(3000); }
+			if (reservedsong.length>0 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/nextsong.png"); toptext.innerHTML = reservetext; topimgtext.innerHTML = ''; rollbacktxt = reservetext; rollbackimg = topimgimg.src; await wait(3000); }
 			if (reservedsong.length>1 && hidetime==-1) { topimgimg.src = getCachedURL("./skin/2series/assets/song/playing/reserve.png"); toptext.innerHTML = `<span style="color: #fff">${safeJoin(reservedsong, 100, '&nbsp;&nbsp')}</span>`; topimgtext.innerHTML = `<span style="color: #FFFF7F">${String(reservedsong.length).padStart(2, "0")}</span>`; await wait(3000); }
 			if (reservedsong.length==0 && !isplaying && hidetime==-1) {	topimgbox.style.visibility = "hidden"; topblackbar.style.visibility = "hidden";}
+
+			if (isplaying) {rollbackview = 'visible';}
 			await wait(100);
 		}
 	} catch (e) {
@@ -245,6 +247,69 @@ async function hideforcestart() {
 		forcestartbox.remove();
 		const systemsound = document.getElementById('system');
 		systemsound.pause();
+	}
+}
+
+async function setting(status=0, tap=0, std) {
+	const bga = document.getElementById('bga');
+	if (status==-1){
+		settingstat=0;
+		bga.style.visibility = 'visible';
+		toptimebox.style.visibility = 'visible';
+		networkbox.style.visibility = 'visible';
+		wrapper.style.backgroundColor = '#000';
+		const settingbox = document.getElementById('settingbox');
+		if (settingbox) settingbox.remove();
+	}
+	else if (status==0){
+		hidecenterimage();
+		hidesideimage();
+		isinevacuationenable = false;
+		const forceimg = document.getElementById('forcebox');
+		if (forceimg) forceimg.remove();
+
+		settingstat=1;
+		bga.style.visibility = 'hidden';
+		toptimebox.style.visibility = 'hidden';
+		networkbox.style.visibility = 'hidden';
+		wrapper.style.backgroundColor = '#2E5966';
+		const settingbox = document.createElement('div');
+		const settingtop = document.createElement('div');
+		const settingtoptxt = document.createElement('p');
+		const settingtoptitle = document.createElement('p');
+		const settingmidpw = document.createElement('div');
+		const settingmidtxtpw = document.createElement('p');
+		const settingmiderrortxtpw = document.createElement('p');
+		const settingtxtpw = document.createElement('p');
+		const settingbottom = document.createElement('div');
+		const settingbottomtxt = document.createElement('p');
+
+		settingtoptxt.innerText = '환경설정';
+		settingmidtxtpw.innerText = '비밀번호를 입력하세요';
+		settingtxtpw.innerHTML = `<span class="settingpwname">모 델 명</span> : ziller K2 (BOOT VER:2.1)<br><span class="settingpwname">제조번호</span> : P1ACEH01DER`;
+		settingbottomtxt.innerHTML = '<span class="settingbottombtn">0~9</span>비밀번호 입력　　　<span class="settingbottombtn">취소</span>닫기';
+
+		settingbox.id = 'settingbox';
+		settingtop.id = 'settingtop';
+		settingtoptxt.id = 'settingtoptxt';
+		settingtoptitle.id = 'settingtoptitle';
+		settingmidpw.id = 'settingmidpw';
+		settingmidtxtpw.id = 'settingmidtxtpw';
+		settingmidtxtpw.id = 'settingmiderrortxtpw';
+		settingtxtpw.id = 'settingtxtpw';
+		settingbottom.id = 'settingbottom';
+		settingbottomtxt.id = 'settingbottomtxt';
+
+		settingtop.appendChild(settingtoptxt);
+		settingtop.appendChild(settingtoptitle);
+		settingmidpw.appendChild(settingmidtxtpw);
+		settingmidpw.appendChild(settingmiderrortxtpw);
+		settingbottom.appendChild(settingbottomtxt);
+		settingbox.appendChild(settingtop);
+		settingbox.appendChild(settingtxtpw);
+		settingbox.appendChild(settingmidpw);
+		settingbox.appendChild(settingbottom);
+		wrapper.appendChild(settingbox);
 	}
 }
 
@@ -937,6 +1002,7 @@ function startkar(evacuation=false){
 		systemsound.play();
 
 		systemsound.addEventListener('ended', function(){
+			if (!isinevacuationenable) { systemsound.removeEventListener('ended', arguments.callee); return; }
 			forceimg.remove();
 			startkar(false);
 			isinevacuationenable = false;

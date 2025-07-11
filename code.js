@@ -26,6 +26,7 @@ let isplaying = false;
 let isinscore = false;
 let isinevacuationenable = false;
 let isinexit = false;
+let settingstat = 0;
 let loadingstat = 0;
 
 let ifmv = false;
@@ -48,6 +49,8 @@ const cachedAssets = {};
 const cachedSongs = {};
 
 //설정
+let setpw = '1111';
+let netpw = '0000';
 let iscoin = true;
 let freeplay = false;
 let remcointime = 5;
@@ -55,9 +58,10 @@ let remcoinamount = 1;
 let coinwaitmessage = true;
 let coinwaittime = 120;
 let renderpron = false;
-let evacuationenable = false;
+let evacuationenable = true;
 let minscore = 0;
 let random100 = 10;
+let bonusscore = null;
 
 const startediscoin = iscoin;
 
@@ -153,12 +157,12 @@ async function preload(upd=false, songs=false) {
         }
     }
     
-    if (upd&&songs||upd&&!localmode) {
+    if (upd&&songs||upd&&!localmode||upd&&abortControllers.length==0) {
         await wait(500);
         loading(0);
         await wait(3000);
         loading(3);
-    } else if (upd&&!songs) {
+    } else if (upd&&!songs&&abortControllers.length>0) {
         await wait(100);
         preload(true, true);
     }
@@ -500,8 +504,10 @@ async function songend(){
         if(Math.floor(Math.random() * random100) == 0) score(nowplaying, 100);
         else score(nowplaying, Math.floor(Math.random() * (100 - minscore + 1)) + minscore);
     } else {
+        isinscore = true;
         await wait(500);
         endscore();
+        isinscore = false;
     }
 }
 
@@ -604,7 +610,7 @@ document.addEventListener('keydown', async function(event) {
             return;
         } else if (loadingstat == 2 && !localmode) {
             preload(true);
-        } else if (loadingstat > 0) return;
+        } else if (loadingstat > 0 || isinscore || isinexit || isinevacuationenable) return;
 
         if (!isplaying && !remotemode) {
             try{
@@ -818,7 +824,7 @@ async function fileExists(url) {
     }
 }
 
-function fadeOutAndPause(audio, duration = 200, step = 0.05) {
+function fadeOutAndPause(audio, duration = 300, step = 0.05) {
   if (!audio || audio.paused) return;
 
   const interval = duration * step;
@@ -872,17 +878,9 @@ setInterval(async () => {
             } else if (nowplaying) {
                 songstart(nowplaying);
             } else {
-                const subdirs = [];
-                for await (const [name, handle] of songdir.entries()) {
-                    if (handle.kind === 'directory') {
-                    subdirs.push({ name, handle });
-                    }
-                }
-                if (subdirs.length === 0) {
-                    info(1, '연주 가능한 곡이 없습니다.');
-                }
-                const randomIndex = Math.floor(Math.random() * subdirs.length);
-                songstart(subdirs[randomIndex].name, ++playnum);
+                const keys = Object.keys(cachedSongs);
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                songstart(randomKey, ++playnum);
             }
         }
     }

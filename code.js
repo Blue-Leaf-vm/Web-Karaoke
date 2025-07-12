@@ -145,18 +145,19 @@ async function preload(upd=false, songs=false) {
         await wait(100);
         for await (const [dirname, dirHandle] of songdir.entries()) {
             if (dirHandle.kind !== 'directory') continue;
+            if (!Number.isNaN(Number(dirname))){
+                try {
+                    const fileHandle = await dirHandle.getFileHandle('song.json');
+                    const file = await fileHandle.getFile();
+                    const text = await file.text();
+                    const json = JSON.parse(text);
 
-            try {
-                const fileHandle = await dirHandle.getFileHandle('song.json');
-                const file = await fileHandle.getFile();
-                const text = await file.text();
-                const json = JSON.parse(text);
-
-                cachedSongs[dirname] = json;
-                updateProgress(`곡 번호　:　${dirname}.......[${loadedCount+1}/${totalAssets}]`);
-            } catch (e) {
-                console.warn(`'${dirname}' 곡을 불러오지 못했습니다.`, e);
-                cachedSongs[dirname] = null;
+                    cachedSongs[dirname] = json;
+                    updateProgress(`곡 번호　:　${dirname}.......[${loadedCount+1}/${totalAssets}]`);
+                } catch (e) {
+                    console.warn(`'${dirname}' 곡을 불러오지 못했습니다.`, e);
+                    cachedSongs[dirname] = null;
+                }
             }
         }
     }
@@ -199,6 +200,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             const context = new (window.AudioContext || window.webkitAudioContext)();
             context.resume();
             await loadsongandvideo(number);
+            if (!hasmv) loadbga();
 
             if (!freeplay&&iscoin){
                 setTimeout(() => {
@@ -881,9 +883,42 @@ setlimit(false);
 skiploading=false;
 loading(0);
 
+async function loadbga() {
+	if (isplaying && hasmv) bga.play();
+    else {
+        if (localmode){
+            const bgaHandle = await songdir.getDirectoryHandle("bga", { create: false }).catch(() => null);
+            if (!bgaHandle) {
+                return null;
+            }
+
+            const files = [];
+            for await (const entry of bgaHandle.values()) {
+                if (entry.kind === "file") {
+                    files.push(entry);
+                }
+            }
+
+            if (files.length === 0) {
+                return null;
+            }
+
+            const randomFile = files[Math.floor(Math.random() * files.length)];
+            const fileData = await randomFile.getFile();
+            bga.src = URL.createObjectURL(fileData);
+            bga.play();
+        }
+    }
+}
+
 addEventListener("DOMContentLoaded", async (event) => {
     await wait(1000);
     loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
+
+    const bga = document.getElementById('bga');
+    bga.addEventListener('ended', async function(){
+        loadbga();
+	});
 });
 
 setInterval(async () => {

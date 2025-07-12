@@ -875,10 +875,10 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 //img: [service, scoreon/off, choruson/off, firstphaseon/off, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
+	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && showpron)) return;
+	if(timerimage.src&&!iscentershowed) return;
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");	
 	await wait(30);
-	if(isshowed || isinscore || isinexit || isinevacuationenable) return;
-	if(timerimage.src&&!iscentershowed) return;
 	centernum++;
 	if(img=='scoreoff'||img=='firstphaseon'||img=='chorusoff') loadsideimage();
 	else loadsideimage(true);
@@ -923,7 +923,7 @@ function hidecenterimage(){
 }
 
 async function loadsideimage(onlyshow=false, noshow=false) {
-	if (isshowed || (isplaying && showpron)) return;
+	if (isshowed) return;
 	if (ifmv==false&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "hidden";
 	} else if (ifmv==true&&ifmr==false&&iflive==false){

@@ -56,6 +56,29 @@ const imagePaths = [
 	"./skin/2series/assets/song/playing/MV.webp",
 	"./skin/2series/assets/song/playing/MR.webp",
 	"./skin/2series/assets/song/playing/LIVE.webp",
+	"./skin/2series/assets/song/score/background.png",
+	"./skin/2series/assets/song/score/message/0man.png",
+	"./skin/2series/assets/song/score/message/0woman.png",
+	"./skin/2series/assets/song/score/message/70man.png",
+	"./skin/2series/assets/song/score/message/70woman.png",
+	"./skin/2series/assets/song/score/message/80man.png",
+	"./skin/2series/assets/song/score/message/80woman.png",
+	"./skin/2series/assets/song/score/message/90man.png",
+	"./skin/2series/assets/song/score/message/90woman.png",
+	"./skin/2series/assets/song/score/message/100man.png",
+	"./skin/2series/assets/song/score/message/100woman.png",
+	"./skin/2series/assets/song/score/number/0.png",
+	"./skin/2series/assets/song/score/number/1.png",
+	"./skin/2series/assets/song/score/number/2.png",
+	"./skin/2series/assets/song/score/number/3.png",
+	"./skin/2series/assets/song/score/number/4.png",
+	"./skin/2series/assets/song/score/number/5.png",
+	"./skin/2series/assets/song/score/number/6.png",
+	"./skin/2series/assets/song/score/number/7.png",
+	"./skin/2series/assets/song/score/number/8.png",
+	"./skin/2series/assets/song/score/number/9.png",
+	"./skin/2series/assets/song/select/woman.png",
+	"./skin/2series/assets/song/select/multi.png",
 	"./skin/2series/assets/ui/noscore.png",
 	"./skin/2series/assets/ui/nochorus.png",
 	"./skin/2series/assets/ui/firstphase.png",
@@ -80,6 +103,7 @@ const audioPaths = [
 	"./skin/2series/sounds/explore.mp3",
 	"./skin/2series/sounds/join.mp3",
 	"./skin/2series/sounds/openmenu.mp3",
+	"./skin/2series/sounds/forcestart.mp3",
 	"./skin/2series/sounds/selsong/0.mp3",
 	"./skin/2series/sounds/selsong/1.mp3",
 	"./skin/2series/sounds/selsong/2.mp3",
@@ -90,7 +114,16 @@ const audioPaths = [
 	"./skin/2series/sounds/selsong/7.mp3",
 	"./skin/2series/sounds/selsong/8.mp3",
 	"./skin/2series/sounds/selsong/9.mp3",
-	"./skin/2series/sounds/forcestart.mp3",
+	"./skin/2series/sounds/score/0man.mp3",
+	"./skin/2series/sounds/score/0woman.mp3",
+	"./skin/2series/sounds/score/70man.mp3",
+	"./skin/2series/sounds/score/70woman.mp3",
+	"./skin/2series/sounds/score/80man.mp3",
+	"./skin/2series/sounds/score/80woman.mp3",
+	"./skin/2series/sounds/score/90man.mp3",
+	"./skin/2series/sounds/score/90woman.mp3",
+	"./skin/2series/sounds/score/100man.mp3",
+	"./skin/2series/sounds/score/100woman.mp3",
 ];
 
 const videoPaths = [
@@ -1014,6 +1047,7 @@ async function score(score=0){
 		score2img.src = getCachedURL(`./skin/2series/assets/song/score/number/${score%10}.png`);
 	}
 	await wait(50);
+	if (!isinscore) return;
 	if (score == 100) {
 		systemsound.src = getCachedURL(`./skin/2series/sounds/score/100${gender}.mp3`);
 		scoremessage.src = getCachedURL(`./skin/2series/assets/song/score/message/100${gender}.png`);
@@ -1035,10 +1069,6 @@ async function score(score=0){
 	if (!isinscore) return;
 	hidescore();
 	endscore();
-}
-
-function loadbga(rep=false){
-
 }
 
 function systemsound(type, sound){

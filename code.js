@@ -626,6 +626,8 @@ document.addEventListener('keydown', async function(event) {
                         const js = await getsongdata(reservedsong[0]);
                         await setnextreservesong(reservedsong[0], js.title, js.description, js.group||js.sing);
                     }
+                } else if (inpnum==''&&nowplaying) {
+                    songstart(nowplaying, ++playnum);
                 } else {
                     if (typeof await getsongdata(inpnum)=="object"){
                         songstart(inpnum, ++playnum);

@@ -238,7 +238,6 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
         for (let k=phase;k<js.lyricsd.length;k++) {
             if(k==1&&firstphase){
                 songend();
-                autoplay = false;
                 isplaying = false;
             }
             console.log(Date.now()-ontime);
@@ -505,7 +504,9 @@ async function songend(){
         if(Math.floor(Math.random() * random100) == 0) sc=100;
         else sc=Math.floor(Math.random() * (100 - minscore + 1)) + minscore;
         if(score!=0) sangsong.push({song: nowplaying, score: sc});
-        score(nowplaying, sc)
+        score(nowplaying, sc);
+        await wait(100);
+        if (!isinscore) endscore();
     } else {
         isinscore = true;
         await wait(500);

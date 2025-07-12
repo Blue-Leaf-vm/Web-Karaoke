@@ -58,7 +58,8 @@ let remcoinamount = 1;
 let coinwaitmessage = true;
 let coinwaittime = 120;
 let renderpron = false;
-let evacuationenable = true;
+let evacuationenable = false;
+let backgroundupdage = false;
 let minscore = 0;
 let random100 = 10;
 let bonusscore = null;
@@ -501,13 +502,16 @@ async function songend(){
     await wait(300);
     endsong();
     if (!noscore){
-        if(Math.floor(Math.random() * random100) == 0) score(nowplaying, 100);
-        else score(nowplaying, Math.floor(Math.random() * (100 - minscore + 1)) + minscore);
+        let sc;
+        if(Math.floor(Math.random() * random100) == 0) sc=100;
+        else sc=Math.floor(Math.random() * (100 - minscore + 1)) + minscore;
+        if(score!=0) sangsong.push({song: nowplaying, score: sc});
+        score(nowplaying, sc)
     } else {
         isinscore = true;
         await wait(500);
-        endscore();
         isinscore = false;
+        endscore();
     }
 }
 

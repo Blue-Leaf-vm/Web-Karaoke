@@ -58,7 +58,7 @@ let remcoinamount = 1;
 let coinwaitmessage = true;
 let coinwaittime = 120;
 let renderpron = false;
-let evacuationenable = false;
+let evacuationenable = true;
 let backgroundupdage = false;
 let minscore = 0;
 let random100 = 10;
@@ -442,19 +442,18 @@ async function getsongdata(number){
     }
     try{
         if(localmode){
-            /*
-            const folderHandle = await songdir.getDirectoryHandle(number);
-            const fileHandle = await folderHandle.getFileHandle('song.json');
+            if(cachedSongs[number]) return cachedSongs[number];
+            else {
+                const folderHandle = await songdir.getDirectoryHandle(number);
+                const fileHandle = await folderHandle.getFileHandle('song.json');
 
-            if (fileHandle) {
-                const file = await fileHandle.getFile();
-                const content = await file.text();
-                const js = JSON.parse(content);
-                return js;
-            }
-            */
-           if(cachedSongs[number]) return cachedSongs[number];
-           else return 1;
+                if (fileHandle) {
+                    const file = await fileHandle.getFile();
+                    const content = await file.text();
+                    const js = JSON.parse(content);
+                    return js;
+                } else return 1;
+            };
         } else {
             const res = await fetch(`./songs/${number}/song.json`);
             const data = await res.text();

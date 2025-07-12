@@ -264,9 +264,10 @@ async function setting(status=0, tap=0, std) {
 	else if (status==0){
 		hidecenterimage();
 		hidesideimage();
+		startkar(false);
+		const systemsound = document.getElementById('system');
+		systemsound.pause();
 		isinevacuationenable = false;
-		const forceimg = document.getElementById('forcebox');
-		if (forceimg) forceimg.remove();
 
 		settingstat=1;
 		bga.style.visibility = 'hidden';
@@ -968,19 +969,19 @@ function startkar(evacuation=false){
 	//입실화면 표시
 	sangsong.length = 0;
 	if(evacuation){
+		const forceimg = document.getElementById('forcebox') || document.createElement("img");
+		const systemsound = document.getElementById('system');
+		if (isinevacuationenable) systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
+		else systemsound.src = getCachedURL('./skin/2series/sounds/evacuation.mp3');
+		systemsound.play();
 		isinevacuationenable = true;
 		toptimeimg.style.opacity = '1';
 		toptimebox.style.zIndex = '101';
 		networkbox.style.visibility = 'hidden';
-		const forceimg = document.createElement("img");
 		forceimg.id = 'forcebox';
 		wrapper.appendChild(forceimg);
 		forceimg.src = getCachedURL('./skin/2series/assets/ui/evacuation.png');
 		forceimg.style.display = 'block';
-
-		const systemsound = document.getElementById('system');
-		systemsound.src = getCachedURL('./skin/2series/sounds/evacuation.mp3');
-		systemsound.play();
 
 		systemsound.addEventListener('ended', function(){
 			if (!isinevacuationenable) { systemsound.removeEventListener('ended', arguments.callee); return; }
@@ -990,6 +991,8 @@ function startkar(evacuation=false){
 			systemsound.removeEventListener('ended', arguments.callee);
 		});
 	} else {
+		const forcebox = document.getElementById('forcebox');
+		if (forcebox) forcebox.remove();
 		toptimeimg.style.opacity = "0.67";
 		networkbox.style.visibility = "visible";
 		const systemsound = document.getElementById('system');
@@ -1031,9 +1034,11 @@ async function hideexitscr(){
 async function endkar(songs){
 	//퇴장화면 표시
 	await wait(500);
-	const systemsound = document.getElementById('system');
-	systemsound.src = getCachedURL('./skin/2series/sounds/exit.mp3');
-	systemsound.play();
+	if (!isinevacuationenable){
+		const systemsound = document.getElementById('system');
+		systemsound.src = getCachedURL('./skin/2series/sounds/exit.mp3');
+		systemsound.play();
+	}
 	
 	if(songs.length >= 10){
 		toptimebox.style.visibility = 'hidden';

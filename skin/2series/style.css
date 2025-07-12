@@ -837,3 +837,24 @@
     transform-origin: left;
     bottom: 12px;
 }
+
+#scorescr {
+    position: absolute;
+    z-index: 101;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+}
+
+#scorebox {position: absolute;
+    top: 50%;
+    left: 1060px;
+    transform: translateY(-50%);
+}
+
+#scoremessage {position: absolute;
+    top: 50%;
+    transform: translateY(-19%);
+    right: 910px;
+}

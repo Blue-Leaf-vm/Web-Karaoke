@@ -516,7 +516,7 @@ async function songend(){
         if(Math.floor(Math.random() * random100) == 0) sc=100;
         else sc=Math.floor(Math.random() * (100 - minscore + 1)) + minscore;
         if(score!=0) sangsong.push({song: nowplaying, score: sc});
-        score(nowplaying, sc);
+        score(sc);
         await wait(10);
         if (!isinscore) endscore();
     } else {

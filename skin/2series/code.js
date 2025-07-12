@@ -280,6 +280,7 @@ async function setting(status=0, tap=0, std) {
 		bga.style.visibility = 'hidden';
 		toptimebox.style.visibility = 'hidden';
 		networkbox.style.visibility = 'hidden';
+		toptimebox.style.zIndex = '1';
 		wrapper.style.backgroundColor = '#275369';
 		const settingbox = document.createElement('div');
 		const settingtop = document.createElement('div');
@@ -922,7 +923,7 @@ function hidecenterimage(){
 }
 
 async function loadsideimage(onlyshow=false, noshow=false) {
-	if (isshowed) return;
+	if (isshowed || (isplaying && showpron)) return;
 	if (ifmv==false&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "hidden";
 	} else if (ifmv==true&&ifmr==false&&iflive==false){
@@ -953,12 +954,86 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 	} else firstphaseimagebox.style.visibility = "hidden";
 }
 
-//score: 점수
-async function score(song, score=0){
+async function hidescore() {
+	const forceimg = document.getElementById('forcebox');
+	const scorescr = document.getElementById('scorescr');
+	const systemsound = document.getElementById('system');
+	if (forceimg) forceimg.remove();
+	if (scorescr) scorescr.remove();
+	if (systemsound) systemsound.pause();
+	isinscore = false;
+	
+}
+
+async function score(score=0){
 	//점수 화면 표시
 	isinscore = true;
-	await wait(500);
-	isinscore = false;
+	let gender;
+	
+	const systemsound = document.getElementById('system');
+
+	const forceimg = document.createElement("img");
+	forceimg.src = getCachedURL('./skin/2series/assets/song/score/background.png');
+	forceimg.style.display = 'block';
+	forceimg.id = 'forcebox';
+	wrapper.appendChild(forceimg);
+
+	const scorescr = document.createElement('div');
+	const scorebox = document.createElement('div');
+	const score1img = document.createElement('img');
+	const score2img = document.createElement('img');
+	const score3img = document.createElement('img');
+	const scoremessage = document.createElement('img');
+	
+	scorescr.id = 'scorescr';
+	scorebox.id = 'scorebox';
+	scoremessage.id = 'scoremessage';
+
+	scorebox.appendChild(score1img);
+	scorebox.appendChild(score2img);
+	scorebox.appendChild(score3img);
+	scorescr.appendChild(scoremessage);
+	scorescr.appendChild(scorebox);
+	wrapper.appendChild(scorescr);
+
+	await wait(50);
+	score1img.src = getCachedURL('./skin/2series/assets/song/score/number/0.png');
+	score2img.src = getCachedURL('./skin/2series/assets/song/score/number/0.png');
+	for(let i=0; i<15; i++){
+		await wait(50);
+		score1img.src = getCachedURL(`./skin/2series/assets/song/score/number/${Math.floor(Math.random()*10)}.png`);
+		score2img.src = getCachedURL(`./skin/2series/assets/song/score/number/${Math.floor(Math.random()*10)}.png`);
+	}
+	gender = Math.floor(Math.random()*2) ? 'man' : 'woman';
+	if (score == 100){
+		score1img.src = getCachedURL(`./skin/2series/assets/song/score/number/1.png`);
+		score2img.src = getCachedURL(`./skin/2series/assets/song/score/number/0.png`);
+		score3img.src = getCachedURL(`./skin/2series/assets/song/score/number/0.png`);
+	} else {
+		score1img.src = getCachedURL(`./skin/2series/assets/song/score/number/${Math.floor(score/10)%10}.png`);
+		score2img.src = getCachedURL(`./skin/2series/assets/song/score/number/${score%10}.png`);
+	}
+	await wait(50);
+	if (score == 100) {
+		systemsound.src = getCachedURL(`./skin/2series/sounds/score/100${gender}.mp3`);
+		scoremessage.src = getCachedURL(`./skin/2series/assets/song/score/message/100${gender}.png`);
+	} else if (score >= 90) {
+		systemsound.src = getCachedURL(`./skin/2series/sounds/score/90${gender}.mp3`);
+		scoremessage.src = getCachedURL(`./skin/2series/assets/song/score/message/90${gender}.png`);
+	} else if (score >= 80) {
+		systemsound.src = getCachedURL(`./skin/2series/sounds/score/80${gender}.mp3`);
+		scoremessage.src = getCachedURL(`./skin/2series/assets/song/score/message/80${gender}.png`);
+	} else if (score >= 70) {
+		systemsound.src = getCachedURL(`./skin/2series/sounds/score/70${gender}.mp3`);
+		scoremessage.src = getCachedURL(`./skin/2series/assets/song/score/message/70${gender}.png`);
+	} else {
+		systemsound.src = getCachedURL(`./skin/2series/sounds/score/0${gender}.mp3`);
+		scoremessage.src = getCachedURL(`./skin/2series/assets/song/score/message/0${gender}.png`);
+	}
+	systemsound.play();
+	await wait(8000);
+	if (!isinscore) return;
+	hidescore();
 	endscore();
 }
 
@@ -1005,6 +1080,7 @@ function startkar(evacuation=false){
 		const forcebox = document.getElementById('forcebox');
 		if (forcebox) forcebox.remove();
 		toptimeimg.style.opacity = "0.67";
+		toptimebox.style.zIndex = '1';
 		networkbox.style.visibility = "visible";
 		const systemsound = document.getElementById('system');
 		const bga = document.getElementById('bga');

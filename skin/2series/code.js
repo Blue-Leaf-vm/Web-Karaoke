@@ -328,7 +328,7 @@ async function setting(status=0, tap=0, std) {
 
 		settingtoptxt.innerText = '환경설정';
 		settingmidtxtpw.innerText = '비밀번호를 입력하세요';
-		settingtxtpw.innerHTML = `<span class="settingpwname">모 델 명</span> : ziller K2 (BOOT VER:2.1)<br><span class="settingpwname">제조번호</span> : P1ACEH01DER`;
+		settingtxtpw.innerHTML = `<span class="settingpwname">모 델 명</span> : ziller P2 (BOOT VER:2.1)<br><span class="settingpwname">제조번호</span> : P1ACEH01DER`;
 		settingbottomtxt.innerHTML = '<span class="settingbottombtn">0~9</span>비밀번호 입력　　　<span class="settingbottombtn">취소</span>닫기';
 
 		settingbox.id = 'settingbox';
@@ -908,7 +908,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 //img: [service, scoreon/off, choruson/off, firstphaseon/off, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
-	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && showpron)) return;
+	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && renderpron)) return;
 	if(timerimage.src&&!iscentershowed) return;
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");	
 	await wait(30);

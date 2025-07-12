@@ -696,8 +696,9 @@
     color: #979d9e;
 }
 
+
 #settingtop {
-    background-color: #163237;
+    background-color: #112E3A;
     position: absolute;
     top: 0;
     left: 0;
@@ -716,7 +717,7 @@
 }
 
 #settingmidpw {
-    background-color: #0F242B;
+    background-color: #0B222D;
     position: absolute;
     width: 700px;
     height: 400px;
@@ -761,7 +762,7 @@
 }
 
 #settingbottom {
-    background-color: #163237;
+    background-color: #112E3A;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -781,8 +782,9 @@
 
 .settingbottombtn {
     background-color: #000;
-    color: #0ff;
+    color: #26A4FF;
     font-size: 25px;
+    font-weight: 600;
     padding: 7px;
     border-radius: 5px;
     position: relative;

@@ -272,7 +272,7 @@ async function setting(status=0, tap=0, std) {
 		bga.style.visibility = 'hidden';
 		toptimebox.style.visibility = 'hidden';
 		networkbox.style.visibility = 'hidden';
-		wrapper.style.backgroundColor = '#2E5966';
+		wrapper.style.backgroundColor = '#275369';
 		const settingbox = document.createElement('div');
 		const settingtop = document.createElement('div');
 		const settingtoptxt = document.createElement('p');
@@ -295,7 +295,7 @@ async function setting(status=0, tap=0, std) {
 		settingtoptitle.id = 'settingtoptitle';
 		settingmidpw.id = 'settingmidpw';
 		settingmidtxtpw.id = 'settingmidtxtpw';
-		settingmidtxtpw.id = 'settingmiderrortxtpw';
+		settingmiderrortxtpw.id = 'settingmiderrortxtpw';
 		settingtxtpw.id = 'settingtxtpw';
 		settingbottom.id = 'settingbottom';
 		settingbottomtxt.id = 'settingbottomtxt';
@@ -303,11 +303,11 @@ async function setting(status=0, tap=0, std) {
 		settingtop.appendChild(settingtoptxt);
 		settingtop.appendChild(settingtoptitle);
 		settingmidpw.appendChild(settingmidtxtpw);
-		settingmidpw.appendChild(settingmiderrortxtpw);
 		settingbottom.appendChild(settingbottomtxt);
 		settingbox.appendChild(settingtop);
 		settingbox.appendChild(settingtxtpw);
 		settingbox.appendChild(settingmidpw);
+		settingbox.appendChild(settingmiderrortxtpw);
 		settingbox.appendChild(settingbottom);
 		wrapper.appendChild(settingbox);
 	}
@@ -419,35 +419,17 @@ async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 		`
 	} else if (status==3) {
 		loadingstat=4;
-		if(evacuationenable){
-			const forceimg = document.createElement("img");
-			forceimg.id = 'forcebox';
-			wrapper.appendChild(forceimg);
-			forceimg.src = getCachedURL('./skin/2series/assets/ui/evacuation.png');
-			forceimg.style.display = 'block';
+		const systemsound = document.getElementById('system');
+		const bga = document.getElementById('bga');
+		systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
+		bga.src = getCachedURL('./skin/2series/videos/join.mp4');
+		systemsound.play();
+		bga.play();
 
-			const systemsound = document.getElementById('system');
-			systemsound.src = getCachedURL('./skin/2series/sounds/evacuation.mp3');
-			systemsound.play();
-
-			systemsound.addEventListener('ended', function(){
-				forceimg.remove();
-				loading(4);
-				systemsound.removeEventListener('ended', arguments.callee);
-			});
-		} else {
-			const systemsound = document.getElementById('system');
-			const bga = document.getElementById('bga');
-			systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
-			bga.src = getCachedURL('./skin/2series/videos/join.mp4');
-			systemsound.play();
-			bga.play();
-
-			bga.addEventListener('ended', function(){
-				loading(4);
-				bga.removeEventListener('ended', arguments.callee);
-			});
-		}
+		bga.addEventListener('ended', function(){
+			loading(4);
+			bga.removeEventListener('ended', arguments.callee);
+		});
 	} else {
 		loadingstat=0;
 		toptimebox.style.visibility = 'visible';

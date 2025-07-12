@@ -749,16 +749,17 @@ document.addEventListener('keydown', async function(event) {
         } else if (!remotemode) {
             if (isplaying){
                 const chorus = document.getElementById('chorus');
+                const music = document.getElementById('music');
                 if (nochorus){
+                    chorus.volume = 1;
                     info(0, '육성/코러스가 동작됩니다.');
                     nochorus = false;
                     loadimage('choruson');
-                    chorus.volume = '1';
                 } else {
+                    chorus.volume = 0.1;
                     info(0, '육성/코러스 동작을 중지합니다.');
                     nochorus = true;
                     loadimage('chorusoff');
-                    chorus.volume = '0';
                 }
             } else {
                 info(0, '연주 중에만 동작됩니다');

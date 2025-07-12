@@ -714,6 +714,10 @@ document.addEventListener('keydown', async function(event) {
             inpnum = '';
         }
     } else if (event.key === 'Escape') {
+        if (settingstat!=0) {
+            setting(-1);
+            return;
+        }
         if (loadingstat == 2 && localmode) {
             localmode = false;
             loading(1, '<span class="modaltexthighlight">취소</span> 버튼을 누르셨습니다.<br>이에 따라 일부 기능이 제한된 상태로<br> 서버에서 곡을 불러옵니다.<br>계속하려면 확인 버튼을 누르십시오.');
@@ -803,6 +807,13 @@ document.addEventListener('keydown', async function(event) {
                 noscore = true;
                 loadimage('scoreoff');
             }
+        }
+    } else if (event.key === 'o' || event.key === 'O') {
+        if(!isplaying&&!isinscore&&!isinexit&&remotemode) {
+            setlimit();
+            setting();
+            remotemode=false;
+            inpnum = '';
         }
     } else if (event.key === 'd' || event.key === 'D') {
         if(!freeplay&&remotemode&&!freeplay) {

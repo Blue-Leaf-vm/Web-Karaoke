@@ -511,7 +511,7 @@ async function songend(){
     iflive = false;
     await wait(300);
     endsong();
-    if (!noscore){
+    if (!noscore && playingphase!=0){
         let sc;
         if(Math.floor(Math.random() * random100) == 0) sc=100;
         else sc=Math.floor(Math.random() * (100 - minscore + 1)) + minscore;

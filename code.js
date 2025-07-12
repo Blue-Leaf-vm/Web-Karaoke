@@ -47,6 +47,7 @@ let forcestarttime = 0;
 
 const cachedAssets = {};
 const cachedSongs = {};
+let bpreload = false;
 
 //설정
 let setpw = '1111';
@@ -59,7 +60,7 @@ let coinwaitmessage = true;
 let coinwaittime = 120;
 let renderpron = false;
 let evacuationenable = true;
-let backgroundupdage = false;
+let backgroundupdage = true;
 let minscore = 0;
 let random100 = 10;
 let bonusscore = null;
@@ -86,6 +87,8 @@ async function preload(upd=false, songs=false) {
             }
         }
     }
+
+    if (!upd) bpreload = true;
 
     let loadedCount = 0;
     let totalAssets = 0;
@@ -166,7 +169,8 @@ async function preload(upd=false, songs=false) {
     } else if (upd&&!songs&&abortControllers.length>0) {
         await wait(100);
         preload(true, true);
-    }
+    } else if (!upd&&songs) bpreload = false;
+    else if (!upd&&!songs) preload(false, true);
 }
 
 async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false){
@@ -435,7 +439,15 @@ async function getsongdata(number){
     if (!songdir&&localmode) {
         if (loadingstat != 2) info(0, "곡 폴더를 선택해주세요.")
         songdir = await window.showDirectoryPicker();
-        if (loadingstat == 2) preload(true);
+        if (loadingstat == 2) {
+            if (!backgroundupdage) preload(true);
+            else {
+                loading(0);
+                await wait(3000);
+                loading(3);
+                preload(false);
+            }
+        }
         else preload(false, true);
         return 1;
     }
@@ -678,7 +690,12 @@ document.addEventListener('keydown', async function(event) {
             } catch {}
         }
     } else if (event.key === 'p' || event.key === 'P') {
-        if (!remotemode) {
+        if (remotemode) {
+            preload(false);
+            remotemode=false;
+            setlimit();
+            inpnum = '';
+        } else if (!remotemode) {
             try{
                 if(typeof await getsongdata(inpnum)=="object"){
                     songreserve(inpnum, true);

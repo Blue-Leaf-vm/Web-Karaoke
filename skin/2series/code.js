@@ -946,8 +946,8 @@ async function loadsideimage(onlyshow=false, noshow=false) {
 async function score(song, score=0){
 	//점수 화면 표시
 	isinscore = true;
-	isinscore = false;
 	await wait(500);
+	isinscore = false;
 	endscore();
 }
 

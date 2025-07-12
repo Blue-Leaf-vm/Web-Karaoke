@@ -505,7 +505,7 @@ async function songend(){
         else sc=Math.floor(Math.random() * (100 - minscore + 1)) + minscore;
         if(score!=0) sangsong.push({song: nowplaying, score: sc});
         score(nowplaying, sc);
-        await wait(100);
+        await wait(10);
         if (!isinscore) endscore();
     } else {
         isinscore = true;

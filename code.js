@@ -509,9 +509,10 @@ async function songend(){
     ifmv = false;
     ifmr = false;
     iflive = false;
+    const js = await getsongdata(nowplaying);
     await wait(300);
     endsong();
-    if (!noscore && playingphase!=0){
+    if (!noscore && (playingphase!=0 || (playingphase==0 && js.lyricsd.length == 1))){
         let sc;
         if(Math.floor(Math.random() * random100) == 0) sc=100;
         else sc=Math.floor(Math.random() * (100 - minscore + 1)) + minscore;
@@ -721,7 +722,7 @@ document.addEventListener('keydown', async function(event) {
         }
         if (isinevacuationenable || loadingstat==4) return;
         if (isinexit) hideexitscr();
-        else if (isinscore) hidesocre();
+        else if (isinscore) hidescore();
         document.getElementById('system').pause();
         if (inpnum.length != 0){
             inpnum = '';

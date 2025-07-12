@@ -879,7 +879,8 @@ async function loadimage(img, time=2, num=centernum+1){
 	if(isshowed || isinscore || isinexit || isinevacuationenable) return;
 	if(timerimage.src&&!iscentershowed) return;
 	centernum++;
-	if(img=='scoreoff'||img=='firstphaseon'||img=='chorusoff') loadsideimage(false);
+	if(img=='scoreoff'||img=='firstphaseon'||img=='chorusoff') loadsideimage();
+	else loadsideimage(true);
 	iscentershowed = true;
 	timerimage.style.display = "none";
 	centerimage.id = "centerimage";

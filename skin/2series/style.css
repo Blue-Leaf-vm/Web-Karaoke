@@ -607,7 +607,7 @@
 
 #updversionver {font-size: 50px;margin: 19px 0 0 60px;transform-origin: left;}
 
-#updversiondate {font-size: 50px;margin: 36px 0 0 60px;transform-origin: left;}
+#updversiondate {font-size: 50px;margin: 14px 0 0 60px;transform-origin: left;}
 
 
 #updpcbox {
@@ -616,7 +616,7 @@
     top: 495px;
 }
 
-.updpc {color: #bbb;margin: 0;background: #282749;width: 286px;height: 52px;font-size: 43px;border-radius: 10px;margin-bottom: 12px;text-align: center;padding: 10px 0 0 0;}
+.updpc {color: #bbb;margin: 0;background: #282749;width: 286px;height: 52px;font-size: 43px;border-radius: 10px;margin-bottom: 12px;text-align: center;padding: 0 0 13px 0;}
 
 .updpc[selected] {
     background: #4900fc;
@@ -659,9 +659,9 @@
 
 #updskipbox {position: absolute;top: 496px;left: 1010px;display: flex;}
 
-#updskipbtn {margin: 0;padding-top: 11px;font-size: 39px;color: #fff;width: 106px;height: 51px;text-align: center;background: #979d9e;border-radius: 9px;text-shadow: 0 0 4px black;}
+#updskipbtn {margin: 0;padding: 5px 0 10px 0;font-size: 39px;color: #fff;width: 106px;height: 51px;text-align: center;background: #979d9e;border-radius: 9px;text-shadow: 0 0 4px black;}
 
-#updskiptext {margin: 0;font-size: 50px;padding-top: 6px;transform: scaleX(0.92);color: #979d9e;}
+#updskiptext {margin: 0;font-size: 50px;transform: scaleX(0.92) translateY(-6px);color: #979d9e;}
 
 #updmessage {position: absolute;top: 680px;left: 420px;font-size: 50px;color: #fff;margin: 0;}
 
@@ -678,7 +678,7 @@
 
 #updupddragbox {position: absolute;left: 157px;background: #4c00ff;height: 20px;margin-top: 17px;}
 
-#updupdsize {margin: 0;position: absolute;left: 50%;top: 15px;color: #fff;font-size: 24px;transform: translateX(-50%);}
+#updupdsize {margin: 0;position: absolute;left: 50%;top: 8px;color: #fff;font-size: 24px;transform: translateX(-50%);}
 
 #updupdper {
     margin: 0;

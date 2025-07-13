@@ -511,6 +511,7 @@ async function songend(){
     ifmv = false;
     ifmr = false;
     iflive = false;
+    chorus.volume = 1;
     const js = await getsongdata(nowplaying);
     await wait(300);
     endsong();
@@ -576,6 +577,7 @@ function setlimit(chkend=true) {
         noscore = false;
         nochorus = false;
         firstphase = false;
+        chorus.volume = 1;
         nowplaying = null;
         hidesideimage();
         endkar(sangsong);

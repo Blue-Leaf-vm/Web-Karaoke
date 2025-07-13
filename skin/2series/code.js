@@ -1301,8 +1301,8 @@ async function endkar(songs){
 		}
 	} else {
 		await wait(500);
-		if (startediscoin && !iscoin) {iscoin = true; info(0, '관리 방식이 코인으로 변경되었습니다.'); setlimit();}
-		else if (!startediscoin && iscoin) {iscoin = false; info(0, '관리 방식이 시간으로 변경되었습니다.'); setlimit();}
+		if (startediscoin && !iscoin) {iscoin = true; info(0, '관리방식: 코인 모드 변경하였습니다.'); setlimit();}
+		else if (!startediscoin && iscoin) {iscoin = false; info(0, '관리방식: 시간 모드 변경하였습니다.'); setlimit();}
 	}
 }
 

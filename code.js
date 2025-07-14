@@ -623,6 +623,7 @@ function wait(ms) {
 document.addEventListener('keydown', async function(event) {
     if (loadingstat > 0 && !(event.key === 'Enter' || event.key === 'Escape')) return;
     else if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R') && !(event.key === 'Escape') && !remotemode) return;
+    else if (settingstat!=0 && !(event.key === 'Escape' || event.key === 'Enter' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || (Number(event.key) >= 0 && Number(event.key) < 10))) return;
     hideforcestart();
     forcestarttime = 0;
 	if (event.key === 'Enter') {

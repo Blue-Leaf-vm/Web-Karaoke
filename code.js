@@ -513,8 +513,10 @@ async function songend(){
     iflive = false;
     chorus.volume = 1;
     const js = await getsongdata(nowplaying);
-    await wait(300);
+    isinscore = true;
+    await wait(200);
     endsong();
+    await wait(300);
     if (!noscore && (playingphase!=0 || (playingphase==0 && js.lyricsd.length == 1))){
         let sc;
         if(Math.floor(Math.random() * random100) == 0) sc=100;
@@ -524,8 +526,6 @@ async function songend(){
         await wait(10);
         if (!isinscore) endscore();
     } else {
-        isinscore = true;
-        await wait(500);
         isinscore = false;
         endscore();
     }

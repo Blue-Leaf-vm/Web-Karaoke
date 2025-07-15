@@ -469,7 +469,7 @@ async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 		bga.play();
 
 		systemsound.addEventListener('ended', function(){
-			loading(4);
+			if (loadingstat==4) loading(4);
 			systemsound.removeEventListener('ended', arguments.callee);
 		});
 	} else {

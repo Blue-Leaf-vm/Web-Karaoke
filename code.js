@@ -50,6 +50,7 @@ const cachedAssets = {};
 const cachedSongs = {};
 let bpreload = false;
 
+let pwc;
 //설정
 let setpw = '1111';
 let netpw = '0000';
@@ -571,7 +572,22 @@ async function endscore(){
 }
 
 async function input(n) {
-    if(!remotemode){
+    if (settingstat==1) {
+        inpnum += n;
+        setting(0, pwc, inpnum.length);
+        if(inpnum.length>3){
+            settingstat=-1;
+            await wait(100);
+            setting(-1);
+            settingstat=-1;
+            await wait(10);
+            if (inpnum==setpw) {setting(0, 0); await wait(10); setting(1, 0);}
+            else if (pwc<2) { inpnum = ''; pwc++; setting(0, pwc); }
+            else settingstat=0;
+        }
+    } else if (settingstat!=0) {
+
+    } else if (!remotemode){
         if(inpnum.length==0 && n==0){return;}
         else if (inpnum.length==6 && n==0){return;}
         delnum++;
@@ -838,6 +854,7 @@ document.addEventListener('keydown', async function(event) {
         }
     } else if (event.key === 'o' || event.key === 'O') {
         if(!isplaying&&!isinscore&&!isinexit&&remotemode) {
+            pwc=0;
             setlimit();
             setting();
             remotemode=false;

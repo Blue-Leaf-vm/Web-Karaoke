@@ -292,7 +292,7 @@ async function hideforcestart() {
 
 async function setting(status=0, tap=0, std) {
 	const bga = document.getElementById('bga');
-	if (status==-1){
+	if (status==-1) {
 		settingstat=0;
 		bga.style.visibility = 'visible';
 		toptimebox.style.visibility = 'visible';
@@ -300,58 +300,89 @@ async function setting(status=0, tap=0, std) {
 		wrapper.style.backgroundColor = '#000';
 		const settingbox = document.getElementById('settingbox');
 		if (settingbox) settingbox.remove();
-	}
-	else if (status==0){
+	} else if (status==0) {
 		hidecenterimage();
 		hidesideimage();
-		startkar(false);
+		const forcebox = document.getElementById('forcebox');
+		if (forcebox) forcebox.remove();
+		toptimeimg.style.opacity = "0.67";
+		toptimebox.style.zIndex = '1';
 		const systemsound = document.getElementById('system');
 		systemsound.pause();
 		isinevacuationenable = false;
 
-		settingstat=1;
-		bga.style.visibility = 'hidden';
-		toptimebox.style.visibility = 'hidden';
-		networkbox.style.visibility = 'hidden';
-		toptimebox.style.zIndex = '1';
-		wrapper.style.backgroundColor = '#275369';
-		const settingbox = document.createElement('div');
-		const settingtop = document.createElement('div');
-		const settingtoptxt = document.createElement('p');
-		const settingtoptitle = document.createElement('p');
-		const settingmidpw = document.createElement('div');
-		const settingmidtxtpw = document.createElement('p');
-		const settingmiderrortxtpw = document.createElement('p');
-		const settingtxtpw = document.createElement('p');
-		const settingbottom = document.createElement('div');
-		const settingbottomtxt = document.createElement('p');
+		if (settingstat!=1){
+			settingstat=1;
+			bga.style.visibility = 'hidden';
+			toptimebox.style.visibility = 'hidden';
+			networkbox.style.visibility = 'hidden';
+			toptimebox.style.zIndex = '1';
+			wrapper.style.backgroundColor = '#275369';
+			const settingbox = document.createElement('div');
+			const settingtop = document.createElement('div');
+			const settingtoptxt = document.createElement('p');
+			const settingtoptitle = document.createElement('p');
+			const settingmidpw = document.createElement('div');
+			const settingmidtxtpw = document.createElement('p');
+			const settingmiderrortxtpw = document.createElement('p');
+			const settingtxtpw = document.createElement('p');
+			const settingbottom = document.createElement('div');
+			const settingbottomtxt = document.createElement('p');
 
-		settingtoptxt.innerText = '환경설정';
-		settingmidtxtpw.innerText = '비밀번호를 입력하세요';
-		settingtxtpw.innerHTML = `<span class="settingpwname">모 델 명</span> : ziller P2 (BOOT VER:2.1)<br><span class="settingpwname">제조번호</span> : P1ACEH01DER`;
-		settingbottomtxt.innerHTML = '<span class="settingbottombtn">0~9</span>비밀번호 입력　　　<span class="settingbottombtn">취소</span>닫기';
+			const settingmidinbox = document.createElement('div');
+			const settingmidinboxbox = document.createElement('div');
 
-		settingbox.id = 'settingbox';
-		settingtop.id = 'settingtop';
-		settingtoptxt.id = 'settingtoptxt';
-		settingtoptitle.id = 'settingtoptitle';
-		settingmidpw.id = 'settingmidpw';
-		settingmidtxtpw.id = 'settingmidtxtpw';
-		settingmiderrortxtpw.id = 'settingmiderrortxtpw';
-		settingtxtpw.id = 'settingtxtpw';
-		settingbottom.id = 'settingbottom';
-		settingbottomtxt.id = 'settingbottomtxt';
+			settingtoptxt.innerText = '환경설정';
+			settingmidtxtpw.innerText = '비밀번호를 입력하세요';
+			settingtxtpw.innerHTML = `<span class="settingpwname">모 델 명</span> : ziller P2 (BOOT VER:2.1)<br><span class="settingpwname">제조번호</span> : P1ACEH01DER<br><span class="settingpwname">프로그램</span> : ${String(version||1).padStart(4, '0')}`;
+			settingbottomtxt.innerHTML = '<span class="settingbottombtn">0~9</span>비밀번호 입력　　　<span class="settingbottombtn">취소</span>닫기';
+			if (tap!=0) settingmiderrortxtpw.innerText = `비밀번호가 틀립니다\n다시 입력하세요 (${tap}회)`;
 
-		settingtop.appendChild(settingtoptxt);
-		settingtop.appendChild(settingtoptitle);
-		settingmidpw.appendChild(settingmidtxtpw);
-		settingbottom.appendChild(settingbottomtxt);
-		settingbox.appendChild(settingtop);
-		settingbox.appendChild(settingtxtpw);
-		settingbox.appendChild(settingmidpw);
-		settingbox.appendChild(settingmiderrortxtpw);
-		settingbox.appendChild(settingbottom);
-		wrapper.appendChild(settingbox);
+			settingbox.id = 'settingbox';
+			settingtop.id = 'settingtop';
+			settingtoptxt.id = 'settingtoptxt';
+			settingtoptitle.id = 'settingtoptitle';
+			settingmidpw.id = 'settingmidpw';
+			settingmidtxtpw.id = 'settingmidtxtpw';
+			settingmiderrortxtpw.id = 'settingmiderrortxtpw';
+			settingtxtpw.id = 'settingtxtpw';
+			settingbottom.id = 'settingbottom';
+			settingbottomtxt.id = 'settingbottomtxt';
+
+			settingmidinbox.id = 'settingmidinbox';
+			settingmidinboxbox.classList.add('settingmidinboxbox');
+
+			settingtop.appendChild(settingtoptxt);
+			settingtop.appendChild(settingtoptitle);
+			settingmidpw.appendChild(settingmidtxtpw);
+			for(let i=0;i<4;i++){const clonenode = settingmidinboxbox.cloneNode(true); settingmidinbox.appendChild(clonenode);}
+			settingmidpw.appendChild(settingmidinbox);
+			settingmidpw.appendChild(settingmiderrortxtpw);
+			settingbottom.appendChild(settingbottomtxt);
+			settingbox.appendChild(settingtop);
+			settingbox.appendChild(settingtxtpw);
+			settingbox.appendChild(settingmidpw);
+			settingbox.appendChild(settingmiderrortxtpw);
+			settingbox.appendChild(settingbottom);
+			wrapper.appendChild(settingbox);
+		}
+
+		requestAnimationFrame(() => { for (let i=0;i<std?std:0;i++) {document.getElementsByClassName('settingmidinboxbox')[i].classList.add('selected');}});
+	} else if (status==1) {
+		if (settingstat!=2){
+			settingstat=2;
+			const settingmidpw = document.getElementById('settingmidpw');
+			const settingmidtxtpw = document.getElementById('settingmidtxtpw');
+			const settingmiderrortxtpw = document.getElementById('settingmiderrortxtpw');
+			const settingtxtpw = document.getElementById('settingtxtpw');
+			if (settingmidpw) settingmidpw.remove();
+			if (settingmidtxtpw) settingmidpw.remove();
+			if (settingmiderrortxtpw) settingmiderrortxtpw.remove();
+			if (settingtxtpw) settingtxtpw.remove();
+
+			const settingbottomtxt = document.getElementById('settingbottomtxt');
+			settingbottomtxt.innerHTML = '<span class="settingbottombtn">✥</span>항목 이동　　　<span class="settingbottombtn">선택</span>선택　　　<span class="settingbottombtn">취소</span>닫기';
+		}
 	}
 }
 
@@ -872,6 +903,7 @@ async function endsong(){
 //type: [free, time, coin, remote]
 function limit(type="free", number){
 	//시간, 코인 처리
+	if (loadingstat!=0||isinevacuationenable||isinscore||isinexit||loadingstat!=0) return;
 	if (type=="free"){toptimebox.style.visibility = "hidden";}
 	else if (type=="time"){
 		toptimebox.style.visibility = "visible";

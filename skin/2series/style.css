@@ -719,25 +719,57 @@ rt {
     position: absolute;
     width: 700px;
     height: 400px;
-    top: 360px;
-    left: 1000px;
+    top: 374px;
+    left: 936px;
     text-align: center;
 }
 
 #settingmidtxtpw {
     color: #81ffff;
     font-family: 'Noto Sans KR', 'Noto Sans';
-    font-size: 55px;
+    font-size: 50px;
     margin: 60px 0 0 0;
     transform: scaleX(0.95);
 }
 
+#settingmidinbox {
+    position: relative;
+    display: flex;
+    top: 62px;
+    left: 58px;
+    width: 582px;
+    gap: 14px;
+}
+
+.settingmidinboxbox {
+    width: 135px;
+    height: 135px;
+    background-color: #213c48;
+}
+
+.settingmidinboxbox.selected {
+	background-color: #0ff;
+}
+
+.settingmidinboxbox.selected::after {
+    position: relative;
+    content: '*';
+    color: #fff;
+    font-size: 200px;
+    font-family: 'Nanum Gothic';
+    top: -22px;
+}
+
 #settingmiderrortxtpw {
-    color: #f00;
+    color: #b30022;
     font-family: 'Noto Sans KR', 'Noto Sans';
-    font-size: 55px;
-    margin: 60px 0 0 0;
-    transform: scaleX(0.95);
+    font-weight: 500;
+    font-size: 42px;
+    position: absolute;
+    top: 740px;
+    left: 1105px;
+    transform: scaleX(0.86);
+    transform-origin: left;
 }
 
 #settingtxtpw {
@@ -746,7 +778,7 @@ rt {
     position: absolute;
     margin: 0;
     font-size: 50px;
-    left: 70px;
+    left: 88px;
     top: 50%;
     transform: translateY(-50%) scaleX(0.9);
     transform-origin: left;

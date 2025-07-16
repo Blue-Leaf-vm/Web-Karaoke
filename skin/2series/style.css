@@ -116,8 +116,8 @@
 }
 
 #upperlyricbox {
-    font-family: "TJ 노래하는즐거움체 TTF", 'Noto Sans KR', sans-serif;
-    font-weight: 600;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
     position: relative;
     top: 545px;
     left: 160px;
@@ -133,8 +133,8 @@
 }
 
 #lowerlyricbox {
-    font-family: "TJ 노래하는즐거움체 TTF", 'Noto Sans KR', sans-serif;
-    font-weight: 600;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
     position: relative;
     top: 700px;
     right: -400px;
@@ -152,12 +152,21 @@
     position: absolute;
 }
 
+rt {
+	font-size: 45px;
+}
+
 .lyrictext {
     font-size: 120px;
     margin: 0;
     position: relative;
     white-space: pre;
     text-align: center;
+}
+
+.tjsinglyric {
+    font-family: 'TJ 노래하는즐거움체 TTF', 'Noto Sans KR', sans-serif;
+    font-weight: 600;
 }
 
 .lyricpron {

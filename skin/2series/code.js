@@ -596,9 +596,9 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 
 	datatxt.innerHTML = `
 		<span style="color: #8B70FC">현재음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${curint}</span>&nbsp;&nbsp;&nbsp;<span style="color: #8B70FC">원음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${songint}</span>
-		</br><span style="color: #8B70FC">작사</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${lyrics}</span>
-		</br><span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${compos}</span>
-		${original ? `</br><span style="color: #8B70FC">원곡</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${original}</span>` : ' '}
+		</br>${lang=="KR" ? '<span style="color: #8B70FC">작사</span>&nbsp;&nbsp;&nbsp;' : '<span style="color: #CCCCCC">詞_</span>'}<span style="color: #CCCCCC">${lyrics}</span>
+		</br>${lang=="KR" ? '<span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;' : '<span style="color: #CCCCCC">曲_</span>'}<span style="color: #CCCCCC">${compos}</span>
+		${original ? `</br>${'<span style="color: #8B70FC">원곡</span>&nbsp;&nbsp;&nbsp;'}<span style="color: #CCCCCC">${original}</span>` : ' '}
 	`;
 	ad.id = 'ad';
 	ad.src = getCachedURL(`./skin/2series/assets/song/start/ad/${Math.floor(Math.random() * 7)+1}.png`);
@@ -737,17 +737,43 @@ async function renderlyric(showpron, data, isup, lang){
 	lyrictextunder.classList.add(`color${data.type}`);
 	lyrictextdragunder.classList.add(`color${data.type}drag`);
 
-	lyrictext.innerText = data.lyrics.join('');
-	lyrictextunder.innerText = data.lyrics.join('');
+	if(lang!='JP'){
+		lyrictext.classList.add("tjsinglyric");
+		lyrictextdrag.classList.add("tjsinglyric");
+		lyrictextunder.classList.add(`tjsinglyric`);
+		lyrictextdragunder.classList.add(`tjsinglyric`);
+	}
+
+	let datahtml = data.lyrics.join('');
+	if (lang == "JP"){
+		datahtml = "<ruby>";
+		for(let i=0;i<data.lyrics.length;i++){
+			datahtml+=`${data.lyrics[i]}<rt>${data.huri[i] || " "}</rt>`;
+		}
+		datahtml += "</ruby>";
+	}
+
+	lyrictext.innerHTML = datahtml;
+	lyrictextunder.innerHTML = datahtml;
 	lyrictextdrag.innerText = "";
 	lyrictextdragunder.innerText = "";
 	lyricpron.innerText = showpron ? data.pronunciation.join('') : "";
 	lyricpron.setAttribute("data-content", showpron ? data.pronunciation.join('') : "");
 
-	if(showpron&&isup){
-		lyricbox.style.top = "400px";
+	if (showpron&&isup){
+		lyricbox.style.top = lang=="JP" ? "335px" : "400px";
 	} else if (showpron&&!isup){
-		lyricbox.style.top = "625px";
+		lyricbox.style.top = lang=="JP" ? "605px" : "625px";
+	} else if (isup){
+		lyricbox.style.top = lang=="JP" ? "460px" : "545px";
+	} else if (!isup){
+		lyricbox.style.top = lang=="JP" ? "670px" : "700px";
+	}
+
+	if (lang=="JP"){
+		lyricpron.style.top = "150px";
+		lyricpron.style.fontSize = "58px";
+		lyricpron.style.fontWeight = "400";
 	}
 
 	lyrictextbox.appendChild(lyrictext);
@@ -786,8 +812,12 @@ async function draglyric(data, isup, lang) {
 	const lyrictextdrag = document.getElementById(isup ? "upperlyrictextdrag" : "lowerlyrictextdrag");
 	const lyrictextdragunder = document.getElementById(isup ? "upperlyrictextdragunder" : "lowerlyrictextdragunder");
 
-	lyrictextdrag.innerText = "";
-	lyrictextdragunder.innerText = "";
+	let datahtml = "";
+	let endhtml = "";
+	if (lang == "JP") { datahtml = "<ruby>"; endhtml = "</ruby>"; }
+
+	lyrictextdrag.innerText = datahtml + endhtml;
+	lyrictextdragunder.innerText = datahtml + endhtml;
 	lyrictextboxdrag.style.width = "0px";
 
 	let sstarttime;
@@ -795,8 +825,9 @@ async function draglyric(data, isup, lang) {
 
 	for (let j = 0; j < data.lyrics.length; j++) {
 		sstarttime = Date.now();
-		lyrictextdrag.innerText += data.lyrics[j];
-		lyrictextdragunder.innerText += data.lyrics[j];
+		datahtml += lang=="JP" ? `${data.lyrics[j]}<rt>${data.huri[j] || " "}</rt>` : data.lyrics[j];
+		lyrictextdrag.innerHTML = datahtml + endhtml;
+		lyrictextdragunder.innerHTML = datahtml + endhtml;
 		await new Promise(requestAnimationFrame);
 
 		if(data.timing[j]+data.wait[j]!=0){
@@ -913,7 +944,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 //img: [service, scoreon/off, choruson/off, firstphaseon/off, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
-	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && renderpron)) return;
+	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && renderpron) || playlang == "JP") return;
 	if(timerimage.src&&!iscentershowed) return;
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");	
 	await wait(30);
@@ -961,7 +992,7 @@ function hidecenterimage(){
 }
 
 async function loadsideimage(onlyshow=false, noshow=false) {
-	if (isshowed) return;
+	if (isshowed || playlang == "JP") return;
 	if (ifmv==false&&ifmr==false&&iflive==false){
 		if (!noshow) sideimage.style.visibility = "hidden";
 	} else if (ifmv==true&&ifmr==false&&iflive==false){

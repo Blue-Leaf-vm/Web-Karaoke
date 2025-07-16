@@ -10,6 +10,7 @@ let reservedsong = [];
 let nowplaying;
 let playingphase;
 let playingtime;
+let playlang;
 let timecoin = 0;
 let isusing = false;
 let autoplay = true;
@@ -194,6 +195,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             autoplay = true;
             nowplaying = number;
             playingphase = 0;
+            playlang = js.lang;
             await loadsongandvideo(number);
             if (!hasmv) loadbga();
 

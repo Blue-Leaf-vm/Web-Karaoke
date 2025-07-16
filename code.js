@@ -581,7 +581,7 @@ async function input(n) {
             setting(-1);
             settingstat=-1;
             await wait(10);
-            if (inpnum==setpw) {setting(0, 0); await wait(10); setting(1, 0);}
+            if (inpnum==setpw) {inpnum = ''; setting(0, 0); await wait(10); setting(1, 0);}
             else if (pwc<2) { inpnum = ''; pwc++; setting(0, pwc); }
             else settingstat=0;
         }

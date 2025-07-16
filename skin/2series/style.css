@@ -160,11 +160,6 @@
     text-align: center;
 }
 
-.lyrichuri {
-    font-size: 50px;
-    margin: 0;
-}
-
 .lyricpron {
   margin: 0;
   font-family: 'Noto Sans KR', 'Noto Sans';
@@ -185,7 +180,9 @@
 }
 
 #upperlyrictextboxdrag,
-#lowerlyrictextboxdrag {
+#lowerlyrictextboxdrag,
+#upperlyrictextboxdragunder,
+#lowerlyrictextboxdragunder {
 	position: absolute;
 	overflow-x: hidden;
 	width: 0;
@@ -193,44 +190,36 @@
 	white-space: nowrap;
 }
 
-#upperlyrictext::after, #upperlyrichuri::after, #lowerlyrictext::after, #lowerlyrichuri::after  {
-    z-index: -2;
-    content: attr(data-content);
-    position: absolute;
-    left: 0;
-}
-
-#upperlyrictextdrag::after, #upperlyrichuridrag::after, #lowerlyrictextdrag::after, #lowerlyrichuridrag::after  {
-    z-index: -1;
-    content: attr(data-content);
-    position: absolute;
-    left: 0;
-}
-
 .color0{
     color: #CCCCCC;
 }
-.color0::after{
+.color0.underlyric{
     -webkit-text-stroke: 13px #4B4861;
 }
 .color0drag{
     color: #00AFEC;
 }
-.color0drag::after{
+.color0drag.underlyric{
     -webkit-text-stroke: 13px #212251;
 }
 
 .color1{
     color: #C8C0B7;
 }
-.color1::after{
+.color1.underlyric{
     -webkit-text-stroke: 13px #514635;
 }
 .color1drag{
     color: #EDEA65;
 }
-.color1drag::after{
+.color1drag.underlyric{
     -webkit-text-stroke: 13px #423422;
+}
+
+.underlyric {
+	top: 0;
+	position: absolute;
+    z-index: -1;
 }
 
 #topbar {

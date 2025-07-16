@@ -702,39 +702,45 @@ async function renderlyric(showpron, data, isup, lang){
 	const lyricbox = document.createElement("div");
 	const lyrictextbox = document.createElement("div");
 	const lyrictext = document.createElement("p");
-	const lyrichuri = document.createElement("p");
+	const lyrictextunder = document.createElement("p");
 
 	const lyrictextboxdrag = document.createElement("div");
 	const lyrictextdrag = document.createElement("p");
-	const lyrichuridrag = document.createElement("p");
+	const lyrictextdragunder = document.createElement("p");
+
 	const lyricpron = document.createElement("p");
 
 	lyricbox.id = isup ? "upperlyricbox" : "lowerlyricbox";
+
 	lyrictextbox.id = isup ? "upperlyrictextbox" : "lowerlyrictextbox";
 	lyrictext.id = isup ? "upperlyrictext" : "lowerlyrictext";
-	lyrichuri.id = isup ? "upperlyrichuri" : "lowerlyrichuri";
+	lyrictextunder.id = isup ? "upperlyrictextunder" : "lowerlyrictextunder";
+
 	lyrictextboxdrag.id = isup ? "upperlyrictextboxdrag" : "lowerlyrictextboxdrag";
 	lyrictextdrag.id = isup ? "upperlyrictextdrag" : "lowerlyrictextdrag";
-	lyrichuridrag.id = isup ? "upperlyrichuridrag" : "lowerlyrichuridrag";
+	lyrictextdragunder.id = isup ? "upperlyrictextdragunder" : "lowerlyrictextdragunder";
+
 	lyricpron.id = isup ? "upperlyricpron" : "lowerlyricpron";
 	
-	lyrichuri.classList.add("lyrichuri");
 	lyrictext.classList.add("lyrictext");
+	lyrictextdrag.classList.add("lyrictext");
+	
+	lyrictextunder.classList.add(`lyrictext`);
+	lyrictextdragunder.classList.add(`lyrictext`);
+	lyrictextunder.classList.add(`underlyric`);
+	lyrictextdragunder.classList.add(`underlyric`);
+
 	lyricpron.classList.add("lyricpron");
 
-	lyrichuridrag.classList.add("lyrichuri");
-	lyrictextdrag.classList.add("lyrictext");
-
 	lyrictext.classList.add(`color${data.type}`);
-	lyrichuri.classList.add(`color${data.type}`);
 	lyrictextdrag.classList.add(`color${data.type}drag`);
-	lyrichuridrag.classList.add(`color${data.type}drag`);
+	lyrictextunder.classList.add(`color${data.type}`);
+	lyrictextdragunder.classList.add(`color${data.type}drag`);
 
 	lyrictext.innerText = data.lyrics.join('');
-	lyrictext.setAttribute("data-content", data.lyrics.join(''));
-	lyrichuri.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
+	lyrictextunder.innerText = data.lyrics.join('');
 	lyrictextdrag.innerText = "";
-	lyrichuridrag.innerText = "";
+	lyrictextdragunder.innerText = "";
 	lyricpron.innerText = showpron ? data.pronunciation.join('') : "";
 	lyricpron.setAttribute("data-content", showpron ? data.pronunciation.join('') : "");
 
@@ -745,9 +751,9 @@ async function renderlyric(showpron, data, isup, lang){
 	}
 
 	lyrictextbox.appendChild(lyrictext);
-	lyrictextbox.appendChild(lyrichuri);
+	lyrictextbox.appendChild(lyrictextunder);
 	lyrictextboxdrag.appendChild(lyrictextdrag);
-	lyrictextboxdrag.appendChild(lyrichuridrag);
+	lyrictextboxdrag.appendChild(lyrictextdragunder);
 
 	lyricbox.appendChild(lyrictextbox);
 	lyricbox.appendChild(lyrictextboxdrag);
@@ -778,11 +784,10 @@ async function renderlyric(showpron, data, isup, lang){
 async function draglyric(data, isup, lang) {
 	const lyrictextboxdrag = document.getElementById(isup ? "upperlyrictextboxdrag" : "lowerlyrictextboxdrag");
 	const lyrictextdrag = document.getElementById(isup ? "upperlyrictextdrag" : "lowerlyrictextdrag");
-	const lyrichuridrag = document.getElementById(isup ? "upperlyrichuridrag" : "lowerlyrichuridrag");
-
-	lyrichuridrag.innerText = lang === "JP" ? (data.hurigana?.join('') || '') : "";
+	const lyrictextdragunder = document.getElementById(isup ? "upperlyrictextdragunder" : "lowerlyrictextdragunder");
 
 	lyrictextdrag.innerText = "";
+	lyrictextdragunder.innerText = "";
 	lyrictextboxdrag.style.width = "0px";
 
 	let sstarttime;
@@ -791,7 +796,7 @@ async function draglyric(data, isup, lang) {
 	for (let j = 0; j < data.lyrics.length; j++) {
 		sstarttime = Date.now();
 		lyrictextdrag.innerText += data.lyrics[j];
-		lyrictextdrag.setAttribute("data-content", lyrictextdrag.innerText);
+		lyrictextdragunder.innerText += data.lyrics[j];
 		await new Promise(requestAnimationFrame);
 
 		if(data.timing[j]+data.wait[j]!=0){

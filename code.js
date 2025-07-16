@@ -60,7 +60,7 @@ let remcointime = 5;
 let remcoinamount = 1;
 let coinwaitmessage = true;
 let coinwaittime = 120;
-let renderpron = false;
+let renderpron = {KR: false, JP: true, CN: true, null: false};
 let evacuationenable = true;
 let backgroundupdage = false;
 let minscore = 0;
@@ -265,13 +265,13 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             hidesideimage();
             ininterlude = false;
             if (item.lines.length >= 2) {
-                renderlyric(renderpron, item.lines[0], true, js.lang);
+                renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
                 setTimeout(()=>{
                     if(!isplaying||num!=playnum){return;}
-                    renderlyric(renderpron, item.lines[1], false, js.lang);
+                    renderlyric(renderpron[js.lang], item.lines[1], false, js.lang);
                 }, 30);
             } else if (item.lines.length == 1) {
-                renderlyric(renderpron, item.lines[0], true, js.lang);
+                renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
             }
 
             let isup = true;
@@ -314,7 +314,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 
                 const next = item.lines[i + 2];
                 if(!isplaying||num!=playnum){return;}
-                if (next) renderlyric(renderpron, next, isup, js.lang);
+                if (next) renderlyric(renderpron[js.lang], next, isup, js.lang);
 
                 isup = !isup;
             }

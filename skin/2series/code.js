@@ -684,7 +684,7 @@ async function hidestartbox(isstop=false, noloadside=false, forcehide=false){
 		if (!isstop&&isplaying){
 			topimgbox.style.visibility = "visible";
 			topblackbar.style.visibility = "visible";
-			if (!noloadside && !renderpron) {loadsideimage();}
+			if (!noloadside && !renderpron[playlang]) {loadsideimage();}
 		}
 	}
 }
@@ -713,7 +713,7 @@ async function timer(bpm, isup, startcount=4){
 
 	timerimage.style.display = "none";
 	timerimage.removeAttribute("src");
-	if (!renderpron) loadsideimage(true);
+	if (!renderpron[playlang]) loadsideimage(true);
 }
 
 function getScaledPositionToWrapper(element) {
@@ -976,7 +976,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 //img: [service, scoreon/off, choruson/off, firstphaseon/off, clap, pause, frontbarjump, backbarjump, phasejump, interludejump]
 async function loadimage(img, time=2, num=centernum+1){
 	//중간이미지 렌더링
-	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && renderpron) || playlang == "JP") return;
+	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && renderpron[playlang]) || playlang == "JP") return;
 	if(timerimage.src&&!iscentershowed) return;
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");	
 	await wait(30);

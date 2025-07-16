@@ -569,7 +569,7 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	infobox.appendChild(upperbox);
 
 	requestAnimationFrame(() => {
-		const maxWidth = 1150;
+		const maxWidth = banner ? 900 : 1150;
 		const actualWidth = titletxt.clientWidth;
 		if (actualWidth > maxWidth) {
 			const scaleX = maxWidth / actualWidth;

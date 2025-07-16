@@ -530,6 +530,7 @@ async function songend(){
     fadeOutAndPause(melody);
     fadeOutAndPause(chorus);
     isplaying = false;
+    playlang = null;
     ininterlude = false;
     nochorus = false;
     ifmv = false;

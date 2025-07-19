@@ -51,6 +51,7 @@ const cachedSongs = {};
 let bpreload = false;
 
 let pwc;
+let serloc;
 //설정
 let setpw = '1111';
 let netpw = '0000';
@@ -387,9 +388,9 @@ async function loadsongandvideo(number, time=0, fileload=false){
                         continue;
                     }
                 } else {
-                    const exists = await fileExists(`./songs/${number}/${name}`);
+                    const exists = await fileExists(`${serloc}songs/${number}/${name}`);
                     if (exists) {
-                        fileUrl = `./songs/${number}/${name}`;
+                        fileUrl = `${serloc}songs/${number}/${name}`;
                     } else {
                         continue;
                     }
@@ -493,7 +494,7 @@ async function getsongdata(number){
                 } else return 1;
             };
         } else {
-            const res = await fetch(`./songs/${number}/song.json`);
+            const res = await fetch(`${serloc}songs/${number}/song.json`);
             const data = await res.text();
             const js = JSON.parse(data);
             return js;
@@ -512,9 +513,9 @@ async function getbannerdata(number){
                 return URL.createObjectURL(await bannerHandle.getFile());
             }
         } else {
-            const exists = await fileExists(`./songs/${number}/banner.png`);
+            const exists = await fileExists(`${serloc}songs/${number}/banner.png`);
             if (exists) {
-                return `./songs/${number}/banner.png`;
+                return `${serloc}songs/${number}/banner.png`;
             }
         }
     } catch (err) {
@@ -970,7 +971,7 @@ async function loadbga() {
 addEventListener("DOMContentLoaded", async (event) => {
     await wait(1000);
     loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
-
+    serloc = document.location;
     const bga = document.getElementById('bga');
     bga.addEventListener('ended', async function(){
         loadbga();

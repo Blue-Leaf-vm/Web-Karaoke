@@ -574,7 +574,7 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	const desctxt = document.createElement("p");
 	const singtxt = document.createElement("p");
 	titletxt.innerText = title;
-	singtxt.innerHTML = `<span style="color: #8B70FC">노래</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${sing}</span>`;
+	singtxt.innerHTML = `${lang=="JP" ? `<span style="color: #8B70FC">唄_${sing}</span>` : `<span style="color: #8B70FC">노래</span>&nbsp;&nbsp;&nbsp;<span style="color: #CCCCCC">${sing}</span>`}`;
 	if(dis){
 		desctxt.innerText = `(${dis})`;
 
@@ -626,9 +626,9 @@ function startsong(number, title, dis, group, sing, gender, songint, curint, lyr
 	const datatxt = document.createElement("p");
 
 	datatxt.innerHTML = `
-		<span style="color: #8B70FC">현재음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${curint}</span>&nbsp;&nbsp;&nbsp;<span style="color: #8B70FC">원음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}&nbsp;${songint}</span>
-		</br>${lang=="KR" ? '<span style="color: #8B70FC">작사</span>&nbsp;&nbsp;&nbsp;' : '<span style="color: #CCCCCC">詞_</span>'}<span style="color: #CCCCCC">${lyrics}</span>
-		</br>${lang=="KR" ? '<span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;' : '<span style="color: #CCCCCC">曲_</span>'}<span style="color: #CCCCCC">${compos}</span>
+		<span style="color: #8B70FC">현재음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}${curint.padStart(3, ' ').replace(/ /g, '&nbsp;')}</span>&nbsp;&nbsp;&nbsp;<span style="color: #8B70FC">원음정</span>&nbsp;<span style="color: #CCCCCC">${gender==0 ? "남성" : gender==1 ? "여성" : "혼성"}${songint.padStart(3, ' ').replace(/ /g, '&nbsp;')}</span>
+		</br>${lang=="JP" ? '<span style="color: #CCCCCC">詞_</span>' : '<span style="color: #8B70FC">작사</span>&nbsp;&nbsp;&nbsp;' }<span style="color: #CCCCCC">${lyrics}</span>
+		</br>${lang=="JP" ? '<span style="color: #CCCCCC">曲_</span>': '<span style="color: #8B70FC">작곡</span>&nbsp;&nbsp;&nbsp;' }<span style="color: #CCCCCC">${compos}</span>
 		${original ? `</br>${'<span style="color: #8B70FC">원곡</span>&nbsp;&nbsp;&nbsp;'}<span style="color: #CCCCCC">${original}</span>` : ' '}
 	`;
 	ad.id = 'ad';

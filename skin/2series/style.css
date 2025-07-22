@@ -225,6 +225,50 @@ rt {
     -webkit-text-stroke: 13px #423422;
 }
 
+.color2{
+    color: #D6E1F5;
+}
+.color2.underlyric{
+    -webkit-text-stroke: 13px #303E6C;
+}
+.color2drag{
+    color: #74FFFF;
+}
+.color2drag.underlyric{
+    -webkit-text-stroke: 13px #012E81;
+}
+
+.color3{
+    color: #EDDCE1;
+}
+.color3.underlyric{
+    -webkit-text-stroke: 13px #764465;
+}
+.color3drag{
+    color: #FFAEFF;
+}
+.color3drag.underlyric{
+    -webkit-text-stroke: 13px #7B0A11;
+}
+
+.color4{
+    color: #E8DEFF;
+}
+.color4.underlyric{
+    -webkit-text-stroke: 13px #3E3562;
+}
+.color4drag{
+    color: #D0B1FF;
+}
+.color4drag.underlyric{
+    -webkit-text-stroke: 13px #302373;
+}
+
+.genicon{
+	position: absolute;
+	left: -110px;
+}
+
 .underlyric {
 	top: 0;
 	position: absolute;

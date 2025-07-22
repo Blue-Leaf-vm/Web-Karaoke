@@ -9,6 +9,7 @@ let songtext;
 let reservetext;
 let lasthap = 0;
 let centernum = 0;
+let beforegender = 0;
 
 const imagePaths = [
 	"./skin/2series/assets/ui/evacuation.png",
@@ -77,8 +78,6 @@ const imagePaths = [
 	"./skin/2series/assets/song/score/number/7.png",
 	"./skin/2series/assets/song/score/number/8.png",
 	"./skin/2series/assets/song/score/number/9.png",
-	"./skin/2series/assets/song/select/woman.png",
-	"./skin/2series/assets/song/select/multi.png",
 	"./skin/2series/assets/ui/noscore.png",
 	"./skin/2series/assets/ui/nochorus.png",
 	"./skin/2series/assets/ui/firstphase.png",
@@ -816,6 +815,16 @@ async function renderlyric(showpron, data, isup, lang){
 	lyricbox.appendChild(lyrictextboxdrag);
 	lyricbox.appendChild(lyricpron);
 
+	if (data.type!=beforegender) {
+		beforegender=data.type;
+		const genicon = document.createElement("img");
+		genicon.classList.add('genicon');
+		if (data.type == 2) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/man.png');
+		else if (data.type == 3) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/woman.png');
+		else if (data.type == 4) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/multi.png');
+		lyricbox.appendChild(genicon);
+	}
+
 	document.getElementById("wrapper").appendChild(lyricbox);
 
 	requestAnimationFrame(() => {
@@ -890,6 +899,7 @@ async function endsong(){
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
 	timerimage.style.display = "none";
+	beforegender = 0;
 	hidesideimage();
 	timerimage.removeAttribute("src")
 	hidelyric(true);

@@ -899,7 +899,6 @@ async function endsong(){
 	topimgbox.style.visibility = "hidden";
 	topblackbar.style.visibility = "hidden";
 	timerimage.style.display = "none";
-	beforegender = 0;
 	hidesideimage();
 	timerimage.removeAttribute("src")
 	hidelyric(true);

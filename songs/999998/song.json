@@ -1,0 +1,40 @@
+{
+  "lang": "JP",
+  "type": 0,
+  "title": "青い珊瑚礁",
+  "sing": "샌즈",
+  "group": "샍",
+  "interval": "G",
+  "lyrics": "와샌즈",
+  "compos": "몰라",
+  "gender": 1,
+  "musicsync": 0,
+  "melodysync": 0,
+  "chorussync": 0,
+  "videosync": 0,
+  "bpm": 120,
+  "endwait": 1000,
+  "lyricsd": [
+    {
+      "startwait": 5000,
+      "lines": [
+        {
+          "type": 0,
+          "huri": ["", "わたし", "", "こい", ""],
+          "lyrics": ["あゝ", "私", "の", "恋", "は"],
+          "pronunciation": ["아아 ", "와타시", "노 ", "코이", "와"],
+          "timing": [100, 200, 50, 100, 100],
+          "wait": [0, 0, 0, 100, 1000]
+        },
+        {
+          "type": 1,
+          "huri": ["みなみ", ""],
+          "lyrics": ["南", "の"],
+          "pronunciation": ["미나미", "노"],
+          "timing": [100, 10000000],
+          "wait": [0, 1000]
+        }
+      ]
+    }
+  ]
+}

@@ -52,6 +52,7 @@ let bpreload = false;
 
 let pwc;
 let serloc;
+
 //설정
 let setpw = '1111';
 let netpw = '0000';
@@ -63,7 +64,7 @@ let coinwaitmessage = true;
 let coinwaittime = 120;
 let renderpron = {KR: false, JP: true, CN: true, null: false};
 let evacuationenable = true;
-let backgroundupdage = false;
+let backgroundupdate = false;
 let minscore = 0;
 let random100 = 10;
 let bonusscore = null;
@@ -468,7 +469,7 @@ async function getsongdata(number){
         if (loadingstat != 2) info(0, "곡 폴더를 선택해주세요.")
         songdir = await window.showDirectoryPicker();
         if (loadingstat == 2) {
-            if (!backgroundupdage) preload(true);
+            if (!backgroundupdate) preload(true);
             else {
                 loading(0);
                 await wait(3000);

@@ -69,6 +69,40 @@ let minscore = 0;
 let random100 = 10;
 let bonusscore = null;
 
+function setsetting(){
+    window.localStorage.setItem('setpw', setpw);
+    window.localStorage.setItem('netpw', netpw);
+    window.localStorage.setItem('iscoin', iscoin);
+    window.localStorage.setItem('freeplay', freeplay);
+    window.localStorage.setItem('remcointime', remcointime);
+    window.localStorage.setItem('remcoinamount', remcoinamount);
+    window.localStorage.setItem('coinwaitmessage', coinwaitmessage);
+    window.localStorage.setItem('coinwaittime', coinwaittime);
+    window.localStorage.setItem('renderpron', JSON.stringify(renderpron));
+    window.localStorage.setItem('evacuationenable', evacuationenable);
+    window.localStorage.setItem('backgroundupdate', backgroundupdate);
+    window.localStorage.setItem('minscore', minscore);
+    window.localStorage.setItem('random100', random100);
+    window.localStorage.setItem('bonusscore', bonusscore);
+}
+
+function getsetting(){
+    setpw = window.localStorage.getItem('setpw') || setpw;
+    netpw = window.localStorage.getItem('netpw') || netpw;
+    iscoin = window.localStorage.getItem('iscoin') || iscoin;
+    freeplay = window.localStorage.getItem('freeplay') || freeplay;
+    remcointime = window.localStorage.getItem('remcointime') || remcointime;
+    remcoinamount = window.localStorage.getItem('remcoinamount') || remcoinamount;
+    coinwaitmessage = window.localStorage.getItem('coinwaitmessage') || coinwaitmessage;
+    coinwaittime = window.localStorage.getItem('coinwaittime') || coinwaittime;
+    renderpron = JSON.parse(window.localStorage.getItem('renderpron')) || renderpron;
+    evacuationenable = window.localStorage.getItem('evacuationenable') || evacuationenable;
+    backgroundupdate = window.localStorage.getItem('backgroundupdate') || backgroundupdate;
+    minscore = window.localStorage.getItem('minscore') || minscore;
+    random100 = window.localStorage.getItem('random100') || random100;
+    bonusscore = window.localStorage.getItem('bonusscore') || bonusscore;
+}
+
 const startediscoin = iscoin;
 
 function getCachedURL(path) {
@@ -974,6 +1008,7 @@ async function loadbga() {
 }
 
 addEventListener("DOMContentLoaded", async (event) => {
+    getsetting();
     await wait(1000);
     loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
     serloc = document.location;

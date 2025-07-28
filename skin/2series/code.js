@@ -912,20 +912,17 @@ async function endsong(){
 //type: [free, time, coin, remote]
 function limit(type="free", number){
 	//시간, 코인 처리
-	if (loadingstat!=0||isinevacuationenable||isinscore||isinexit||loadingstat!=0) return;
-	if (type=="free"){toptimebox.style.visibility = "hidden";}
-	else if (type=="time"){
-		toptimebox.style.visibility = "visible";
+	if (type=="free") toptimebox.style.visibility = "hidden";
+	else if (!(loadingstat!=0||isinevacuationenable||isinscore||isinexit)) toptimebox.style.visibility = "visible";
+	if (type=="time"){
 		toptimeimg.src = getCachedURL('./skin/2series/assets/ui/time/time.png');
 		toptimetext.innerText = `${String(number).padStart(3, '0')}분`;
 	}
 	else if (type=="coin"){
-		toptimebox.style.visibility = "visible";
 		toptimeimg.src = getCachedURL('./skin/2series/assets/ui/time/coin.png');
 		toptimetext.innerText = `${String(number).padStart(3, '0')}곡`;
 	}
 	else if (type=="remote"){
-		toptimebox.style.visibility = "visible";
 		toptimeimg.src = getCachedURL('./skin/2series/assets/ui/time/remote.png');
 		toptimetext.innerText = `${String(number).padStart(5, '0')}`;
 	}

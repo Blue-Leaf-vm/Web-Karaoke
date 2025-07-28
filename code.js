@@ -4,7 +4,7 @@ let isup = true;
 let inpnum = "";
 let delnum = 0;
 let playnum = 0;
-let remotemode = false;
+let selmode = 'normal';
 const sangsong = [];
 let reservedsong = [];
 let nowplaying;
@@ -623,7 +623,7 @@ async function input(n) {
         }
     } else if (settingstat!=0) {
 
-    } else if (!remotemode){
+    } else if (selmode == 'normal'){
         if(inpnum.length==0 && n==0){return;}
         else if (inpnum.length==6 && n==0){return;}
         delnum++;
@@ -699,7 +699,7 @@ function wait(ms) {
 
 document.addEventListener('keydown', async function(event) {
     if (loadingstat > 0 && !(event.key === 'Enter' || event.key === 'Escape')) return;
-    else if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R' || event.key === 'Escape') && !remotemode) return;
+    else if ((isinscore || isinexit || isinevacuationenable) && !(event.key === 'r' || event.key === 'R' || event.key === 'Escape') && selmode == 'normal') return;
     else if (settingstat!=0 && !(event.key === 'Escape' || event.key === 'Enter' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || (Number(event.key) >= 0 && Number(event.key) < 10))) return;
     hideforcestart();
     forcestarttime = 0;
@@ -711,7 +711,7 @@ document.addEventListener('keydown', async function(event) {
             preload(true);
         } else if (loadingstat > 0 || isinscore || isinexit || isinevacuationenable) return;
 
-        if (!isplaying && !remotemode) {
+        if (!isplaying && selmode == 'normal') {
             try{
                 if(inpnum==''&&reservedsong.length>0){
                     songstart(reservedsong[0], ++playnum);
@@ -732,7 +732,7 @@ document.addEventListener('keydown', async function(event) {
             } catch {}
         }
     } else if (event.key === 'u' || event.key === 'U') {
-        if (!remotemode){
+        if (selmode == 'normal'){
             try{
                 if(inpnum == ''){
                     if(reservedsong.length>0){
@@ -764,7 +764,7 @@ document.addEventListener('keydown', async function(event) {
             } catch {}
         }
     } else if (event.key === 'q' || event.key === 'Q') {
-        if (!remotemode) {
+        if (selmode == 'normal') {
             try{
                 if(typeof await getsongdata(inpnum)=="object"){
                     songreserve(inpnum);
@@ -773,12 +773,12 @@ document.addEventListener('keydown', async function(event) {
             } catch {}
         }
     } else if (event.key === 'p' || event.key === 'P') {
-        if (remotemode) {
+        if (selmode == 'remote') {
             preload(false);
-            remotemode=false;
+            selmode = 'normal';
             setlimit();
             inpnum = '';
-        } else if (!remotemode) {
+        } else if (selmode == 'normal') {
             try{
                 if(typeof await getsongdata(inpnum)=="object"){
                     songreserve(inpnum, true);
@@ -787,9 +787,9 @@ document.addEventListener('keydown', async function(event) {
             } catch {}
         }
     } else if (event.key === 'l' || event.key === 'L') {
-        if(remotemode) {
+        if(selmode == 'remote') {
             localmode=!localmode;
-            remotemode=false;
+            selmode = 'normal';
             setlimit();
             inpnum = '';
         } else {
@@ -823,16 +823,16 @@ document.addEventListener('keydown', async function(event) {
             isplaying = false;
         }
     } else if (event.key === 'r' || event.key === 'R') {
-        if(!remotemode) {remotemode=true; limit("remote", 0);}
-        else {remotemode=false; setlimit();}
+        if(selmode == 'normal') {selmode = 'remote'; limit("remote", 0);}
+        else {selmode = 'normal'; setlimit();}
         inpnum = '';
     } else if (event.key === 'f' || event.key === 'F') {
-        if(remotemode) {
+        if(selmode == 'remote') {
             freeplay=!freeplay;
-            remotemode=false;
+            selmode = 'normal';
             setlimit();
             inpnum = '';
-        } else if (!remotemode) {
+        } else if (selmode == 'normal') {
             if (firstphase){
                 info(0, '1절 연주를 해제합니다.');
                 firstphase = false;
@@ -844,19 +844,19 @@ document.addEventListener('keydown', async function(event) {
             }
         }
     } else if (event.key === 't' || event.key === 'T') {
-        if(remotemode && (!iscoin || timecoin==0) && !freeplay) {
+        if(selmode == 'remote' && (!iscoin || timecoin==0) && !freeplay) {
             const toupcoin = inpnum==''?30:Number(inpnum);
             addtimecoin("time", toupcoin);
-            remotemode=false;
+            selmode = 'normal';
             inpnum = '';
         }
     } else if (event.key === 'c' || event.key === 'C') {
-        if(remotemode && (iscoin || timecoin==0) && !freeplay) {
+        if(selmode == 'remote' && (iscoin || timecoin==0) && !freeplay) {
             const toupcoin = inpnum==''?1:Number(inpnum);
             addtimecoin("coin", toupcoin);
-            remotemode=false;
+            selmode = 'normal';
             inpnum = '';
-        } else if (!remotemode) {
+        } else if (selmode == 'normal') {
             if (isplaying){
                 if (!ifmr) {
                     const chorus = document.getElementById('chorus');
@@ -880,12 +880,12 @@ document.addEventListener('keydown', async function(event) {
             }
         }
     } else if (event.key === 's' || event.key === 'S') {
-        if(!freeplay&&remotemode&&!freeplay) {
+        if(!freeplay&&selmode == 'remote'&&!freeplay) {
             const toupcoin = inpnum==''?(iscoin?1:5):Number(inpnum);
             addservice(toupcoin);
-            remotemode=false;
+            selmode = 'normal';
             inpnum = '';
-        } else if (!remotemode) {
+        } else if (selmode == 'normal') {
             if (noscore){
                 info(0, '점수를 표시합니다.');
                 noscore = false;
@@ -897,27 +897,27 @@ document.addEventListener('keydown', async function(event) {
             }
         }
     } else if (event.key === 'o' || event.key === 'O') {
-        if(!isplaying&&!isinscore&&!isinexit&&remotemode) {
+        if(!isplaying&&!isinscore&&!isinexit&&selmode == 'remote') {
             pwc=0;
             setlimit();
             setting();
-            remotemode=false;
+            selmode = 'normal';
             inpnum = '';
         }
     } else if (event.key === 'd' || event.key === 'D') {
-        if(!freeplay&&remotemode&&!freeplay) {
+        if(!freeplay&&selmode == 'remote'&&!freeplay) {
             const toupcoin = inpnum==''?(iscoin?1:5):Number(inpnum);
             timecoin-=toupcoin;
             setlimit();
-            remotemode=false;
+            selmode = 'normal';
             inpnum = '';
         }
     } else if (event.key === 'e' || event.key === 'E') {
-        if(remotemode) {
+        if(selmode == 'remote') {
             if(freeplay){isusing=true;}
             timecoin=0;
             setlimit();
-            remotemode=false;
+            selmode = 'normal';
             inpnum = '';
         }
     } else if (event.key === 'ArrowUp') {

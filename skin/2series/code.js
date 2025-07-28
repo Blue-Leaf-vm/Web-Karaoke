@@ -123,6 +123,7 @@ const audioPaths = [
 	"./skin/2series/sounds/score/90woman.mp3",
 	"./skin/2series/sounds/score/100man.mp3",
 	"./skin/2series/sounds/score/100woman.mp3",
+	"./skin/2series/sounds/clap.mp3",
 ];
 
 const videoPaths = [

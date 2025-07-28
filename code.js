@@ -792,6 +792,10 @@ document.addEventListener('keydown', async function(event) {
             remotemode=false;
             setlimit();
             inpnum = '';
+        } else {
+            info(0, '박수 효과음.');
+            loadimage('clap');
+            systemsound(1, 'clap');
         }
     } else if (event.key === 'Escape') {
         if (settingstat!=0) {

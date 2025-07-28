@@ -1,4 +1,4 @@
-const version = '2';
+const version = '3';
 
 let isup = true;
 let inpnum = "";
@@ -1014,6 +1014,9 @@ async function loadbga() {
 addEventListener("DOMContentLoaded", async (event) => {
     getsetting();
     await wait(1000);
+    document.getElementById('music').volume = '0.75';
+    document.getElementById('melody').volume = '0.75';
+    document.getElementById('chorus').volume = '0.75';
     loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
     serloc = document.location;
     const bga = document.getElementById('bga');

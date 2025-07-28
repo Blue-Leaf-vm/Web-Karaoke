@@ -434,7 +434,6 @@ async function loadsongandvideo(number, time=0, fileload=false){
                 const element = document.getElementById(id);
                 element.src = fileUrl;
                 element.load();
-                if (id === 'bga') element.volume = 0;
                 status[key] = true;
             }
 
@@ -1014,6 +1013,7 @@ async function loadbga() {
 addEventListener("DOMContentLoaded", async (event) => {
     getsetting();
     await wait(1000);
+    document.getElementById('bga').volume = '0';
     document.getElementById('music').volume = '0.75';
     document.getElementById('melody').volume = '0.75';
     document.getElementById('chorus').volume = '0.75';

@@ -224,8 +224,6 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
         const banner = await getbannerdata(number);
         if(phase==0&&time==0&&!isplaying&&!skipinter){
             ininterlude = true;
-            await loadsongandvideo(number, 0, true);
-            await waitUntilAllMediaLoaded();
             ontime = Date.now();
             startsong(number, js.title, js.description||null, js.group||js.sing, js.sing, js.gender, js.interval, js.interval, js.lyrics, js.compos, js.original || null, banner || null, js.lang);
             isplaying = true;
@@ -233,6 +231,8 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             nowplaying = number;
             playingphase = 0;
             playlang = js.lang;
+            await loadsongandvideo(number, 0, true);
+            await waitUntilAllMediaLoaded();
             await loadsongandvideo(number);
             if (!hasmv) loadbga();
 
@@ -423,9 +423,9 @@ async function loadsongandvideo(number, time=0, fileload=false){
                         continue;
                     }
                 } else {
-                    const exists = await fileExists(`${serloc}songs/${number}/${name}`);
+                    const exists = await fileExists(`${serloc}/${number}/${name}`);
                     if (exists) {
-                        fileUrl = `${serloc}songs/${number}/${name}`;
+                        fileUrl = `${serloc}/${number}/${name}`;
                     } else {
                         continue;
                     }
@@ -528,7 +528,7 @@ async function getsongdata(number){
                 } else return 1;
             };
         } else {
-            const res = await fetch(`${serloc}songs/${number}/song.json`);
+            const res = await fetch(`${serloc}/${number}/song.json`);
             const data = await res.text();
             const js = JSON.parse(data);
             return js;
@@ -547,9 +547,9 @@ async function getbannerdata(number){
                 return URL.createObjectURL(await bannerHandle.getFile());
             }
         } else {
-            const exists = await fileExists(`${serloc}songs/${number}/banner.png`);
+            const exists = await fileExists(`${serloc}/${number}/banner.png`);
             if (exists) {
-                return `${serloc}songs/${number}/banner.png`;
+                return `${serloc}/${number}/banner.png`;
             }
         }
     } catch (err) {
@@ -1018,7 +1018,7 @@ addEventListener("DOMContentLoaded", async (event) => {
     document.getElementById('melody').volume = '0.75';
     document.getElementById('chorus').volume = '0.75';
     loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
-    serloc = document.location;
+    serloc = `${document.location}songs`;
     const bga = document.getElementById('bga');
     bga.addEventListener('ended', async function(){
         loadbga();

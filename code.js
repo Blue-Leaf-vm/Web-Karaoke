@@ -872,7 +872,7 @@ document.addEventListener('keydown', async function(event) {
                         loadimage('chorusoff');
                     }
                 } else {
-                    info(0, '지원하지 않는 기능입니다.')
+                    info(0, '지원하지 않는 기능입니다.');
                 }
             } else {
                 info(0, '연주 중에만 동작됩니다');

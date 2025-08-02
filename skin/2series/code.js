@@ -988,7 +988,6 @@ async function loadimage(img, time=2, num=centernum+1){
 	if(isshowed || isinscore || isinexit || isinevacuationenable || (isplaying && renderpron[playlang]) || playlang == "JP") return;
 	if(timerimage.src&&!iscentershowed) return;
 	const centerimage = document.getElementById("centerimage") || document.createElement("img");	
-	await wait(30);
 	centernum++;
 	if(img=='scoreoff'||img=='firstphaseon'||img=='chorusoff') loadsideimage();
 	else loadsideimage(true);

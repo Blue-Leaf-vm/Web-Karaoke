@@ -252,8 +252,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             autoplay = false;
             isplaying = false;
         } else if (phase!=0||isplaying){
-            if(!skipinter) hidestartbox(false);
-            else hidestartbox(false, true, true);
+            if (!skipinter) hidestartbox(false);
             hidelyric(true);
             hidelyric(false);     
             //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함
@@ -932,6 +931,7 @@ document.addEventListener('keydown', async function(event) {
     } else if (event.key === 'j' || event.key === 'J') {
         if(isplaying&&ininterlude) {
             songstart(nowplaying, ++playnum, playingphase, 0, true);
+            hidestartbox(false, true, true);
             info(0, "간주를 점프합니다.");
             loadimage('interludejump');
         }

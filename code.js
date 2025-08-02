@@ -230,6 +230,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             autoplay = true;
             nowplaying = number;
             playingphase = 0;
+            playingtime = 0.0;
             playlang = js.lang;
             await loadsongandvideo(number, 0, true);
             await waitUntilAllMediaLoaded();
@@ -265,13 +266,13 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                     for (let j = 0; j < line.lyrics.length; j++) {
                         sum+=line.timing[j] || 0;
                         sum+=line.wait[j] || 0;
-                        //sum+=1.2;
                     }
                 }
             }
             console.log(sum);
             if(skipinter){sum+=js.lyricsd[phase].startwait - ((60000 / js.bpm) * 6);}
             await loadsongandvideo(number, sum);
+            ontime=Date.now()-sum;
         }
 
         for (let k=phase;k<js.lyricsd.length;k++) {
@@ -314,7 +315,6 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             timer(js.bpm, isup);
 
             await wait((60000 / js.bpm) * 4);
-
             drift = Date.now() - starttime - ((60000 / js.bpm) * 5);
 
             if(!isplaying||num!=playnum){return;}
@@ -326,17 +326,15 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
 
                 draglyric(line, isup, js.lang);
                 starttime = Date.now();
-                let sum = 0;
+                let sum = 0.0;
                 for (let j = 0; j < line.lyrics.length; j++) {
                     sum += line.timing[j] + line.wait[j];
                 }
                 if(sum!=0){
                     await wait(Math.max(0, sum - drift));
-
                     drift = Date.now() - starttime - sum;
                     if (drift < 0) drift = 0;
                 }
-                playingtime = sum;
 
                 if(!isplaying||num!=playnum){return;}
                 if (isLastLine) {
@@ -362,6 +360,10 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
         console.error(err);
     }
 }
+
+setInterval(() => {
+    if (isplaying) playingtime=Date.now()-ontime;
+}, 5);
 
 async function waitUntilAllMediaLoaded() {
     const elements = [];

@@ -692,7 +692,7 @@ async function hidestartbox(isstop=false, noloadside=false, forcehide=false){
 //bpm: 곡 BPM, isup: [true: 위, false: 아래], startcount: [4, 3, 2, 1]
 async function timer(bpm, isup, startcount=4){
 	//4,3,2,1표출
-	if (!isshowed && !iscentershowed) timerimage.style.display = "block";
+	if (!isshowed && !iscentershowed) { timerimage.style.display = "block"; hidesideimage(false); }
 	else timerimage.style.display = "none";
 	const lyricElem = document.getElementById(isup ? "upperlyrictext" : "lowerlyrictext");
 	const pos = getScaledPositionToWrapper(lyricElem);
@@ -1014,16 +1014,18 @@ async function loadimage(img, time=2, num=centernum+1){
 
 	await wait(1000*time);
 	if (num!=centernum) return;
-	timerimage.style.display = "block";
+	if (timerimage.src) { timerimage.style.display = "block"; hidesideimage(false); }
 	centerimage.remove();
 	iscentershowed = false;
 }
 
-function hidesideimage(){
+function hidesideimage(allhide=true){
 	sideimage.style.visibility = "hidden";
-	noscoreimagebox.style.visibility = "hidden";
-	nochorusimagebox.style.visibility = "hidden";
-	firstphaseimagebox.style.visibility = "hidden";
+	if (allhide) {
+		noscoreimagebox.style.visibility = "hidden";
+		nochorusimagebox.style.visibility = "hidden";
+		firstphaseimagebox.style.visibility = "hidden";
+	}
 }
 
 function hidecenterimage(){

@@ -298,7 +298,6 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 skipinter = false;
             }
             if(!isplaying||num!=playnum){return;}
-            hidesideimage();
             ininterlude = false;
             if (item.lines.length >= 2) {
                 renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);

@@ -505,7 +505,7 @@ async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 		});
 	} else {
 		loadingstat=0;
-		toptimebox.style.visibility = 'visible';
+		if (!freeplay) toptimebox.style.visibility = 'visible';
 		networkbox.style.visibility = 'visible';
 	}
 }

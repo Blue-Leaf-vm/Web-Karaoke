@@ -68,6 +68,7 @@ let backgroundupdate = false;
 let minscore = 0;
 let random100 = 10;
 let bonusscore = null;
+let devmode = false;
 
 function setsetting(){
     window.localStorage.setItem('setpw', setpw);
@@ -84,23 +85,31 @@ function setsetting(){
     window.localStorage.setItem('minscore', minscore);
     window.localStorage.setItem('random100', random100);
     window.localStorage.setItem('bonusscore', bonusscore);
+    window.localStorage.setItem('devmode', devmode);
 }
 
-function getsetting(){
-    setpw = window.localStorage.getItem('setpw') || setpw;
-    netpw = window.localStorage.getItem('netpw') || netpw;
-    iscoin = window.localStorage.getItem('iscoin') || iscoin;
-    freeplay = window.localStorage.getItem('freeplay') || freeplay;
-    remcointime = window.localStorage.getItem('remcointime') || remcointime;
-    remcoinamount = window.localStorage.getItem('remcoinamount') || remcoinamount;
-    coinwaitmessage = window.localStorage.getItem('coinwaitmessage') || coinwaitmessage;
-    coinwaittime = window.localStorage.getItem('coinwaittime') || coinwaittime;
-    renderpron = JSON.parse(window.localStorage.getItem('renderpron')) || renderpron;
-    evacuationenable = window.localStorage.getItem('evacuationenable') || evacuationenable;
-    backgroundupdate = window.localStorage.getItem('backgroundupdate') || backgroundupdate;
-    minscore = window.localStorage.getItem('minscore') || minscore;
-    random100 = window.localStorage.getItem('random100') || random100;
-    bonusscore = window.localStorage.getItem('bonusscore') || bonusscore;
+function getParsedItem(key, defaultValue, parse = true) {
+    const item = window.localStorage.getItem(key);
+    if (item === null) return defaultValue;
+    return parse ? JSON.parse(item) : item;
+}
+
+function getsetting() {
+    setpw = getParsedItem('setpw', setpw, false);
+    netpw = getParsedItem('netpw', netpw, false);
+    iscoin = getParsedItem('iscoin', iscoin);
+    freeplay = getParsedItem('freeplay', freeplay);
+    remcointime = getParsedItem('remcointime', remcointime);
+    remcoinamount = getParsedItem('remcoinamount', remcoinamount);
+    coinwaitmessage = getParsedItem('coinwaitmessage', coinwaitmessage);
+    coinwaittime = getParsedItem('coinwaittime', coinwaittime);
+    renderpron = getParsedItem('renderpron', renderpron);
+    evacuationenable = getParsedItem('evacuationenable', evacuationenable);
+    backgroundupdate = getParsedItem('backgroundupdate', backgroundupdate);
+    minscore = getParsedItem('minscore', minscore);
+    random100 = getParsedItem('random100', random100);
+    bonusscore = getParsedItem('bonusscore', bonusscore);
+    devmode = getParsedItem('devmode', devmode);
 }
 
 const startediscoin = iscoin;
@@ -252,6 +261,62 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             songend();
             autoplay = false;
             isplaying = false;
+        } else if (time!=0){
+            hidestartbox(false);
+            hidelyric(true);
+            hidelyric(false);     
+            //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함
+            let sum = 0;
+            let isinstartwait = 0;
+            for (let k=0;k<js.lyricsd.length;k++) {
+                const item = js.lyricsd[k];
+                playingphase = k;
+                sum+=item.startwait || 0;
+                if (sum>time) {isinstartwait=sum-time; break;}
+                for (let i = 0; i < item.lines.length; i++) {
+                    const line = item.lines[i];
+                    for (let j = 0; j < line.lyrics.length; j++) {
+                        sum+=line.timing[j] || 0;
+                        sum+=line.wait[j] || 0;
+                    }
+                }
+            }
+            console.log(`${sum} ${isinstartwait} ${time}`)
+            await loadsongandvideo(number, time);
+            ontime=Date.now()-time;
+            phase = playingphase;
+            if (isinstartwait>=0) {
+                const item = js.lyricsd[playingphase];
+                let expected = sum-time-((60000 / js.bpm) * 4);
+                let more = 0;
+                while (expected<0){
+                    expected += ((60000 / js.bpm) * 1);
+                    more += 1;
+                }
+                await wait(expected);
+                drift = Date.now() - starttime - expected;
+                if(!isplaying||num!=playnum){return;}
+                ininterlude = false;
+                if (item.lines.length >= 2) {
+                    renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
+                    setTimeout(()=>{
+                        if(!isplaying||num!=playnum){return;}
+                        renderlyric(renderpron[js.lang], item.lines[1], false, js.lang);
+                    }, 30);
+                } else if (item.lines.length == 1) {
+                    renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
+                }
+
+                let isup = true;
+                starttime = Date.now();
+                if (more==0) await wait(Math.max(0, (60000 / js.bpm) - drift));
+
+                timer(js.bpm, isup, 4-more);
+                await wait(sum-expected-time);
+                drift = Date.now() - starttime - (sum-expected-time);
+            } else {
+                
+            }
         } else if (phase!=0||isplaying){
             if (!skipinter) hidestartbox(false);
             hidelyric(true);
@@ -276,46 +341,50 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
         }
 
         for (let k=phase;k<js.lyricsd.length;k++) {
-            if(k==1&&firstphase){
-                songend();
-                isplaying = false;
-            }
-            console.log(Date.now()-ontime);
-            playingphase = k;
-            ininterlude = true;
             const item = js.lyricsd[k];
-            if(!isplaying||num!=playnum){return;}
-            starttime = Date.now();
-            if (!skipinter) {
-                const expected = item.startwait - ((60000 / js.bpm) * 5);
-                await wait(expected);
-                drift = Date.now() - starttime - expected;
-            } else {
-                ininterlude = false;
-                const expected = 60000 / js.bpm;
-                await wait(expected);
-                drift = Date.now() - starttime - expected;
-                skipinter = false;
-            }
-            if(!isplaying||num!=playnum){return;}
-            ininterlude = false;
-            if (item.lines.length >= 2) {
-                renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
-                setTimeout(()=>{
-                    if(!isplaying||num!=playnum){return;}
-                    renderlyric(renderpron[js.lang], item.lines[1], false, js.lang);
-                }, 30);
-            } else if (item.lines.length == 1) {
-                renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
-            }
-
             let isup = true;
-            starttime = Date.now();
-            await wait(Math.max(0, (60000 / js.bpm) - drift));
-            timer(js.bpm, isup);
+            if (time==0){
+                if(k==1&&firstphase){
+                    songend();
+                    isplaying = false;
+                }
+                console.log(Date.now()-ontime);
+                playingphase = k;
+                ininterlude = true;
+                if(!isplaying||num!=playnum){return;}
+                starttime = Date.now();
+                if (!skipinter) {
+                    const expected = item.startwait - ((60000 / js.bpm) * 5);
+                    await wait(expected);
+                    drift = Date.now() - starttime - expected;
+                } else {
+                    ininterlude = false;
+                    const expected = 60000 / js.bpm;
+                    await wait(expected);
+                    drift = Date.now() - starttime - expected;
+                    skipinter = false;
+                }
+                if(!isplaying||num!=playnum){return;}
+                ininterlude = false;
+                if (item.lines.length >= 2) {
+                    renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
+                    setTimeout(()=>{
+                        if(!isplaying||num!=playnum){return;}
+                        renderlyric(renderpron[js.lang], item.lines[1], false, js.lang);
+                    }, 30);
+                } else if (item.lines.length == 1) {
+                    renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
+                }
 
-            await wait((60000 / js.bpm) * 4);
-            drift = Date.now() - starttime - ((60000 / js.bpm) * 5);
+                starttime = Date.now();
+                await wait(Math.max(0, (60000 / js.bpm) - drift));
+                timer(js.bpm, isup);
+
+                await wait((60000 / js.bpm) * 4);
+                drift = Date.now() - starttime - ((60000 / js.bpm) * 5);
+            }
+
+            time = 0;
 
             if(!isplaying||num!=playnum){return;}
             for (let i = 0; i < item.lines.length; i++) {
@@ -1013,17 +1082,18 @@ async function loadbga() {
 
 addEventListener("DOMContentLoaded", async (event) => {
     getsetting();
-    await wait(1000);
+    await wait(!devmode ? 1000 : 10);
     document.getElementById('bga').volume = '0';
     document.getElementById('music').volume = '0.75';
     document.getElementById('melody').volume = '0.75';
     document.getElementById('chorus').volume = '0.75';
-    loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
+    if (!devmode) loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
     serloc = `${document.location}songs`;
     const bga = document.getElementById('bga');
     bga.addEventListener('ended', async function(){
         loadbga();
 	});
+    loading(4);
 });
 
 setInterval(async () => {

@@ -290,7 +290,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             phase = playingphase;
             if(!isplaying||num!=playnum){return;}
             if (isinstartwait>0) {
-                if (js.lyricsd[0].startwait/4 < time) hidestartbox();
+                if (js.lyricsd[0].startwait/4 < time && time!=0) hidestartbox();
 
                 const item = js.lyricsd[playingphase];
                 let expected = sum-time-((60000 / js.bpm) * 4);
@@ -354,7 +354,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 return;
             }
         } else if (phase!=0||isplaying){
-            if (!skipinter) hidestartbox(false);
+            if (!skipinter && phase!=0) hidestartbox(false);
             hidelyric(true);
             hidelyric(false);     
             //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함

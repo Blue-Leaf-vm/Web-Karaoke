@@ -1094,7 +1094,6 @@ setInterval(() => {
 }, 60000);
 
 setlimit(false);
-
 skiploading=false;
 loading(0);
 
@@ -1129,20 +1128,22 @@ async function loadbga() {
 addEventListener("DOMContentLoaded", async (event) => {
     serloc = `${document.location}songs`;
     getsetting();
-    await wait(!devmode ? 1000 : 10);
     document.getElementById('bga').volume = '0';
     document.getElementById('music').volume = '0.75';
     document.getElementById('melody').volume = '0.75';
     document.getElementById('chorus').volume = '0.75';
+    await wait(!devmode ? 1000 : 10);
     if (!devmode) {
         if (localmode) loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
         else preload(true);
+    } else {
+        loading(4);
+        loadbga();
     }
     const bga = document.getElementById('bga');
     bga.addEventListener('ended', async function(){
         loadbga();
 	});
-    loading(4);
 });
 
 setInterval(async () => {

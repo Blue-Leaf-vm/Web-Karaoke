@@ -346,7 +346,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                     if (next) { hidelyric(!Boolean((toskip-1)%2)); renderlyric(renderpron[js.lang], next, !Boolean((toskip+1)%2), js.lang); }
                     else if (!item.lines[toskip]) { hidelyric(true); hidelyric(false); }
                 }
-            } else if (sum+js.endwait>time) {
+            } else {
                 await wait(Math.max(0, sum+js.endwait-time));
                 if(!isplaying||num!=playnum){return;}
                 songend();

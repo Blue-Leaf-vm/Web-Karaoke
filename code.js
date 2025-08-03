@@ -255,6 +255,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 }, remcointime*1000);
             }
             setTimeout(() => {
+                if(!isplaying||nowplaying!=number){return;}
                 hidestartbox();
             }, js.lyricsd[0].startwait/4);
         } else if (phase>=js.lyricsd.length) {
@@ -262,10 +263,8 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             autoplay = false;
             isplaying = false;
         } else if (time!=0){
-            hidestartbox(false);
             hidelyric(true);
             hidelyric(false);     
-            //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함
             let sum = 0;
             let isinstartwait = 0;
             let isinlyric = 0;
@@ -291,6 +290,8 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             phase = playingphase;
             if(!isplaying||num!=playnum){return;}
             if (isinstartwait>0) {
+                if (js.lyricsd[0].startwait/4 < time) hidestartbox();
+
                 const item = js.lyricsd[playingphase];
                 let expected = sum-time-((60000 / js.bpm) * 4);
                 let more = 0;
@@ -1013,11 +1014,6 @@ document.addEventListener('keydown', async function(event) {
             setlimit();
             selmode = 'normal';
             inpnum = '';
-        }
-    } else if (event.key === 'ArrowUp') {
-        if(isplaying&&(freeplay||timecoin!=0&&!iscoin)) {
-            songstart(nowplaying, ++playnum, playingphase-1>=0?playingphase-1:0, 0);
-            info(0, "절을 점프합니다."); //마디점프 개발 끝나면 삭제
         }
     } else if (event.key === 'ArrowDown') {
         if(isplaying&&(freeplay||!iscoin)) {

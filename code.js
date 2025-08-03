@@ -1,6 +1,5 @@
 const version = '3';
 
-let isup = true;
 let inpnum = "";
 let delnum = 0;
 let playnum = 0;
@@ -231,6 +230,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
         const js = await getsongdata(number);
         if(js==1){info(0, `카운터에 문의하세요(CODE:01)`); return;}
         const banner = await getbannerdata(number);
+        let toskip = 0;
         if(phase==0&&time==0&&!isplaying&&!skipinter){
             ininterlude = true;
             ontime = Date.now();
@@ -268,9 +268,11 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             //내 앞까지 있는 모든 절들의 모든 가사의 합을 구함
             let sum = 0;
             let isinstartwait = 0;
+            let isinlyric = 0;
             for (let k=0;k<js.lyricsd.length;k++) {
                 const item = js.lyricsd[k];
                 playingphase = k;
+                isinstartwait=-1;
                 sum+=item.startwait || 0;
                 if (sum>time) {isinstartwait=sum-time; break;}
                 for (let i = 0; i < item.lines.length; i++) {
@@ -279,12 +281,14 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                         sum+=line.timing[j] || 0;
                         sum+=line.wait[j] || 0;
                     }
+                    if (sum>time) {isinlyric=sum-time; toskip=i+1; break;}
                 }
+                if (isinlyric!=0) break;
             }
-            console.log(`${sum} ${isinstartwait} ${time}`)
             await loadsongandvideo(number, time);
             ontime=Date.now()-time;
             phase = playingphase;
+            if(!isplaying||num!=playnum){return;}
             if (isinstartwait>=0) {
                 const item = js.lyricsd[playingphase];
                 let expected = sum-time-((60000 / js.bpm) * 4);
@@ -307,15 +311,39 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                     renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
                 }
 
-                let isup = true;
                 starttime = Date.now();
                 if (more==0) await wait(Math.max(0, (60000 / js.bpm) - drift));
 
-                timer(js.bpm, isup, 4-more);
+                timer(js.bpm, true, 4-more);
                 await wait(sum-expected-time);
+                if(!isplaying||num!=playnum){return;}
                 drift = Date.now() - starttime - (sum-expected-time);
-            } else {
-                
+            } else if (isinlyric>=0) {
+                const item = js.lyricsd[playingphase];
+                const line = item.lines[toskip-1];
+                let linesum=0;
+                for (let j = 0; j < line.lyrics.length; j++) {
+                    linesum+=line.timing[j] || 0;
+                    linesum+=line.wait[j] || 0;
+                }
+                renderlyric(renderpron[js.lang], line, !Boolean((toskip-1)%2), js.lang);
+                const next = item.lines[toskip];
+                if (next) renderlyric(renderpron[js.lang], next, !Boolean(toskip%2), js.lang);
+                else {
+                    const before = item.lines[toskip-2];
+                    if (before) { renderlyric(renderpron[js.lang], before, !Boolean((toskip-2)%2), js.lang); draglyric(before, !Boolean((toskip-2)%2), js.lang, -1); }
+                }
+                draglyric(line, !Boolean((toskip-1)%2), js.lang, linesum-isinlyric);
+                starttime = Date.now();
+                if(linesum!=0){
+                    await wait(isinlyric);
+                    if(!isplaying||num!=playnum){return;}
+                    drift = Date.now() - starttime - isinlyric;
+                    if (drift < 0) drift = 0;
+                    const next = item.lines[toskip + 1];
+                    if (next) { hidelyric(!Boolean((toskip-1)%2)); renderlyric(renderpron[js.lang], next, !Boolean((toskip+1)%2), js.lang); }
+                    else if (!item.lines[toskip]) { hidelyric(true); hidelyric(false); }
+                }
             }
         } else if (phase!=0||isplaying){
             if (!skipinter) hidestartbox(false);
@@ -342,7 +370,6 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
 
         for (let k=phase;k<js.lyricsd.length;k++) {
             const item = js.lyricsd[k];
-            let isup = true;
             if (time==0){
                 if(k==1&&firstphase){
                     songend();
@@ -378,22 +405,21 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
 
                 starttime = Date.now();
                 await wait(Math.max(0, (60000 / js.bpm) - drift));
-                timer(js.bpm, isup);
+                timer(js.bpm, true);
 
                 await wait((60000 / js.bpm) * 4);
                 drift = Date.now() - starttime - ((60000 / js.bpm) * 5);
+                toskip = 0;
             }
 
             time = 0;
 
             if(!isplaying||num!=playnum){return;}
-            for (let i = 0; i < item.lines.length; i++) {
+            for (let i = toskip; i < item.lines.length; i++) {
                 if(!isplaying||num!=playnum){return;}
                 const line = item.lines[i];
-                const isLastLine = (i === item.lines.length - 1);
-                const isNextLastLine = (i + 1 === item.lines.length - 1);
 
-                draglyric(line, isup, js.lang);
+                draglyric(line, !Boolean(i%2), js.lang);
                 starttime = Date.now();
                 let sum = 0.0;
                 for (let j = 0; j < line.lyrics.length; j++) {
@@ -406,18 +432,11 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 }
 
                 if(!isplaying||num!=playnum){return;}
-                if (isLastLine) {
-                    hidelyric(true);
-                    hidelyric(false);
-                } else if (!isNextLastLine) {
-                    hidelyric(isup);
-                }
                 
                 const next = item.lines[i + 2];
                 if(!isplaying||num!=playnum){return;}
-                if (next) renderlyric(renderpron[js.lang], next, isup, js.lang);
-
-                isup = !isup;
+                if (next) { hidelyric(!Boolean(i%2)); renderlyric(renderpron[js.lang], next, !Boolean(i%2), js.lang); }
+                else if (!item.lines[i + 1]) { hidelyric(true); hidelyric(false); }
             }
         }
         await wait(js.endwait);
@@ -998,6 +1017,23 @@ document.addEventListener('keydown', async function(event) {
             songstart(nowplaying, ++playnum, playingphase+1, 0);
             info(0, "절을 점프합니다.");
             loadimage('phasejump');
+        }
+    } else if (event.key === 'ArrowLeft') {
+        if(isplaying&&(freeplay||timecoin!=0&&!iscoin)) {
+            const songdata = await getsongdata(nowplaying);
+            const bar = Math.floor((60000/songdata.bpm)*4);
+            const backbar = playingtime-bar;
+            songstart(nowplaying, ++playnum, 0, backbar>=0?backbar:0);
+            info(0, "마디를 뒤로 점프합니다.");
+            loadimage('backbarjump');
+        }
+    } else if (event.key === 'ArrowRight') {
+        if(isplaying&&(freeplay||!iscoin)) {
+            const songdata = await getsongdata(nowplaying);
+            const bar = Math.floor((60000/songdata.bpm)*4);
+            songstart(nowplaying, ++playnum, 0, playingtime+bar);
+            info(0, "마디를 점프합니다.");
+            loadimage('frontbarjump');
         }
     } else if (event.key === 'j' || event.key === 'J') {
         if(isplaying&&ininterlude) {

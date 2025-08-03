@@ -848,7 +848,7 @@ async function renderlyric(showpron, data, isup, lang){
 
 
 //data: {hurigana: [일본곡 한정], lyric: [], pronunciation: []} 형태로 전달되는 줄 데이터, isup: [true: 위, false: 아래], lang: 곡 언어
-async function draglyric(data, isup, lang) {
+async function draglyric(data, isup, lang, start=0) {
 	const lyrictextboxdrag = document.getElementById(isup ? "upperlyrictextboxdrag" : "lowerlyrictextboxdrag");
 	const lyrictextdrag = document.getElementById(isup ? "upperlyrictextdrag" : "lowerlyrictextdrag");
 	const lyrictextdragunder = document.getElementById(isup ? "upperlyrictextdragunder" : "lowerlyrictextdragunder");
@@ -861,8 +861,23 @@ async function draglyric(data, isup, lang) {
 	lyrictextdragunder.innerText = datahtml + endhtml;
 	lyrictextboxdrag.style.width = "0px";
 
+	if (start==-1) {
+		lyrictextboxdrag.style.transition = `width 0ms linear`;
+		for (let j = 0; j < data.lyrics.length; j++) {
+			datahtml += lang=="JP" ? `${data.lyrics[j]}<rt>${data.huri[j] || " "}</rt>` : data.lyrics[j];
+			lyrictextdrag.innerHTML = datahtml + endhtml;
+			lyrictextdragunder.innerHTML = datahtml + endhtml;
+		}
+		await new Promise(requestAnimationFrame);
+		const targetWidth = lyrictextdrag.scrollWidth;
+		lyrictextboxdrag.style.width = `${targetWidth}px`;
+		return;
+	}
+
 	let sstarttime;
 	let sdrift = 0;
+	let sum = 0;
+	let sumnext = start==0 ? true:false;
 
 	for (let j = 0; j < data.lyrics.length; j++) {
 		sstarttime = Date.now();
@@ -870,8 +885,12 @@ async function draglyric(data, isup, lang) {
 		lyrictextdrag.innerHTML = datahtml + endhtml;
 		lyrictextdragunder.innerHTML = datahtml + endhtml;
 		await new Promise(requestAnimationFrame);
-
-		if(data.timing[j]+data.wait[j]!=0){
+		sum+=data.timing[j]+data.wait[j];
+		if(data.timing[j]+data.wait[j]!=0&&start<sum){
+			if (sum>start&&!sumnext) {
+				sumnext = true;
+				sdrift += sum-start;
+			}
 			if (j == data.lyrics.length-1) lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift-100}ms linear`;
 			else lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift}ms linear`;
 			const targetWidth = lyrictextdrag.scrollWidth;

@@ -15,7 +15,6 @@ let isusing = false;
 let autoplay = true;
 let songdir = null;
 let ininterlude = false;
-let localmode = true;
 let prioritysong = null;
 
 let noscore = false;
@@ -50,7 +49,6 @@ const cachedSongs = {};
 let bpreload = false;
 
 let pwc;
-let serloc;
 
 //설정
 let setpw = '1111';
@@ -67,7 +65,10 @@ let backgroundupdate = false;
 let minscore = 0;
 let random100 = 10;
 let bonusscore = null;
+
 let devmode = false;
+let serloc;
+let localmode = true;
 
 function setsetting(){
     window.localStorage.setItem('setpw', setpw);
@@ -84,7 +85,10 @@ function setsetting(){
     window.localStorage.setItem('minscore', minscore);
     window.localStorage.setItem('random100', random100);
     window.localStorage.setItem('bonusscore', bonusscore);
+
     window.localStorage.setItem('devmode', devmode);
+    window.localStorage.setItem('serloc', serloc);
+    window.localStorage.setItem('localmode', localmode);
 }
 
 function getParsedItem(key, defaultValue, parse = true) {
@@ -108,7 +112,10 @@ function getsetting() {
     minscore = getParsedItem('minscore', minscore);
     random100 = getParsedItem('random100', random100);
     bonusscore = getParsedItem('bonusscore', bonusscore);
+
     devmode = getParsedItem('devmode', devmode);
+    serloc = getParsedItem('serloc', serloc, false);
+    localmode = getParsedItem('localmode', localmode);
 }
 
 const startediscoin = iscoin;
@@ -1120,14 +1127,17 @@ async function loadbga() {
 }
 
 addEventListener("DOMContentLoaded", async (event) => {
+    serloc = `${document.location}songs`;
     getsetting();
     await wait(!devmode ? 1000 : 10);
     document.getElementById('bga').volume = '0';
     document.getElementById('music').volume = '0.75';
     document.getElementById('melody').volume = '0.75';
     document.getElementById('chorus').volume = '0.75';
-    if (!devmode) loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
-    serloc = `${document.location}songs`;
+    if (!devmode) {
+        if (localmode) loading(1, '<span class="modaltexthighlight">곡 폴더</span>가 선택되지 않았습니다.</br>곡 재생 등 기능 사용을 위해서는<br>곡이 있는 폴더를 선택해야 합니다.<br>확인 버튼을 눌러 곡을 선택해주세요.');
+        else preload(true);
+    }
     const bga = document.getElementById('bga');
     bga.addEventListener('ended', async function(){
         loadbga();

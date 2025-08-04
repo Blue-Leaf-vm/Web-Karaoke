@@ -432,7 +432,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                     } else if (item.lines.length == 1) {
                         renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
                     }
-                    setTimeout(timer, more==0 ? 60000 / js.bpm : 0, js.bpm, true, more==0 ? 4 : 5-more);
+                    setTimeout(timer, 60000 / js.bpm, js.bpm, true, 4-more);
                 }, towait);
 
                 let waittime = !skipinter ? item.startwait : (60000 / js.bpm) * 6;
@@ -980,14 +980,13 @@ document.addEventListener('keydown', async function(event) {
             if (isplaying){
                 if (!ifmr) {
                     const chorus = document.getElementById('chorus');
-                    const music = document.getElementById('music');
                     if (nochorus){
                         chorus.volume = 1;
                         info(0, '육성/코러스가 동작됩니다.');
                         nochorus = false;
                         loadimage('choruson');
                     } else {
-                        chorus.volume = 0.1;
+                        chorus.volume = 0.0001;
                         info(0, '육성/코러스 동작을 중지합니다.');
                         nochorus = true;
                         loadimage('chorusoff');

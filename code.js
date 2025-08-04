@@ -393,38 +393,37 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 console.log(Date.now()-ontime);
                 playingphase = k;
                 ininterlude = true;
-                if(!isplaying||num!=playnum){return;}
-                starttime = Date.now();
+                let towait;
                 if (!skipinter) {
                     const expected = item.startwait - ((60000 / js.bpm) * 5);
-                    await wait(expected);
-                    drift = Date.now() - starttime - expected;
+                    towait = expected;
                 } else {
-                    ininterlude = false;
                     const expected = 60000 / js.bpm;
-                    await wait(expected);
-                    drift = Date.now() - starttime - expected;
-                    skipinter = false;
+                    towait = expected;
                 }
-                if(!isplaying||num!=playnum){return;}
-                ininterlude = false;
-                if (item.lines.length >= 2) {
-                    renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
-                    setTimeout(()=>{
-                        if(!isplaying||num!=playnum){return;}
-                        renderlyric(renderpron[js.lang], item.lines[1], false, js.lang);
-                    }, 30);
-                } else if (item.lines.length == 1) {
-                    renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
-                }
+                setTimeout( async ()=>{
+                    if(!isplaying||num!=playnum){return;}
+                    ininterlude = false;
+                    if (item.lines.length >= 2) {
+                        renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
+                        setTimeout(()=>{
+                            if(!isplaying||num!=playnum){return;}
+                            renderlyric(renderpron[js.lang], item.lines[1], false, js.lang);
+                        }, 30);
+                    } else if (item.lines.length == 1) {
+                        renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
+                    }
+                    setTimeout(timer, 60000 / js.bpm, js.bpm, true);
+                }, towait);
 
+                let waittime = !skipinter ? item.startwait : (60000 / js.bpm) * 6;
                 starttime = Date.now();
-                await wait(Math.max(0, (60000 / js.bpm) - drift));
-                timer(js.bpm, true);
-
-                await wait((60000 / js.bpm) * 4);
-                drift = Date.now() - starttime - ((60000 / js.bpm) * 5);
+                console.log(waittime);
+                await wait(waittime);
+                if(!isplaying||num!=playnum){return;}
+                drift = Date.now() - starttime - waittime;
                 toskip = 0;
+                skipinter = false;
             }
 
             time = 0;

@@ -714,6 +714,9 @@ async function songend(){
 }
 
 async function endscore(){
+    const chorus = document.getElementById('chorus');
+    nochorus = false;
+    chorus.volume = 1;
     setlimit();
     if(reservedsong.length>0&&timecoin>0&&autoplay){
         songstart(reservedsong[0], ++playnum);

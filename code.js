@@ -394,9 +394,28 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 playingphase = k;
                 ininterlude = true;
                 let towait;
+                let more = 0;
                 if (!skipinter) {
-                    const expected = item.startwait - ((60000 / js.bpm) * 5);
+                    let expected = item.startwait - ((60000 / js.bpm) * 5);
                     towait = expected;
+                    let closestExpected = expected;
+                    let closestMore = more;
+                    while (expected < 0) {
+                        expected += (60000 / js.bpm);
+                        more += 1;
+
+                        if (Math.abs(expected) < Math.abs(closestExpected)) {
+                            closestExpected = expected;
+                            closestMore = more;
+                        }
+                    }
+                    let oneMoreExpected = expected + (60000 / js.bpm);
+                    let oneMoreMore = more + 1;
+                    if (Math.abs(oneMoreExpected) < Math.abs(closestExpected)) {
+                        closestExpected = oneMoreExpected;
+                        closestMore = oneMoreMore;
+                    }
+                    more = closestMore;
                 } else {
                     const expected = 60000 / js.bpm;
                     towait = expected;
@@ -413,7 +432,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                     } else if (item.lines.length == 1) {
                         renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
                     }
-                    setTimeout(timer, 60000 / js.bpm, js.bpm, true);
+                    setTimeout(timer, more==0 ? 60000 / js.bpm : 0, js.bpm, true, more==0 ? 4 : 5-more);
                 }, towait);
 
                 let waittime = !skipinter ? item.startwait : (60000 / js.bpm) * 6;

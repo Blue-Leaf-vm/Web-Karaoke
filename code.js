@@ -437,7 +437,6 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
 
                 let waittime = !skipinter ? item.startwait : (60000 / js.bpm) * 6;
                 starttime = Date.now();
-                console.log(waittime);
                 await wait(waittime);
                 if(!isplaying||num!=playnum){return;}
                 drift = Date.now() - starttime - waittime;
@@ -460,7 +459,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 }
                 if(sum!=0){
                     await wait(Math.max(0, sum - drift));
-                    drift = Date.now() - starttime - sum;
+                    drift = Date.now() - starttime - sum; 
                     if (drift < 0) drift = 0;
                 }
 

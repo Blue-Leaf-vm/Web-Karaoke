@@ -889,8 +889,7 @@ async function draglyric(data, isup, lang, start=0) {
 				sumnext = true;
 				sdrift += sum-start;
 			}
-			if (j == data.lyrics.length-1) lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift-100}ms linear`;
-			else lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift}ms linear`;
+			lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift}ms linear`;
 			const targetWidth = lyrictextdrag.scrollWidth;
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
 			await wait(Math.max(0, data.timing[j]+data.wait[j] - sdrift));

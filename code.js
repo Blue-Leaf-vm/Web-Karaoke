@@ -444,6 +444,8 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 skipinter = false;
             }
 
+            starttime = Date.now();
+            let allsum = 0;
             time = 0;
 
             if(!isplaying||num!=playnum){return;}
@@ -452,16 +454,14 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 const line = item.lines[i];
 
                 draglyric(line, !Boolean(i%2), js.lang);
-                starttime = Date.now();
                 let sum = 0.0;
                 for (let j = 0; j < line.lyrics.length; j++) {
                     sum += line.timing[j] + line.wait[j];
                 }
                 if(sum!=0){
                     await wait(Math.max(0, sum - drift));
-                    drift = Date.now() - starttime - sum; 
-                    if (drift < 0) drift = 0;
                 }
+                allsum+=sum;
 
                 if(!isplaying||num!=playnum){return;}
                 
@@ -469,6 +469,8 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 if(!isplaying||num!=playnum){return;}
                 if (next) { hidelyric(!Boolean(i%2)); renderlyric(renderpron[js.lang], next, !Boolean(i%2), js.lang); }
                 else if (!item.lines[i + 1]) { hidelyric(true); hidelyric(false); }
+                drift = Date.now() - starttime - allsum; 
+                if (drift < 0) drift = 0;
             }
         }
         await wait(js.endwait);

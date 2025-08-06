@@ -469,8 +469,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 if(!isplaying||num!=playnum){return;}
                 if (next) { hidelyric(!Boolean(i%2)); renderlyric(renderpron[js.lang], next, !Boolean(i%2), js.lang); }
                 else if (!item.lines[i + 1]) { hidelyric(true); hidelyric(false); }
-                drift = Date.now() - starttime - allsum; 
-                if (drift < 0) drift = 0;
+                drift = Date.now() - starttime - allsum;
             }
         }
         await wait(js.endwait);

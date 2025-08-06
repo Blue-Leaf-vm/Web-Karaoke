@@ -899,7 +899,6 @@ async function draglyric(data, isup, lang, start=0) {
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
 		}
 		sdrift = Date.now() - sstarttime - sum;
-		if (sdrift < 0) sdrift = 0;
 	}
 }
 

@@ -445,7 +445,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             }
 
             starttime = Date.now();
-            let allsum = 0;
+            let allsum = 0.0;
             time = 0;
 
             if(!isplaying||num!=playnum){return;}

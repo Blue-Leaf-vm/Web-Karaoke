@@ -154,6 +154,7 @@
 
 rt {
 	font-size: 45px;
+    ruby-align: center;
 }
 
 .lyrictext {
@@ -162,6 +163,7 @@ rt {
     position: relative;
     white-space: pre;
     text-align: center;
+    font-weight: 500;
 }
 
 .tjsinglyric {
@@ -199,69 +201,77 @@ rt {
 	white-space: nowrap;
 }
 
+.underlyric {
+    -webkit-text-stroke-width: 13px;
+}
+
+.underlyric > ruby > rt {
+    -webkit-text-stroke-width: 8px;
+}
+
 .color0{
     color: #CCCCCC;
 }
 .color0.underlyric{
-    -webkit-text-stroke: 13px #4B4861;
+    -webkit-text-stroke-color: #4B4861;
 }
 .color0drag{
     color: #00AFEC;
 }
 .color0drag.underlyric{
-    -webkit-text-stroke: 13px #212251;
+    -webkit-text-stroke-color: #212251;
 }
 
 .color1{
     color: #C8C0B7;
 }
 .color1.underlyric{
-    -webkit-text-stroke: 13px #514635;
+    -webkit-text-stroke-color: #514635;
 }
 .color1drag{
     color: #EDEA65;
 }
 .color1drag.underlyric{
-    -webkit-text-stroke: 13px #423422;
+    -webkit-text-stroke-color: #423422;
 }
 
 .color2{
     color: #D6E1F5;
 }
 .color2.underlyric{
-    -webkit-text-stroke: 13px #303E6C;
+    -webkit-text-stroke-color: #303E6C;
 }
 .color2drag{
     color: #74FFFF;
 }
 .color2drag.underlyric{
-    -webkit-text-stroke: 13px #012E81;
+    -webkit-text-stroke-color: #012E81;
 }
 
 .color3{
     color: #EDDCE1;
 }
 .color3.underlyric{
-    -webkit-text-stroke: 13px #764465;
+    -webkit-text-stroke-color: #764465;
 }
 .color3drag{
     color: #FFAEFF;
 }
 .color3drag.underlyric{
-    -webkit-text-stroke: 13px #7B0A11;
+    -webkit-text-stroke-color: #7B0A11;
 }
 
 .color4{
     color: #E8DEFF;
 }
 .color4.underlyric{
-    -webkit-text-stroke: 13px #3E3562;
+    -webkit-text-stroke-color: #3E3562;
 }
 .color4drag{
     color: #D0B1FF;
 }
 .color4drag.underlyric{
-    -webkit-text-stroke: 13px #302373;
+    -webkit-text-stroke-color: #302373;
 }
 
 .genicon{

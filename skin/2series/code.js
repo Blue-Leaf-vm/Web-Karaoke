@@ -804,7 +804,7 @@ async function renderlyric(showpron, data, isup, lang){
 	if (lang=="JP"){
 		lyricpron.style.top = "150px";
 		lyricpron.style.fontSize = "58px";
-		lyricpron.style.fontWeight = "400";
+		lyricpron.style.fontWeight = "450";
 	}
 
 	lyrictextbox.appendChild(lyrictext);

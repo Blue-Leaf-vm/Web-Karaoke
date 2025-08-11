@@ -199,6 +199,9 @@ rt {
 	width: 0;
 	transition: width 0s linear;
 	white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+    transform: translateX(-5px);
 }
 
 .underlyric {

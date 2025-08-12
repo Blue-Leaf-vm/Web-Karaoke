@@ -100,7 +100,8 @@ const audioPaths = [
 	"./skin/2series/sounds/evacuation.mp3",
 	"./skin/2series/sounds/exit.mp3",
 	"./skin/2series/sounds/explore.mp3",
-	"./skin/2series/sounds/join.mp3",
+	"./skin/2series/sounds/booting.mp3",
+	"./skin/2series/sounds/intro.mp3",
 	"./skin/2series/sounds/openmenu.mp3",
 	"./skin/2series/sounds/forcestart.mp3",
 	"./skin/2series/sounds/selsong/0.mp3",
@@ -127,7 +128,8 @@ const audioPaths = [
 ];
 
 const videoPaths = [
-	"./skin/2series/videos/join.mp4",
+	"./skin/2series/videos/booting.mp4",
+	"./skin/2series/videos/intro.mp4",
 ];
 
 //상단바 생성
@@ -494,8 +496,8 @@ async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 		loadingstat=4;
 		const systemsound = document.getElementById('system');
 		const bga = document.getElementById('bga');
-		systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
-		bga.src = getCachedURL('./skin/2series/videos/join.mp4');
+		systemsound.src = getCachedURL('./skin/2series/sounds/booting.mp3');
+		bga.src = getCachedURL('./skin/2series/videos/booting.mp4');
 		systemsound.play();
 		bga.play();
 
@@ -505,6 +507,7 @@ async function loading(status=0, file='', cursize=0, filesize=1, stat=null) {
 		});
 	} else {
 		loadingstat=0;
+		loadbga();
 		if (!freeplay) toptimebox.style.visibility = 'visible';
 		networkbox.style.visibility = 'visible';
 	}
@@ -1180,7 +1183,7 @@ function startkar(evacuation=false){
 	if(evacuation){
 		const forceimg = document.getElementById('forcebox') || document.createElement("img");
 		const systemsound = document.getElementById('system');
-		if (isinevacuationenable) systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
+		if (isinevacuationenable) systemsound.src = getCachedURL('./skin/2series/sounds/intro.mp3');
 		else systemsound.src = getCachedURL('./skin/2series/sounds/evacuation.mp3');
 		systemsound.play();
 		isinevacuationenable = true;
@@ -1207,8 +1210,8 @@ function startkar(evacuation=false){
 		networkbox.style.visibility = "visible";
 		const systemsound = document.getElementById('system');
 		const bga = document.getElementById('bga');
-		systemsound.src = getCachedURL('./skin/2series/sounds/join.mp3');
-		bga.src = getCachedURL('./skin/2series/videos/join.mp4');
+		systemsound.src = getCachedURL('./skin/2series/sounds/intro.mp3');
+		bga.src = getCachedURL('./skin/2series/videos/intro.mp4');
 		systemsound.play();
 		bga.play();
 

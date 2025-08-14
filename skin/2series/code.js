@@ -987,7 +987,7 @@ async function info(type=0, message="카운터에 문의하세요(CODE:00)", tim
 	if (hidetime==-1){
 		rollbackimg = topimgimg.src;
 		rollbacktxt = toptext.innerHTML;
-		rollbackview = topblackbar.style.visibility;
+		rollbackview = isshowed ? true : topblackbar.style.visibility;
 	}
 	if(type==0){topimgimg.src = getCachedURL('./skin/2series/assets/ui/info.png');}
 	else if(type==1){topimgimg.src = getCachedURL('./skin/2series/assets/ui/einfo.png');}

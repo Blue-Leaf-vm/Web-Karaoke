@@ -1,4 +1,4 @@
-const version = '3';
+const version = '4';
 
 let inpnum = "";
 let delnum = 0;

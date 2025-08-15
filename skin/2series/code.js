@@ -786,13 +786,13 @@ async function renderlyric(showpron, data, isup, lang){
 	if (lang == "JP"){
 		datahtml = "<ruby>";
 		for(let i=0;i<data.lyrics.length;i++){
-			datahtml+=`${data.lyrics[i]}<rt>${data.huri[i] || " "}</rt>`;
+			datahtml+=`${data.lyrics[i]}<rt class="color0">${data.huri[i] || " "}</rt>`;
 		}
 		datahtml += "</ruby>";
 	}
 
 	lyrictext.innerHTML = datahtml;
-	lyrictextunder.innerHTML = datahtml;
+	lyrictextunder.innerHTML = datahtml.replaceAll("color0", "color0 underpron");
 	lyrictextdrag.innerText = "";
 	lyrictextdragunder.innerText = "";
 	lyricpron.innerText = showpron ? data.pronunciation.join(lang=="JP" ? '' : ' ') : "";
@@ -879,9 +879,9 @@ async function draglyric(data, isup, lang, start=0) {
 	if (start==-1) {
 		lyrictextboxdrag.style.transition = `width 0ms linear`;
 		for (let j = 0; j < data.lyrics.length; j++) {
-			datahtml += lang=="JP" ? `${data.lyrics[j]}<rt>${data.huri[j] || " "}</rt>` : data.lyrics[j];
+			datahtml += lang=="JP" ? `${data.lyrics[j]}<rt class="color0drag">${data.huri[j] || " "}</rt>` : data.lyrics[j];
 			lyrictextdrag.innerHTML = datahtml + endhtml;
-			lyrictextdragunder.innerHTML = datahtml + endhtml;
+			lyrictextdragunder.innerHTML = datahtml.replaceAll("color0drag", "color0drag underpron"); + endhtml;
 		}
 		await new Promise(requestAnimationFrame);
 		const targetWidth = lyrictextdrag.scrollWidth;
@@ -893,9 +893,9 @@ async function draglyric(data, isup, lang, start=0) {
 	let sum = 0;
 	let sumnext = start==0 ? true:false;
 	for (let j = 0; j < data.lyrics.length; j++) {
-		datahtml += lang=="JP" ? `${data.lyrics[j]}<rt>${data.huri[j] || " "}</rt>` : data.lyrics[j];
+		datahtml += lang=="JP" ? `${data.lyrics[j]}<rt class="color0drag">${data.huri[j] || " "}</rt>` : data.lyrics[j];
 		lyrictextdrag.innerHTML = datahtml + endhtml;
-		lyrictextdragunder.innerHTML = datahtml + endhtml;
+		lyrictextdragunder.innerHTML = datahtml.replaceAll("color0drag", "color0drag underpron"); + endhtml;
 		await new Promise(requestAnimationFrame);
 		sum+=data.timing[j]+data.wait[j];
 		if(data.timing[j]+data.wait[j]!=0&&start<sum){

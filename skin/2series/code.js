@@ -766,6 +766,7 @@ async function renderlyric(showpron, data, isup, lang){
 
 	lyricpron.classList.add("lyricpron");
 
+	lyricpron.classList.add(`color${data.type}`);
 	lyrictext.classList.add(`color${data.type}`);
 	lyrictextdrag.classList.add(`color${data.type}drag`);
 	lyrictextunder.classList.add(`color${data.type}`);

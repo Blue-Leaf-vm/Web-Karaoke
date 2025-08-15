@@ -743,6 +743,7 @@ async function renderlyric(showpron, data, isup, lang){
 	const lyrictextdragunder = document.createElement("p");
 
 	const lyricpron = document.createElement("p");
+	const lyricpronunder = document.createElement("p");
 
 	lyricbox.id = isup ? "upperlyricbox" : "lowerlyricbox";
 
@@ -755,6 +756,7 @@ async function renderlyric(showpron, data, isup, lang){
 	lyrictextdragunder.id = isup ? "upperlyrictextdragunder" : "lowerlyrictextdragunder";
 
 	lyricpron.id = isup ? "upperlyricpron" : "lowerlyricpron";
+	lyricpronunder.id = isup ? "upperlyricpron" : "lowerlyricpron";
 	
 	lyrictext.classList.add("lyrictext");
 	lyrictextdrag.classList.add("lyrictext");
@@ -765,8 +767,9 @@ async function renderlyric(showpron, data, isup, lang){
 	lyrictextdragunder.classList.add(`underlyric`);
 
 	lyricpron.classList.add("lyricpron");
+	lyricpronunder.classList.add("lyricpron");
+	lyricpronunder.classList.add("underpron");
 
-	lyricpron.classList.add(`color${data.type}`);
 	lyrictext.classList.add(`color${data.type}`);
 	lyrictextdrag.classList.add(`color${data.type}drag`);
 	lyrictextunder.classList.add(`color${data.type}`);
@@ -793,7 +796,7 @@ async function renderlyric(showpron, data, isup, lang){
 	lyrictextdrag.innerText = "";
 	lyrictextdragunder.innerText = "";
 	lyricpron.innerText = showpron ? data.pronunciation.join(lang=="JP" ? '' : ' ') : "";
-	lyricpron.setAttribute("data-content", showpron ? data.pronunciation.join(lang=="JP" ? '' : ' ') : "");
+	lyricpronunder.innerText = showpron ? data.pronunciation.join(lang=="JP" ? '' : ' ') : "";
 
 	if (showpron&&isup){
 		lyricbox.style.top = lang=="JP" ? "335px" : "400px";
@@ -809,6 +812,11 @@ async function renderlyric(showpron, data, isup, lang){
 		lyricpron.style.top = "150px";
 		lyricpron.style.fontSize = "58px";
 		lyricpron.style.fontWeight = "450";
+		lyricpronunder.style.top = "150px";
+		lyricpronunder.style.fontSize = "58px";
+		lyricpronunder.style.fontWeight = "450";
+		lyricpron.classList.add(`color${data.type}`);
+		lyricpronunder.classList.add(`color${data.type}`);
 	}
 
 	lyrictextbox.appendChild(lyrictext);
@@ -819,11 +827,13 @@ async function renderlyric(showpron, data, isup, lang){
 	lyricbox.appendChild(lyrictextbox);
 	lyricbox.appendChild(lyrictextboxdrag);
 	lyricbox.appendChild(lyricpron);
+	lyricbox.appendChild(lyricpronunder);
 
 	if (data.type!=beforegender) {
 		beforegender=data.type;
 		const genicon = document.createElement("img");
 		genicon.classList.add('genicon');
+		genicon.style.top = '45px';
 		if (data.type == 2) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/man.png');
 		else if (data.type == 3) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/woman.png');
 		else if (data.type == 4) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/multi.png');
@@ -841,12 +851,12 @@ async function renderlyric(showpron, data, isup, lang){
 		}
 
 		const textElem = lyrictext;
-		const pronElem = lyricpron;
 
 		const halfWidth = textElem.offsetWidth / 2;
-		pronElem.style.position = "absolute";
-		pronElem.style.left = `${textElem.offsetLeft + halfWidth}px`;
-		pronElem.style.transform = "translateX(-50%)";
+		lyricpron.style.left = `${textElem.offsetLeft + halfWidth}px`;
+		lyricpron.style.transform = "translateX(-50%)";
+		lyricpronunder.style.left = `${textElem.offsetLeft + halfWidth}px`;
+		lyricpronunder.style.transform = "translateX(-50%)";
 	});
 }
 

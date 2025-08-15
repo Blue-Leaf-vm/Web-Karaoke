@@ -178,10 +178,13 @@ rt {
   font-weight: 500;
   top: 129px;
   white-space: nowrap;
+  position: absolute;
+  color: #CCCCCC;
 }
 
-.lyricpron.underlyric {
+.lyricpron.underpron {
   -webkit-text-stroke: 10px #4B4861;
+  z-index: -1;
 }
 
 #upperlyrictextboxdrag,
@@ -209,65 +212,65 @@ rt {
 .color0{
     color: #CCCCCC;
 }
-.color0.underlyric{
+.color0.underlyric, .color0.underpron{
     -webkit-text-stroke-color: #4B4861;
 }
 .color0drag{
     color: #00AFEC;
 }
-.color0drag.underlyric{
+.color0drag.underlyric, .color0drag.underpron{
     -webkit-text-stroke-color: #212251;
 }
 
 .color1{
     color: #C8C0B7;
 }
-.color1.underlyric{
+.color1.underlyric, .color1.underpron{
     -webkit-text-stroke-color: #514635;
 }
 .color1drag{
     color: #EDEA65;
 }
-.color1drag.underlyric{
+.color1drag.underlyric, .color1drag.underpron{
     -webkit-text-stroke-color: #423422;
 }
 
 .color2{
     color: #D6E1F5;
 }
-.color2.underlyric{
+.color2.underlyric, .color2.underpron{
     -webkit-text-stroke-color: #303E6C;
 }
 .color2drag{
     color: #74FFFF;
 }
-.color2drag.underlyric{
+.color2drag.underlyric, .color2drag.underpron{
     -webkit-text-stroke-color: #012E81;
 }
 
 .color3{
     color: #EDDCE1;
 }
-.color3.underlyric{
+.color3.underlyric, .color3.underpron{
     -webkit-text-stroke-color: #764465;
 }
 .color3drag{
     color: #FFAEFF;
 }
-.color3drag.underlyric{
+.color3drag.underlyric, .color3drag.underpron{
     -webkit-text-stroke-color: #7B0A11;
 }
 
 .color4{
     color: #E8DEFF;
 }
-.color4.underlyric{
+.color4.underlyric, .color4.underpron{
     -webkit-text-stroke-color: #3E3562;
 }
 .color4drag{
     color: #D0B1FF;
 }
-.color4drag.underlyric{
+.color4drag.underlyric, .color4drag.underpron{
     -webkit-text-stroke-color: #302373;
 }
 

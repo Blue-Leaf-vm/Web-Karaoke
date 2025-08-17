@@ -297,6 +297,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
             phase = playingphase;
             if(!isplaying||num!=playnum){return;}
             if (isinstartwait>0) {
+                ininterlude = true;
                 if (js.lyricsd[0].startwait/4 < time && time!=0) hidestartbox();
 
                 const item = js.lyricsd[playingphase];

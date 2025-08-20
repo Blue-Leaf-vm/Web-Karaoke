@@ -324,7 +324,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                 starttime = Date.now();
                 if (more==0) await wait(Math.max(0, (60000 / js.bpm) - drift));
 
-                timer(js.bpm, true, 4-more);
+                timer(js.bpm, item.lines[0].lyrics.toString().trim().length!=0 ? true : false, 4-more);
                 await wait(sum-expected-time);
                 if(!isplaying||num!=playnum){return;}
                 drift = Date.now() - starttime - (sum-expected-time);
@@ -433,7 +433,7 @@ async function songstart(number, num=playnum, phase=0, time=0, skipinter1=false)
                     } else if (item.lines.length == 1) {
                         renderlyric(renderpron[js.lang], item.lines[0], true, js.lang);
                     }
-                    setTimeout(timer, 60000 / js.bpm, js.bpm, true, 4-more);
+                    setTimeout(timer, 60000 / js.bpm, js.bpm, item.lines[0].lyrics.toString().trim().length!=0 ? true : false, 4-more);
                 }, towait);
 
                 let waittime = !skipinter ? item.startwait : (60000 / js.bpm) * 6;

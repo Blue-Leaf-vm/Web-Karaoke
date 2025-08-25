@@ -70,6 +70,7 @@ let bonusscore = null;
 
 let devmode = false;
 let serloc;
+let serapiloc;
 let localmode = true;
 
 function setsetting(){
@@ -90,6 +91,7 @@ function setsetting(){
 
     window.localStorage.setItem('devmode', devmode);
     window.localStorage.setItem('serloc', serloc);
+    window.localStorage.setItem('serapiloc', serapiloc);
     window.localStorage.setItem('localmode', localmode);
 }
 
@@ -117,6 +119,7 @@ function getsetting() {
 
     devmode = getParsedItem('devmode', devmode);
     serloc = getParsedItem('serloc', serloc, false);
+    serapiloc = getParsedItem('serapiloc', serapiloc, false);
     localmode = getParsedItem('localmode', localmode);
 }
 
@@ -192,51 +195,74 @@ async function preload(upd=false, songs=false) {
         await Promise.all(allPaths.map(loadAsset));
     } else {
         if (upd) loading(2, '곡을 확인하는 중입니다...', 0, 1);
-        for await (const [, handle] of songdir.entries()) {
-            if (handle.kind === 'directory') {
-                totalAssets++;
-            }
-        }
-        await wait(100);
-        for await (const [dirname, dirHandle] of songdir.entries()) {
-            if (dirHandle.kind !== 'directory') continue;
-            if (!Number.isNaN(Number(dirname))){
-                try {
-                    const fileHandle = await dirHandle.getFileHandle('song.json');
-                    const file = await fileHandle.getFile();
-                    const text = await file.text();
-                    const json = JSON.parse(text);
-
-                    cachedSongs[dirname] = json;
-                    updateProgress(`곡 번호　:　${dirname}.......[${loadedCount+1}/${totalAssets}]`);
-                } catch (e) {
-                    console.warn(`'${dirname}' 곡을 불러오지 못했습니다.`, e);
-                    cachedSongs[dirname] = null;
-                }
-            }
-        }
-        await wait(100);
-        totalAssets=0;
-        const bgaHandle = await songdir.getDirectoryHandle("bga", { create: false }).catch(() => null);
-        if (bgaHandle) {
-            for await (const entry of bgaHandle.values()) {
-                if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
+        if (localmode) {
+            for await (const [, handle] of songdir.entries()) {
+                if (handle.kind === 'directory') {
                     totalAssets++;
                 }
             }
-            loadedCount=0;
-            for await (const entry of bgaHandle.values()) {
-                if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
-                    const filename = entry.name;
-                    listbga.push(entry);
-                    updateProgress(filename);
+            await wait(100);
+            for await (const [dirname, dirHandle] of songdir.entries()) {
+                if (dirHandle.kind !== 'directory') continue;
+                if (!Number.isNaN(Number(dirname))){
+                    try {
+                        const fileHandle = await dirHandle.getFileHandle('song.json');
+                        const file = await fileHandle.getFile();
+                        const text = await file.text();
+                        const json = JSON.parse(text);
+
+                        cachedSongs[dirname] = json;
+                        updateProgress(`곡 번호　:　${dirname}.......[${loadedCount+1}/${totalAssets}]`);
+                    } catch (e) {
+                        console.warn(`'${dirname}' 곡을 불러오지 못했습니다.`, e);
+                        cachedSongs[dirname] = null;
+                    }
+                }
+            }
+            await wait(100);
+            totalAssets=0;
+            const bgaHandle = await songdir.getDirectoryHandle("bga", { create: false }).catch(() => null);
+            if (bgaHandle) {
+                for await (const entry of bgaHandle.values()) {
+                    if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
+                        totalAssets++;
+                    }
+                }
+                loadedCount=0;
+                for await (const entry of bgaHandle.values()) {
+                    if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
+                        const filename = entry.name;
+                        listbga.push(entry);
+                        updateProgress(filename);
+                    }
+                }
+            }
+        } else {
+            const res = await fetch(`${serapiloc}/songs`);
+            const data = await res.text();
+            const js = JSON.parse(data);
+            totalAssets = js.length;
+            await wait(100);
+            for await (const songs of js) {
+                if (songs.number){
+                    try {
+                        const song = await fetch(`${serloc}/${songs.number}/song.json`);
+                        const text = await song.text();
+                        const json = JSON.parse(text);
+
+                        cachedSongs[songs.number] = json;
+                        updateProgress(`곡 번호　:　${songs.number}.......[${loadedCount+1}/${totalAssets}]`);
+                    } catch (e) {
+                        console.warn(`'${songs.number}' 곡을 불러오지 못했습니다.`, e);
+                        cachedSongs[songs.number] = null;
+                    }
                 }
             }
         }
         await wait(100);
     }
     
-    if (upd&&songs||upd&&!localmode||upd&&abortControllers.length==0) {
+    if (upd&&songs||upd&&abortControllers.length==0) {
         await wait(500);
         loading(0);
         await wait(3000);
@@ -657,8 +683,8 @@ async function getsongdata(number){
         return 1;
     }
     try{
-        if(cachedSongs[number]) return cachedSongs[number];
-        else {
+        if(cachedSongs[number]) { return cachedSongs[number]; }
+        else if (localmode) /*서버모드에선 지연으로 인해 실시간 검사가 어려움*/ {
             if(localmode){
                 const folderHandle = await songdir.getDirectoryHandle(number);
                 const fileHandle = await folderHandle.getFileHandle('song.json');
@@ -675,6 +701,8 @@ async function getsongdata(number){
                 const js = JSON.parse(data);
                 return js;
             }
+        } else {
+            return 1;
         }
     } catch (err) {
         return 1;
@@ -1158,6 +1186,7 @@ async function loadbga() {
 
 addEventListener("DOMContentLoaded", async (event) => {
     serloc = `${document.location}songs`;
+    serapiloc = `${document.location}api`;
     getsetting();
     document.getElementById('bga').volume = '0';
     document.getElementById('music').volume = '0.75';

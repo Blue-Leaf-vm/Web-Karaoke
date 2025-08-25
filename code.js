@@ -238,35 +238,39 @@ async function preload(upd=false, songs=false) {
                 }
             }
         } else {
-            let res = await fetch(`${serapiloc}/songs`);
-            let data = await res.text();
-            let js = JSON.parse(data);
-            totalAssets = js.length;
-            await wait(100);
-            for await (const songs of js) {
-                if (songs.number){
-                    try {
-                        const song = await fetch(`${serloc}/${songs.number}/song.json`);
-                        const text = await song.text();
-                        const json = JSON.parse(text);
+            try{
+                let res = await fetch(`${serapiloc}/songs`);
+                let data = await res.text();
+                let js = JSON.parse(data);
+                totalAssets = js.length;
+                await wait(100);
+                for await (const songs of js) {
+                    if (songs.number){
+                        try {
+                            const song = await fetch(`${serloc}/${songs.number}/song.json`);
+                            const text = await song.text();
+                            const json = JSON.parse(text);
 
-                        cachedSongs[songs.number] = json;
-                        updateProgress(`곡 번호　:　${songs.number}.......[${loadedCount+1}/${totalAssets}]`);
-                    } catch (e) {
-                        console.warn(`'${songs.number}' 곡을 불러오지 못했습니다.`, e);
-                        cachedSongs[songs.number] = null;
+                            cachedSongs[songs.number] = json;
+                            updateProgress(`곡 번호　:　${songs.number}.......[${loadedCount+1}/${totalAssets}]`);
+                        } catch (e) {
+                            console.warn(`'${songs.number}' 곡을 불러오지 못했습니다.`, e);
+                            cachedSongs[songs.number] = null;
+                        }
                     }
                 }
-            }
-            res = await fetch(`${serapiloc}/bga`);
-            data = await res.text();
-            js = JSON.parse(data);
-            totalAssets = js.length;
-            loadedCount = 0;
-            await wait(100);
-            for await (const bga of js) {
-                listbga.push(bga);
-                updateProgress(bga);
+                res = await fetch(`${serapiloc}/bga`);
+                data = await res.text();
+                js = JSON.parse(data);
+                totalAssets = js.length;
+                loadedCount = 0;
+                await wait(100);
+                for await (const bga of js) {
+                    listbga.push(bga);
+                    updateProgress(bga);
+                }
+            } catch (e) {
+                console.warn(`데이터를 불러오지 못했습니다.`, e);
             }
         }
         await wait(100);
@@ -694,7 +698,7 @@ async function getsongdata(number){
     }
     try{
         if(cachedSongs[number]) { return cachedSongs[number]; }
-        else if (localmode) /*서버모드에선 지연으로 인해 실시간 검사가 어려움*/ {
+        else if (localmode || Object.values(cachedSongs).length == 0) /*서버모드에선 지연으로 인해 실시간 검사가 어려움*/ {
             if(localmode){
                 const folderHandle = await songdir.getDirectoryHandle(number);
                 const fileHandle = await folderHandle.getFileHandle('song.json');

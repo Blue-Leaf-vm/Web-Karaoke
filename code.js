@@ -228,7 +228,7 @@ async function preload(upd=false, songs=false) {
             for await (const entry of bgaHandle.values()) {
                 if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
                     const filename = entry.name;
-                    listbga.push(filename);
+                    listbga.push(entry);
                     updateProgress(filename);
                 }
             }
@@ -1142,28 +1142,17 @@ loading(0);
 async function loadbga() {
 	if (isplaying && hasmv) bga.play();
     else {
-        if (localmode){
-            const bgaHandle = await songdir.getDirectoryHandle("bga", { create: false }).catch(() => null);
-            if (!bgaHandle) {
-                return null;
-            }
-
-            const files = [];
-            for await (const entry of bgaHandle.values()) {
-                if (entry.kind === "file") {
-                    files.push(entry);
-                }
-            }
-
-            if (files.length === 0) {
-                return null;
-            }
-
-            const randomFile = files[Math.floor(Math.random() * files.length)];
+        if (listbga.length === 0) {
+            return null;
+        }
+        const randomFile = listbga[Math.floor(Math.random() * listbga.length)];
+        if (localmode) {
             const fileData = await randomFile.getFile();
             bga.src = URL.createObjectURL(fileData);
-            bga.play();
+        } else {
+            bga.src = getCachedURL(`${serloc}/${randomFile}`);
         }
+        bga.play();
     }
 }
 

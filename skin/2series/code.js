@@ -833,7 +833,7 @@ async function renderlyric(showpron, data, isup, lang){
 		beforegender=data.type;
 		const genicon = document.createElement("img");
 		genicon.classList.add('genicon');
-		genicon.style.top = '45px';
+		if (lang=="JP") genicon.style.top = '45px';
 		if (data.type == 2) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/man.png');
 		else if (data.type == 3) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/woman.png');
 		else if (data.type == 4) genicon.src = getCachedURL('./skin/2series/assets/song/playing/changes/multi.png');

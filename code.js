@@ -144,6 +144,7 @@ async function preload(upd=false, songs=false) {
                 delete cachedSongs[key];
             }
         }
+        listbga.length = 0;
     }
 
     if (!upd) bpreload = true;

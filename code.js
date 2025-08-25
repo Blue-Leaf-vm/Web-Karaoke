@@ -48,6 +48,8 @@ const cachedAssets = {};
 const cachedSongs = {};
 let bpreload = false;
 
+const listbga = [];
+
 let pwc;
 
 //설정
@@ -213,6 +215,25 @@ async function preload(upd=false, songs=false) {
                 }
             }
         }
+        await wait(100);
+        totalAssets=0;
+        const bgaHandle = await songdir.getDirectoryHandle("bga", { create: false }).catch(() => null);
+        if (bgaHandle) {
+            for await (const entry of bgaHandle.values()) {
+                if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
+                    totalAssets++;
+                }
+            }
+            loadedCount=0;
+            for await (const entry of bgaHandle.values()) {
+                if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
+                    const filename = entry.name;
+                    listbga.push(filename);
+                    updateProgress(filename);
+                }
+            }
+        }
+        await wait(100);
     }
     
     if (upd&&songs||upd&&!localmode||upd&&abortControllers.length==0) {

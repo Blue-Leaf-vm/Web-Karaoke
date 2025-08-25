@@ -220,7 +220,7 @@ async function preload(upd=false, songs=false) {
                 }
             }
             await wait(100);
-            totalAssets=0;
+            totalAssets = 0;
             const bgaHandle = await songdir.getDirectoryHandle("bga", { create: false }).catch(() => null);
             if (bgaHandle) {
                 for await (const entry of bgaHandle.values()) {
@@ -228,7 +228,7 @@ async function preload(upd=false, songs=false) {
                         totalAssets++;
                     }
                 }
-                loadedCount=0;
+                loadedCount = 0;
                 for await (const entry of bgaHandle.values()) {
                     if (entry.kind === "file" && entry.name.toLowerCase().endsWith(".mp4")) {
                         const filename = entry.name;
@@ -238,9 +238,9 @@ async function preload(upd=false, songs=false) {
                 }
             }
         } else {
-            const res = await fetch(`${serapiloc}/songs`);
-            const data = await res.text();
-            const js = JSON.parse(data);
+            let res = await fetch(`${serapiloc}/songs`);
+            let data = await res.text();
+            let js = JSON.parse(data);
             totalAssets = js.length;
             await wait(100);
             for await (const songs of js) {
@@ -257,6 +257,16 @@ async function preload(upd=false, songs=false) {
                         cachedSongs[songs.number] = null;
                     }
                 }
+            }
+            res = await fetch(`${serapiloc}/bga`);
+            data = await res.text();
+            js = JSON.parse(data);
+            totalAssets = js.length;
+            loadedCount = 0;
+            await wait(100);
+            for await (const bga of js) {
+                listbga.push(bga);
+                updateProgress(bga);
             }
         }
         await wait(100);
@@ -1178,7 +1188,7 @@ async function loadbga() {
             const fileData = await randomFile.getFile();
             bga.src = URL.createObjectURL(fileData);
         } else {
-            bga.src = getCachedURL(`${serloc}/${randomFile}`);
+            bga.src = getCachedURL(`${serloc}/bga/${randomFile}`);
         }
         bga.play();
     }

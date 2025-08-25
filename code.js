@@ -657,9 +657,9 @@ async function getsongdata(number){
         return 1;
     }
     try{
-        if(localmode){
-            if(cachedSongs[number]) return cachedSongs[number];
-            else {
+        if(cachedSongs[number]) return cachedSongs[number];
+        else {
+            if(localmode){
                 const folderHandle = await songdir.getDirectoryHandle(number);
                 const fileHandle = await folderHandle.getFileHandle('song.json');
 
@@ -669,12 +669,12 @@ async function getsongdata(number){
                     const js = JSON.parse(content);
                     return js;
                 } else return 1;
-            };
-        } else {
-            const res = await fetch(`${serloc}/${number}/song.json`);
-            const data = await res.text();
-            const js = JSON.parse(data);
-            return js;
+            } else {
+                const res = await fetch(`${serloc}/${number}/song.json`);
+                const data = await res.text();
+                const js = JSON.parse(data);
+                return js;
+            }
         }
     } catch (err) {
         return 1;

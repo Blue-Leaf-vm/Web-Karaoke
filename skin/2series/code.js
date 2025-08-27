@@ -891,8 +891,10 @@ async function draglyric(data, isup, lang, start=0) {
 
 	let sdrift = 0;
 	let sum = 0;
-	let sumnext = start==0 ? true:false;
+	let waitsum = 0;
+	let sumnext = start==0 ? true:false
 	for (let j = 0; j < data.lyrics.length; j++) {
+		let plustime = 0;
 		datahtml += lang=="JP" ? `${data.lyrics[j]}<rt class="color0drag">${data.huri[j] || " "}</rt>` : data.lyrics[j];
 		lyrictextdrag.innerHTML = datahtml + endhtml;
 		lyrictextdragunder.innerHTML = datahtml.replaceAll("color0drag", "color0drag underpron"); + endhtml;
@@ -900,19 +902,21 @@ async function draglyric(data, isup, lang, start=0) {
 		sum+=data.timing[j]+data.wait[j];
 		if(data.timing[j]+data.wait[j]!=0&&start<sum){
 			if (sum>start&&!sumnext) {
+				plustime = sum-start;
 				sumnext = true;
-				sdrift += sum-start;
 			}
-			lyrictextboxdrag.style.transition = `width ${data.timing[j]-sdrift}ms linear`;
+			lyrictextboxdrag.style.transition = `width ${plustime==0 ? data.timing[j]-sdrift : plustime-data.wait[j]-sdrift}ms linear`;
 			const targetWidth = lyrictextdrag.scrollWidth;
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
-			await wait(Math.max(0, data.timing[j]+data.wait[j] - sdrift));
+			const towait = plustime==0 ? (data.timing[j]+data.wait[j]) : (plustime);
+			waitsum += towait;
+			await wait(Math.max(0, towait - sdrift));
 		} else {
 			lyrictextboxdrag.style.transition = `width 0ms linear`;
 			const targetWidth = lyrictextdrag.scrollWidth;
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
 		}
-		sdrift = Date.now() - sstarttime - sum;
+		sdrift = Date.now() - sstarttime - waitsum;
 	}
 }
 

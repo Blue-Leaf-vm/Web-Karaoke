@@ -904,11 +904,11 @@ async function draglyric(data, isup, lang, start=0) {
 		if(data.timing[j]+data.wait[j]!=0&&start<sum){
 			if (sum>start&&!sumnext) {
 				plustime = sum-start;
-				const diddragtime = start-(sum-data.timing[j]+data.wait[j]);
+				const diddragtime = start-(sum-data.timing[j]-data.wait[j]);
 				sumnext = true;
 				const nowWidth = Number.parseInt(lyrictextboxdrag.style.width);
 				lyrictextboxdrag.style.transition = `width 0ms linear`;
-				lyrictextboxdrag.style.width = `${Math.floor(nowWidth + (targetWidth - nowWidth) * Math.min(diddragtime / (plustime+diddragtime), 1))}px`;
+				lyrictextboxdrag.style.width = `${nowWidth + (targetWidth - nowWidth) * Math.min(diddragtime / (plustime+diddragtime), 1)}px`;
 				await new Promise(requestAnimationFrame);
 			}
 			lyrictextboxdrag.style.transition = `width ${plustime==0 ? data.timing[j]-sdrift : plustime-data.wait[j]-sdrift}ms linear`;

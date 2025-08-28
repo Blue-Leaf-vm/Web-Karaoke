@@ -900,20 +900,24 @@ async function draglyric(data, isup, lang, start=0) {
 		lyrictextdragunder.innerHTML = datahtml.replaceAll("color0drag", "color0drag underpron"); + endhtml;
 		await new Promise(requestAnimationFrame);
 		sum+=data.timing[j]+data.wait[j];
+		const targetWidth = lyrictextdrag.scrollWidth;
 		if(data.timing[j]+data.wait[j]!=0&&start<sum){
 			if (sum>start&&!sumnext) {
 				plustime = sum-start;
+				const diddragtime = start-(sum-data.timing[j]+data.wait[j]);
 				sumnext = true;
+				const nowWidth = Number.parseInt(lyrictextboxdrag.style.width);
+				lyrictextboxdrag.style.transition = `width 0ms linear`;
+				lyrictextboxdrag.style.width = `${Math.floor(nowWidth + (targetWidth - nowWidth) * (diddragtime / (plustime+diddragtime)))}px`;
+				await new Promise(requestAnimationFrame);
 			}
 			lyrictextboxdrag.style.transition = `width ${plustime==0 ? data.timing[j]-sdrift : plustime-data.wait[j]-sdrift}ms linear`;
-			const targetWidth = lyrictextdrag.scrollWidth;
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
 			const towait = plustime==0 ? (data.timing[j]+data.wait[j]) : (plustime);
 			waitsum += towait;
 			await wait(Math.max(0, towait - sdrift));
 		} else {
 			lyrictextboxdrag.style.transition = `width 0ms linear`;
-			const targetWidth = lyrictextdrag.scrollWidth;
 			lyrictextboxdrag.style.width = `${targetWidth}px`;
 		}
 		sdrift = Date.now() - sstarttime - waitsum;
